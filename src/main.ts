@@ -2,42 +2,10 @@ import * as yup from "yup";
 import * as yupObject from "yup/lib/object";
 import * as yupTypes from "yup/lib/types";
 import { Test } from "yup/lib/util/createValidation";
-import * as faker from "faker";
 
-interface Restrictions {
-  type: string;
-  email: any;
-  length: number | undefined;
-  min: number | undefined;
-  max: number | undefined;
-  choices: Array<any>;
-  nullable: boolean;
-  presence: string;
-}
-
-function oneOf<T>(choices: Array<T>): T {
-  const index = randomInt(choices.length - 1);
-  return Array.from(choices)[index];
-}
-
-function randomInt(high: number, low = 0) {
-  return Math.floor(Math.random() * (high - low + 1) + low);
-}
-
-function shouldAddField(specs: Restrictions): boolean {
-  const isOptional = specs.presence === "optional";
-  if (isOptional) {
-    return Math.random() > 0.3;
-  }
-  return true;
-}
-
-function shouldReturnNull(isNullable: boolean): boolean {
-  if (isNullable) {
-    return Math.random() > 0.75;
-  }
-  return false;
-}
+import { Specs } from "./data";
+import { Sign } from "./data/enumerations";
+import { Handler } from "./handler";
 
 function getTestValue<T>(tests: Test[], name: string): T | undefined {
   const test = tests.find((x) => x.OPTIONS.name === name);
@@ -57,52 +25,27 @@ function getTestValue<T>(tests: Test[], name: string): T | undefined {
   return undefined;
 }
 
-function getRestrictions(schema: yup.AnySchema): Restrictions {
+function getSpecs(schema: yup.AnySchema): Specs {
   const tests = schema.tests;
   const lengthTest = tests.find((x) => x.name === "length");
   const validateTests = tests.filter((x) => x.name === "validate");
   const minVal = getTestValue<number>(validateTests, "min");
   const maxVal = getTestValue<number>(validateTests, "max");
-  // console.log(schema.tests);
+  // tests.map((x) => console.log(schema));
   return {
-    type: schema.type,
+    type: schema.type, // ??? number or float (default is float), email, url, uuid
     length:
       lengthTest !== undefined
         ? (lengthTest.OPTIONS.params?.length as number)
         : undefined,
-    min: minVal,
-    max: maxVal,
-    email: tests.find((x) => x.name === "email"),
+    min: minVal, // ???
+    max: maxVal, // ???
+    // email: tests.find((x) => x.name === "email"), // ???
+    sign: Sign.Positive, // ???
     choices: schema.describe().oneOf,
     nullable: schema.spec.nullable,
     presence: schema.spec.presence,
   };
-}
-
-function getRandomValue(specs: Restrictions): any {
-  if (specs.choices && specs.choices.length > 0) {
-    return oneOf(specs.choices);
-  }
-  if (shouldReturnNull(specs.nullable)) {
-    return null;
-  }
-  if (specs.type === "string") {
-    if (specs.email !== undefined) {
-      return faker.internet.email();
-    }
-    let length = specs.length;
-    if (specs.max || specs.min) {
-      length = randomInt(specs.max || 255, specs.min || 0);
-    }
-    return faker.datatype.string(length);
-  } else if (specs.type === "boolean") {
-    return faker.datatype.boolean();
-  } else if (specs.type === "number") {
-    return faker.datatype.number({ max: specs.max, min: specs.min });
-  } else if (specs.type === "date") {
-    return faker.date.past();
-  }
-  return null;
 }
 
 function example<
@@ -115,12 +58,13 @@ function example<
 ): yup.InferType<typeof schema> {
   type objType = yup.InferType<typeof schema>;
   const item = {} as objType;
+  const handler = new Handler();
   for (const x in schema.fields) {
     const field = schema.fields[x] as yup.AnySchema;
-    const specs = getRestrictions(field);
-    if (shouldAddField(specs)) {
+    const specs = getSpecs(field);
+    if (handler.shouldAddField(specs.presence)) {
       // @ts-ignore
-      item[x] = getRandomValue(specs);
+      item[x] = handler.draw(specs);
     }
   }
   return item;

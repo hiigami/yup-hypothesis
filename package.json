@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/hiigami/yup-hypothesis#readme",
   "dependencies": {
-    "faker": "^5.5.3",
     "yup": "^0.32.9"
   },
   "devDependencies": {
