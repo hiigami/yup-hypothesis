@@ -1,43 +1,37 @@
 import { Specs } from "../data";
+import { PresenceType, SchemaType } from "../data/enumerations";
+import { random } from "../random";
 import * as strategies from "../strategies";
-import { random } from "../strategies/random";
 
-export class Handler {
-  shouldAddField(presence: string): boolean {
-    const isOptional = presence === "optional";
+export interface Handler {
+  canHandle(t: any): boolean;
+  handle(specs: Specs): any;
+}
+
+const mapper = new Map<SchemaType, strategies.StrategyConstructor>([
+  [SchemaType.Boolean, strategies.BooleanStrategy],
+  [SchemaType.Date, strategies.DateStrategy],
+  [SchemaType.Email, strategies.EmailStrategy],
+  [SchemaType.Float, strategies.FloatStrategy],
+  [SchemaType.Number, strategies.NumberStrategy],
+  [SchemaType.String, strategies.StringStrategy],
+  [SchemaType.URL, strategies.URLStrategy],
+  [SchemaType.UUID, strategies.UUIDStrategy],
+]);
+
+export class FieldHandler {
+  canHandle(presence: PresenceType): boolean {
+    const isOptional = presence === PresenceType.Optional;
     if (isOptional) {
       return random() > 0.3;
     }
     return true;
   }
-  draw(specs: Specs): any {
-    let strategy;
-    switch (specs.type) {
-      case "boolean": {
-        strategy = new strategies.BooleanStrategy(specs);
-        break;
-      }
-      case "number": {
-        strategy = new strategies.NumberStrategy(specs);
-        break;
-      }
-      case "float": {
-        strategy = new strategies.FloatStrategy(specs);
-        break;
-      }
-      case "date": {
-        strategy = new strategies.DateStrategy(specs);
-        break;
-      }
-      case "email": {
-        strategy = new strategies.DateStrategy(specs);
-        break;
-      }
-      default: {
-        strategy = new strategies.StringStrategy(specs);
-        break;
-      }
+  handle(specs: Specs): any {
+    if (mapper.has(specs.type)) {
+      const strategy = mapper.get(specs.type)!;
+      return new strategy(specs).draw();
     }
-    return strategy.draw();
+    return undefined;
   }
 }

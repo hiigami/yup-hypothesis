@@ -1,20 +1,34 @@
-import { Sign } from "./enumerations";
+import { PresenceType, SchemaType, Sign } from "./enumerations";
 
 export interface Constrain {
   max: number;
   min: number;
 }
 
+export interface EmailConstrain extends Constrain {
+  username: Constrain;
+  entity: Constrain;
+}
+
 export interface FloatConstrain extends Constrain {
   precision: number;
 }
 
+export interface StringConstrain extends Constrain {
+  chars: Constrain;
+}
+
+// interface Transform {
+//   (value: any): any;
+// }
+
 export interface BaseSpecs {
-  type: string;
+  type: SchemaType;
   default?: any;
   choices?: Array<any>;
   nullable: boolean;
-  presence: string;
+  presence: PresenceType;
+  // transform?: Transform[];
 }
 
 export interface BooleanSpecs extends BaseSpecs {}
