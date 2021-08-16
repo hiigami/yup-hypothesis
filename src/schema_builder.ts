@@ -49,7 +49,7 @@ export class SchemaBuilder {
     return _type;
   }
 
-  private _getSign(testSearch: TestSearch, max?: number, min?: number) {
+  private _getSign(testSearch: TestSearch, max?: number, min?: number): Sign {
     const positive = testSearch.getParameter(TestParameters.More, TestName.Min);
     if (positive || (min && min >= 0)) {
       return Sign.Positive;
@@ -65,11 +65,11 @@ export class SchemaBuilder {
 
   specs(): Specs {
     const testSearch = new TestSearch(this.schema.tests);
-    const max = testSearch.getParameter(TestParameters.Max);
-    const min = testSearch.getParameter(TestParameters.Min);
+    const max = testSearch.getParameter<number>(TestParameters.Max);
+    const min = testSearch.getParameter<number>(TestParameters.Min);
     return {
       type: this._getType(testSearch),
-      length: testSearch.getParameter(TestParameters.Length),
+      length: testSearch.getParameter<number>(TestParameters.Length),
       min: min,
       max: max,
       sign: this._getSign(testSearch, max, min),

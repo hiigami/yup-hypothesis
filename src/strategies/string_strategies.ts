@@ -47,8 +47,8 @@ export class StringStrategy extends Strategy<string> {
   protected _draw(): string {
     const size = this._getLength();
     const chars = this.defaults.chars;
-    let s = [];
-    for (var i = 0; i < size; i++) {
+    const s = [];
+    for (let i = 0; i < size; i++) {
       const c = this._random(chars.max, chars.min);
       s.push(String.fromCharCode(c));
     }
@@ -65,8 +65,8 @@ export class EmailStrategy extends Strategy<string> {
   }
 
   private _genChars(size: number, toUse: string): string {
-    let s = [];
-    for (var i = 0; i < size; i++) {
+    const s = [];
+    for (let i = 0; i < size; i++) {
       const c = this._random(toUse.length - 1);
       s.push(toUse[c]);
     }
@@ -175,6 +175,7 @@ export class URLStrategy extends Strategy<string> {
     return schemas[index];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _genPath(size: number): string {
     return "";
   }

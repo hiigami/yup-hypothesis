@@ -24,14 +24,14 @@ export interface StringConstrain extends Constrain {
 
 export interface BaseSpecs {
   type: SchemaType;
-  default?: any;
-  choices?: Array<any>;
+  default?: unknown;
+  choices?: Array<unknown>;
   nullable: boolean;
   presence: PresenceType;
   // transform?: Transform[];
 }
 
-export interface BooleanSpecs extends BaseSpecs {}
+export type BooleanSpecs = BaseSpecs;
 
 export interface StringSpecs extends BaseSpecs {
   min?: number;

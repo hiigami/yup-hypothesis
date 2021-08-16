@@ -13,18 +13,16 @@ function example<
 >(
   schema: yup.ObjectSchema<TShape, TContext, TIn, TOut>
 ): yup.InferType<typeof schema> {
-  type objType = yup.InferType<typeof schema>;
-  const item = {} as objType;
+  const item: Record<string, unknown> = {};
   const handler = new FieldHandler();
   for (const x in schema.fields) {
     const field = schema.fields[x] as yup.AnySchema;
     const specs = new SchemaBuilder(field).specs();
     if (handler.canHandle(specs.presence)) {
-      // @ts-ignore
-      item[x] = handler.handle(specs);
+      item[x] = handler.handle(specs) as [typeof x];
     }
   }
-  return item;
+  return item as yup.InferType<typeof schema>;
 }
 
 export default { example };
