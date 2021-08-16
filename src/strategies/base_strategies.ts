@@ -12,7 +12,7 @@ import * as constant from "./constant";
 import * as common from "./common";
 
 interface IStrategy {
-  draw(): any;
+  draw(): unknown;
 }
 
 export interface StrategyConstructor {
@@ -28,7 +28,7 @@ export abstract class Strategy<T> {
 
   protected abstract _draw(): T;
 
-  protected _random(max: number, min: number = 0) {
+  protected _random(max: number, min = 0): number {
     return randomIntInclusive(max, min);
   }
 
@@ -53,13 +53,13 @@ export abstract class Strategy<T> {
 
   draw(): T | null {
     if (this._shouldBeDefault()) {
-      return this.specs.default;
+      return this.specs.default as T | null;
     }
     if (this._shouldBeNull()) {
       return null;
     }
     if (this.specs.choices && this.specs.choices.length > 0) {
-      return this._oneOf(this.specs.choices);
+      return this._oneOf(this.specs.choices as (T | null)[]);
     }
     return this._draw();
   }

@@ -15,11 +15,11 @@ export class TestSearch {
     return this._find(name) !== undefined;
   }
 
-  getParameter(name: string, testName?: string): any {
+  getParameter<T>(name: string, testName?: string): T | undefined {
     const test = this._find(testName ?? name);
     if (test === undefined) {
       return undefined;
     }
-    return test.OPTIONS.params ? test.OPTIONS.params[name] : undefined;
+    return test.OPTIONS.params ? (test.OPTIONS.params[name] as T) : undefined;
   }
 }

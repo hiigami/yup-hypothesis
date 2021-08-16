@@ -4,8 +4,8 @@ import { random } from "../random";
 import * as strategies from "../strategies";
 
 export interface Handler {
-  canHandle(t: any): boolean;
-  handle(specs: Specs): any;
+  canHandle(t: unknown): boolean;
+  handle(specs: Specs): unknown;
 }
 
 const mapper = new Map<SchemaType, strategies.StrategyConstructor>([
@@ -27,9 +27,9 @@ export class FieldHandler {
     }
     return true;
   }
-  handle(specs: Specs): any {
+  handle(specs: Specs): unknown {
     if (mapper.has(specs.type)) {
-      const strategy = mapper.get(specs.type)!;
+      const strategy = mapper.get(specs.type) as strategies.StrategyConstructor;
       return new strategy(specs).draw();
     }
     return undefined;
