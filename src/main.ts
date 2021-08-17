@@ -18,7 +18,7 @@ function example<
   for (const x in schema.fields) {
     const field = schema.fields[x] as yup.AnySchema;
     const specs = new SchemaBuilder(field).specs();
-    if (handler.canHandle(specs.presence)) {
+    if (specs !== undefined && handler.canHandle(specs.presence)) {
       item[x] = handler.handle(specs) as [typeof x];
     }
   }

@@ -30,7 +30,7 @@ export enum TestName {
   UUID = "uuid",
 }
 
-export enum TestParameters {
+export enum TestParameter {
   Length = "length",
   Less = "less",
   Max = "max",

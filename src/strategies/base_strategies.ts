@@ -5,6 +5,7 @@ import {
   FloatSpecs,
   FloatConstrain,
   BooleanSpecs,
+  DateSpecs,
 } from "../data";
 import { randomIntInclusive, random } from "../random";
 
@@ -75,7 +76,7 @@ export class BooleanStrategy extends Strategy<boolean> {
 }
 
 export class DateStrategy extends Strategy<Date> {
-  constructor(specs: BooleanSpecs) {
+  constructor(specs: DateSpecs) {
     super(specs);
   }
   protected _draw(): Date {
@@ -113,7 +114,7 @@ export class FloatStrategy extends Strategy<number> {
 
   constructor(specs: FloatSpecs) {
     super(specs);
-    this.defaults = { min: 0, max: 99999, precision: 4 };
+    this.defaults = constant.FLOAT_DEFAULTS;
   }
 
   protected _draw(): number {
