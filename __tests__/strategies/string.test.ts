@@ -62,6 +62,38 @@ test("should be one of", () => {
   expect(val).toBe(specs.choices![index]);
 });
 
+test("should be trim", () => {
+  const specs: Specs = {
+    type: SchemaType.String,
+    nullable: false,
+    presence: PresenceType.Required,
+    trim: true,
+    length: 11,
+  };
+
+  const index = 32; // space
+  randomIntInclusiveMock.mockReturnValue(index);
+
+  const val = new StringStrategy(specs).draw();
+  expect(val).toEqual("");
+});
+
+test("should not be trim", () => {
+  const specs: Specs = {
+    type: SchemaType.String,
+    nullable: false,
+    presence: PresenceType.Required,
+    trim: false,
+    length: 10,
+  };
+
+  const index = 32; // space
+  randomIntInclusiveMock.mockReturnValue(index);
+
+  const val = new StringStrategy(specs).draw();
+  expect(val).not.toEqual("");
+});
+
 test("should respect default max and min limits", () => {
   const defaults = constant.STRING_DEFAULTS;
   const specs: Specs = {

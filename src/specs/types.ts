@@ -121,7 +121,7 @@ export class StringSpec extends Spec {
     ) as Specs;
     specs.min = this.testSearch.getParameter<number>(TestParameter.Min);
     specs.max = this.testSearch.getParameter<number>(TestParameter.Max);
-    specs.trim = false; /**@todo */
+    specs.trim = this.testSearch.has(TestName.Trim);
     return specs;
   }
 }

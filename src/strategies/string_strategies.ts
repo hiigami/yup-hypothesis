@@ -27,32 +27,16 @@ export class StringStrategy extends Strategy<string> {
     super(specs);
     this.defaults = constant.STRING_DEFAULTS;
   }
-  private _getLength(): number {
-    if (this.specs.length) {
-      return this.specs.length;
-    }
-    let max = common.getValidValue(
-      this.defaults,
-      this.defaults.max,
-      this.specs.max
-    );
-    let min = common.getValidValue(
-      this.defaults,
-      this.defaults.min,
-      this.specs.min
-    );
-    [max, min] = common.getCorrectMaxMin(max, min);
-    return this._random(max, min);
-  }
   protected _draw(): string {
-    const size = this._getLength();
+    const size = common.getLengthForStrings(this.specs, this.defaults);
     const chars = this.defaults.chars;
     const s = [];
     for (let i = 0; i < size; i++) {
       const c = this._random(chars.max, chars.min);
       s.push(String.fromCharCode(c));
     }
-    return s.join("");
+    const text = s.join("");
+    return this.specs.trim ? text.trim() : text;
   }
 }
 
@@ -64,28 +48,14 @@ export class EmailStrategy extends Strategy<string> {
     this.defaults = constant.EMAIL_DEFAULTS;
   }
 
-  private _genChars(size: number, toUse: string): string {
-    const s = [];
-    for (let i = 0; i < size; i++) {
-      const c = this._random(toUse.length - 1);
-      s.push(toUse[c]);
-    }
-    return s.join("");
-  }
-
-  private _getUsernameLength(size: number): number {
-    const proposedLimit = size - 3; // entity (x1) TLD (x2)
-    const max = common.getValidValueOrBest(
-      this.defaults.username,
-      proposedLimit
-    );
-    return this._random(max, this.defaults.username.min);
-  }
-
-  private _getEntityLength(size: number): number {
-    const proposedLimit = size - 2; // TLD (x2)
-    const max = common.getValidValueOrBest(this.defaults.entity, proposedLimit);
-    return this._random(max, this.defaults.entity.min);
+  private _getSectionLength(
+    size: number,
+    offset: number,
+    constrain: Constrain
+  ): number {
+    const proposedLimit = size - offset;
+    const max = common.getValidValueOrBest(constrain, proposedLimit);
+    return this._random(max, constrain.min);
   }
 
   private _getTLDLength(size: number): number {
@@ -101,38 +71,22 @@ export class EmailStrategy extends Strategy<string> {
     const UChars = chars + "_.+-";
     const entityChars = chars + "-.";
 
-    let _size = size - 2; // dot and @
-    const uSize = this._getUsernameLength(_size);
-    const username = this._genChars(uSize, UChars);
+    // offset = dot (x1)  @ (x1)
+    let _size = size - 2;
+    // offset = entity (x1) TLD (x2)
+    const uSize = this._getSectionLength(_size, 3, this.defaults.username);
+    const username = common.textGenerator(uSize, UChars);
     _size = _size - uSize;
-    const eSize = this._getEntityLength(_size);
-    const entity = this._genChars(eSize, entityChars);
+    // offset = TLD (x2)
+    const eSize = this._getSectionLength(_size, 2, this.defaults.entity);
+    const entity = common.textGenerator(eSize, entityChars);
     _size = _size - eSize;
-    const tld = this._genChars(this._getTLDLength(_size), chars);
+    const tld = common.textGenerator(this._getTLDLength(_size), chars);
     return `${username}@${entity}.${tld}`;
   }
 
-  private _getLength(): number {
-    if (this.specs.length) {
-      return common.getLength(this.specs.length, this.defaults);
-    }
-    let max = common.getValidValue(
-      this.defaults,
-      this.defaults.max,
-      this.specs.max
-    );
-
-    let min = common.getValidValue(
-      this.defaults,
-      this.defaults.min,
-      this.specs.min
-    );
-    [max, min] = common.getCorrectMaxMin(max, min);
-    return this._random(max, min);
-  }
-
   protected _draw(): string {
-    const size = this._getLength();
+    const size = common.getLengthForStrings(this.specs, this.defaults, true);
     return this._gen(size);
   }
 }
@@ -152,10 +106,7 @@ export class URLStrategy extends Strategy<string> {
     return false;
   }
 
-  private _genHost(size: number): string {
-    if (random() > 0.8) {
-      return "";
-    }
+  private _getValueFromEmail(size: number): string {
     const emailStrategy = new EmailStrategy({
       type: SchemaType.Email,
       presence: PresenceType.Required,
@@ -167,6 +118,13 @@ export class URLStrategy extends Strategy<string> {
       return email.replace(/^.*?@/, "");
     }
     return email;
+  }
+
+  private _genHost(size: number): string {
+    if (random() > 0.8) {
+      return "";
+    }
+    return this._getValueFromEmail(size);
   }
 
   private _getSchema(): string {
@@ -190,27 +148,8 @@ export class URLStrategy extends Strategy<string> {
     return `${schema}://${host}${path}`;
   }
 
-  private _getLength(): number {
-    if (this.specs.length) {
-      return common.getLength(this.specs.length, this.defaults);
-    }
-    let max = common.getValidValue(
-      this.defaults,
-      this.defaults.max,
-      this.specs.max
-    );
-
-    let min = common.getValidValue(
-      this.defaults,
-      this.defaults.min,
-      this.specs.min
-    );
-    [max, min] = common.getCorrectMaxMin(max, min);
-    return this._random(max, min);
-  }
-
   protected _draw(): string {
-    const size = this._getLength();
+    const size = common.getLengthForStrings(this.specs, this.defaults, true);
     return this._gen(size);
   }
 }

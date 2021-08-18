@@ -26,6 +26,7 @@ export enum TestName {
   Integer = "integer",
   Max = "max",
   Min = "min",
+  Trim = "trim",
   URL = "url",
   UUID = "uuid",
 }
