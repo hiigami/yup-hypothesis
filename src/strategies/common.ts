@@ -1,4 +1,4 @@
-import { Constrain } from "../data";
+import { Constrain, Specs } from "../data";
 import { Sign } from "../data/enumerations";
 import { random, randomIntInclusive } from "../random";
 import { SIGN_CHANGE } from "./constant";
@@ -52,4 +52,27 @@ export function getValidValueOrBest(constrain: Constrain, val: number): number {
     return constrain.min;
   }
   return constrain.max;
+}
+
+export function getLengthForStrings(
+  specs: Specs,
+  constrains: Constrain,
+  strict = false
+): number {
+  if (specs.length !== undefined) {
+    return strict ? getLength(specs.length, constrains) : specs.length;
+  }
+  let max = getValidValue(constrains, constrains.max, specs.max);
+  let min = getValidValue(constrains, constrains.min, specs.min);
+  [max, min] = getCorrectMaxMin(max, min);
+  return randomIntInclusive(max, min);
+}
+
+export function textGenerator(size: number, stack: string): string {
+  const s = [];
+  for (let i = 0; i < size; i++) {
+    const c = randomIntInclusive(stack.length - 1);
+    s.push(stack[c]);
+  }
+  return s.join("");
 }

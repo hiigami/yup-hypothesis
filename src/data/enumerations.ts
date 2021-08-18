@@ -26,11 +26,12 @@ export enum TestName {
   Integer = "integer",
   Max = "max",
   Min = "min",
+  Trim = "trim",
   URL = "url",
   UUID = "uuid",
 }
 
-export enum TestParameters {
+export enum TestParameter {
   Length = "length",
   Less = "less",
   Max = "max",

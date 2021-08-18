@@ -22,12 +22,15 @@ export interface StringConstrain extends Constrain {
 //   (value: any): any;
 // }
 
-export interface BaseSpecs {
-  type: SchemaType;
-  default?: unknown;
+export interface DefaultSpecs {
+  default?: unknown | (() => unknown) /**@todo */;
   choices?: Array<unknown>;
   nullable: boolean;
   presence: PresenceType;
+}
+
+export interface BaseSpecs extends DefaultSpecs {
+  type: SchemaType;
   // transform?: Transform[];
 }
 
@@ -37,6 +40,7 @@ export interface StringSpecs extends BaseSpecs {
   min?: number;
   max?: number;
   length?: number;
+  trim?: boolean;
 }
 
 export interface NumberSpecs extends BaseSpecs {
@@ -49,8 +53,14 @@ export interface FloatSpecs extends NumberSpecs {
   precision?: number;
 }
 
+export interface DateSpecs extends BaseSpecs {
+  min?: number;
+  max?: number;
+}
+
 export interface Specs
   extends BaseSpecs,
     BooleanSpecs,
     StringSpecs,
-    FloatSpecs {}
+    FloatSpecs,
+    DateSpecs {}

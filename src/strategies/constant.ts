@@ -19,6 +19,7 @@ export const FLOAT_DEFAULTS: FloatConstrain = {
 };
 export const IS_DEFAULT = 0.75;
 export const IS_NULLABLE = 0.75;
+export const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 export const NUMBER_DEFAULTS: Constrain = {
   min: 0,
   max: 99999,
@@ -31,5 +32,6 @@ export const STRING_DEFAULTS: StringConstrain = {
 };
 export const URL_DEFAULTS: Constrain = {
   min: 10,
-  max: 99999,
+  max: 2000,
 };
+export const URL_SCHEMAS = ["http", "https", "ftp", "file", "data", "irc"];
