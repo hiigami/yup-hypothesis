@@ -19,6 +19,7 @@ export const FLOAT_DEFAULTS: FloatConstrain = {
 };
 export const IS_DEFAULT = 0.75;
 export const IS_NULLABLE = 0.75;
+export const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 export const NUMBER_DEFAULTS: Constrain = {
   min: 0,
   max: 99999,

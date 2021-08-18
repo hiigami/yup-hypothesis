@@ -17,3 +17,28 @@ export function emailCheck(val: string): boolean {
     val
   );
 }
+
+export function urlCheck(val: string): boolean {
+  // eslint-disable-next-line no-control-regex,no-useless-escape
+  return /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/.test(
+    val
+  );
+}
+
+export function randIntIncMinEq0Is1OrMax(max: number, min?: number): number {
+  if (min === 0) {
+    return 1;
+  }
+  return max;
+}
+
+export function randIntIncMaxEqDefaultAndMinEq0Is1OrMax(maxDefault: number) {
+  return (max: number, min?: number): number => {
+    if (max === maxDefault) {
+      if (min === 0) {
+        return 1;
+      }
+    }
+    return max;
+  };
+}

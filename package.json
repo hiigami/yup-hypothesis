@@ -12,6 +12,7 @@
     "lint": "eslint --max-warnings 0",
     "build": "npx tsc -p tsconfig.json && npx tsc -p tsconfig-cjs.json",
     "test": "jest -i",
+    "test-coverage": "jest -i --coverage",
     "prepublishOnly": "npm run build",
     "prepare": "husky install"
   },

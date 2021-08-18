@@ -67,9 +67,8 @@ export class EmailStrategy extends Strategy<string> {
 
   private _gen(size: number): string {
     /**@todo create a better email generation logic*/
-    const chars = "abcdefghijklmnopqrstuvwxyz";
-    const UChars = chars + "_.+-";
-    const entityChars = chars + "-.";
+    const UChars = constant.LETTERS + "_.+-";
+    const entityChars = constant.LETTERS + "-.";
 
     // offset = dot (x1)  @ (x1)
     let _size = size - 2;
@@ -81,7 +80,10 @@ export class EmailStrategy extends Strategy<string> {
     const eSize = this._getSectionLength(_size, 2, this.defaults.entity);
     const entity = common.textGenerator(eSize, entityChars);
     _size = _size - eSize;
-    const tld = common.textGenerator(this._getTLDLength(_size), chars);
+    const tld = common.textGenerator(
+      this._getTLDLength(_size),
+      constant.LETTERS
+    );
     return `${username}@${entity}.${tld}`;
   }
 
@@ -106,6 +108,15 @@ export class URLStrategy extends Strategy<string> {
     return false;
   }
 
+  private _validateHost(host: string): string {
+    if (host.indexOf(".") === -1) {
+      return host.length < 3
+        ? `${host}.${host}`
+        : `${host.slice(0, 1)}.${host.slice(1, host.length - 1)}`;
+    }
+    return host;
+  }
+
   private _getValueFromEmail(size: number): string {
     const emailStrategy = new EmailStrategy({
       type: SchemaType.Email,
@@ -113,17 +124,14 @@ export class URLStrategy extends Strategy<string> {
       nullable: false,
       max: size,
     });
-    const email = emailStrategy.draw() as string;
+    let email = emailStrategy.draw() as string;
     if (!this._withAuthority()) {
-      return email.replace(/^.*?@/, "");
+      email = email.replace(/^.*?@/, "");
     }
-    return email;
+    return this._validateHost(email.slice(email.length - size));
   }
 
   private _genHost(size: number): string {
-    if (random() > 0.8) {
-      return "";
-    }
     return this._getValueFromEmail(size);
   }
 
@@ -133,19 +141,22 @@ export class URLStrategy extends Strategy<string> {
     return schemas[index];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private _genPath(size: number): string {
-    return "";
+    if (size <= 0) {
+      return "";
+    }
+    return common.textGenerator(size, constant.LETTERS);
   }
 
   private _gen(size: number): string {
     /**@todo complete and create a better url generation logic*/
     const schema = this._getSchema();
-    let _size = size - schema.length - 1 - 3;
+    let _size = size - (schema.length + 3);
     const host = this._genHost(_size);
-    _size = _size - host.length - 1;
-    const path = this._genPath(_size);
-    return `${schema}://${host}${path}`;
+    _size = _size - host.length;
+    const pathSymbol = host.length > 2 && _size > 1 ? "/" : "";
+    const path = this._genPath(_size - pathSymbol.length);
+    return `${schema}://${host}${pathSymbol}${path}`;
   }
 
   protected _draw(): string {
