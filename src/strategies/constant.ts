@@ -32,5 +32,6 @@ export const STRING_DEFAULTS: StringConstrain = {
 };
 export const URL_DEFAULTS: Constrain = {
   min: 10,
-  max: 99999,
+  max: 2000,
 };
+export const URL_SCHEMAS = ["http", "https", "ftp", "file", "data", "irc"];

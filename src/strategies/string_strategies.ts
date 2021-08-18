@@ -136,9 +136,9 @@ export class URLStrategy extends Strategy<string> {
   }
 
   private _getSchema(): string {
-    const schemas = ["http", "https", "ftp", "mailto", "file", "data", "irc"];
-    const index = this._random(schemas.length - 1);
-    return schemas[index];
+    // mailto, etc
+    const index = this._random(constant.URL_SCHEMAS.length - 1);
+    return constant.URL_SCHEMAS[index];
   }
 
   private _genPath(size: number): string {

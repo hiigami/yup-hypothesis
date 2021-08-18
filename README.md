@@ -1,6 +1,7 @@
 # yup-hypothesis
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/9290db12ea8831e07c89/test_coverage)](https://codeclimate.com/github/hiigami/yup-hypothesis/test_coverage)
 
 ## Install
 
@@ -27,6 +28,7 @@ const TestSchema = yup.object({
   debt: yup.number().required(),
   age: yup.number().integer().positive().min(18).max(99).required(),
   name: yup.string().length(10).optional(),
+  lastName: yup.string().length(20).trim(),
   description: yup.string().nullable().required(),
   uuid: yup.string().uuid().required(),
   url: yup.string().url().required(),

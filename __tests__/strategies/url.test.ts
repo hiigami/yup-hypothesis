@@ -15,10 +15,12 @@ test("should be a URL", () => {
   };
 
   randomMock.mockReturnValue(97);
-  randomIntInclusiveMock.mockReturnValue(1);
-
-  const val = new URLStrategy(specs).draw();
-  expect(mockUtils.urlCheck(val!)).toBeTruthy();
+  for (let i = 0; i < constant.URL_SCHEMAS.length; i++) {
+    randomIntInclusiveMock.mockReturnValue(i);
+    const val = new URLStrategy(specs).draw();
+    expect(mockUtils.urlCheck(val!)).toBeTruthy();
+    randomIntInclusiveMock.mockReset();
+  }
 });
 
 test("should be nullable", () => {
