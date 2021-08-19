@@ -11,7 +11,5 @@
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["**/lib/*.{js,ts}", "**/README.md"],
-  "rules": {
-    "no-warning-comments": "error"
-  }
+  "rules": {}
 }

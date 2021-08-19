@@ -1,11 +1,14 @@
 jest.unmock("../src/random");
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as rnd from "../src/random";
+
 import * as yup from "yup";
 import yh from "../src/main";
 
 import * as mockUtils from "./utils";
 
-test("should succeed required happy path", () => {
+test("should render all types correctly", () => {
   const TestSchema = yup.object({
     bool: yup.boolean().required(),
     date: yup.date().required(),
