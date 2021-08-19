@@ -1,12 +1,27 @@
 import { Test } from "yup/lib/util/createValidation";
-import { TestName, TestParameter } from "./data/enumerations";
+import { enumerations, specs as dSpecs } from "./data";
+import * as mutations from "./mutation";
 
 type ExtraParams = Record<string, unknown>;
 type Mapper = Map<string, Map<string, unknown>>;
+type TestOptions = {
+  name?: string;
+  message?: unknown;
+  test: unknown;
+  params?: ExtraParams;
+  exclusive?: boolean;
+};
 
 export interface ITestSearch {
   has(name: string): boolean;
-  getParameter<T>(name: TestParameter, testName?: TestName): T | undefined;
+  getParameter<T>(
+    name: enumerations.TestParameter,
+    testName?: enumerations.TestName
+  ): T | undefined;
+  getMutation(
+    name: enumerations.TestMutation,
+    testName: enumerations.TestName
+  ): dSpecs.SpecMutation | undefined;
 }
 
 export class TestSearch {
@@ -23,16 +38,34 @@ export class TestSearch {
       }
     }
   }
+  private _setMutation(
+    mapper: Map<string, unknown>,
+    options: TestOptions
+  ): void {
+    if (
+      options.name === enumerations.TestName.StringCase &&
+      (options.message as string)
+        .toLowerCase()
+        .lastIndexOf(enumerations.TestMutation.Upper) > -1
+    ) {
+      mapper.set(
+        enumerations.TestMutation.Upper,
+        mutations.mapper.get(enumerations.TestMutation.Upper)
+      );
+    }
+  }
 
   private _mapValues(tests: Test[]): Mapper {
     const mapper = new Map();
     for (const test of tests) {
-      const option = test.OPTIONS;
-      if (!mapper.has(option.name)) {
-        mapper.set(option.name, new Map());
+      const options = test.OPTIONS;
+      if (!mapper.has(options.name)) {
+        mapper.set(options.name, new Map());
       }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      this._setParams(mapper.get(option.name)!, option.params);
+      const item = mapper.get(options.name)!;
+      this._setParams(item, options.params);
+      this._setMutation(item, options);
     }
     return mapper;
   }
@@ -41,11 +74,24 @@ export class TestSearch {
     return this.mapper.has(name);
   }
 
-  getParameter<T>(name: TestParameter, testName?: TestName): T | undefined {
+  getParameter<T>(
+    name: enumerations.TestParameter,
+    testName?: enumerations.TestName
+  ): T | undefined {
     const params = this.mapper.get(testName ?? name);
     if (params === undefined) {
       return undefined;
     }
     return params.has(name) ? (params.get(name) as T) : undefined;
+  }
+  getMutation(
+    name: enumerations.TestMutation,
+    testName: enumerations.TestName
+  ): dSpecs.SpecMutation | undefined {
+    const params = this.mapper.get(testName);
+    if (params === undefined) {
+      return undefined;
+    }
+    return params.get(name.toString()) as dSpecs.SpecMutation;
   }
 }

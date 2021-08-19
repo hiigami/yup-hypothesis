@@ -1,21 +1,14 @@
 import * as yup from "yup";
 
-import { Specs } from "./data";
-import { SchemaType } from "./data/enumerations";
-import {
-  BooleanSpec,
-  DateSpec,
-  NumberSpec,
-  SpecConstructor,
-  StringSpec,
-} from "./specs";
+import { enumerations, specs as dSpecs } from "./data";
+import * as specs from "./specs";
 import { TestSearch } from "./test_search";
 
-const mapper = new Map<SchemaType, SpecConstructor>([
-  [SchemaType.String, StringSpec],
-  [SchemaType.Number, NumberSpec],
-  [SchemaType.Date, DateSpec],
-  [SchemaType.Boolean, BooleanSpec],
+const mapper = new Map<enumerations.SchemaType, specs.SpecConstructor>([
+  [enumerations.SchemaType.String, specs.StringSpec],
+  [enumerations.SchemaType.Number, specs.NumberSpec],
+  [enumerations.SchemaType.Date, specs.DateSpec],
+  [enumerations.SchemaType.Boolean, specs.BooleanSpec],
 ]);
 
 export class SchemaBuilder {
@@ -25,14 +18,16 @@ export class SchemaBuilder {
     this.schema = schema;
   }
 
-  private _getInitialType(): SchemaType {
+  private _getInitialType(): enumerations.SchemaType {
     const keyName = `${this.schema.type
       .charAt(0)
       .toUpperCase()}${this.schema.type.slice(1)}`;
-    return SchemaType[keyName as keyof typeof SchemaType];
+    return enumerations.SchemaType[
+      keyName as keyof typeof enumerations.SchemaType
+    ];
   }
 
-  specs(): Specs | undefined {
+  specs(): dSpecs.Specs | undefined {
     const type = this._getInitialType();
     const spec = mapper.get(type);
     if (spec === undefined) {

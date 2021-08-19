@@ -2,16 +2,15 @@
 import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 import * as mockUtils from "../utils";
 
-import { Specs } from "../../src/data";
-import { PresenceType, SchemaType } from "../../src/data/enumerations";
+import { enumerations, specs as dSpecs } from "../../src/data";
 import { EmailStrategy } from "../../src/strategies";
 import * as constant from "../../src/strategies/constant";
 
 test("should be an email", () => {
-  const specs: Specs = {
-    type: SchemaType.Email,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.Email,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
   };
 
   randomMock.mockReturnValue(0);
@@ -21,54 +20,12 @@ test("should be an email", () => {
   expect(mockUtils.emailCheck(val!)).toBeTruthy();
 });
 
-test("should be nullable", () => {
-  const specs: Specs = {
-    type: SchemaType.Email,
-    nullable: true,
-    presence: PresenceType.Required,
-  };
-
-  randomMock.mockReturnValue(constant.IS_NULLABLE + 0.05);
-
-  const val = new EmailStrategy(specs).draw();
-  expect(val).toBeNull();
-});
-
-test("should be default", () => {
-  const specs: Specs = {
-    type: SchemaType.Email,
-    nullable: true,
-    presence: PresenceType.Required,
-    default: "test@example.com",
-  };
-
-  randomMock.mockReturnValue(constant.IS_DEFAULT + 0.05);
-
-  const val = new EmailStrategy(specs).draw();
-  expect(val).toBe(specs.default);
-});
-
-test("should be one of", () => {
-  const specs: Specs = {
-    type: SchemaType.Email,
-    nullable: false,
-    presence: PresenceType.Required,
-    choices: ["tesr@example.com", "jopk@jnoi.org", "nubiuhg@text.com"],
-  };
-
-  const index = 0;
-  randomIntInclusiveMock.mockReturnValue(index);
-
-  const val = new EmailStrategy(specs).draw();
-  expect(val).toBe(specs.choices![index]);
-});
-
 test("should respect default max and min limits", () => {
   const defaults = constant.EMAIL_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.Email,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.Email,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     max: defaults.max + 1,
     min: defaults.min - 1,
   };
@@ -83,10 +40,10 @@ test("should respect default max and min limits", () => {
 
 test("should respect max and min within limits", () => {
   const defaults = constant.EMAIL_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.Email,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.Email,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     max: defaults.max - 1,
     min: defaults.min + 1,
   };
@@ -102,10 +59,10 @@ test("should respect max and min within limits", () => {
 
 test("should respect default length limits over specs length", () => {
   const defaults = constant.EMAIL_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.Email,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.Email,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     length: defaults.max + 1,
   };
 
@@ -123,10 +80,10 @@ test("should respect default length limits over specs length", () => {
 
 test("should respect length within limits", () => {
   const defaults = constant.EMAIL_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.Email,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.Email,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     length: defaults.min + 1,
   };
 
