@@ -29,4 +29,4 @@ export const URL_DEFAULTS: constrains.Constrain = {
   min: 10,
   max: 2000,
 };
-export const URL_SCHEMAS = ["http", "https", "ftp", "file", "data", "irc"];
+export const URL_SCHEMAS = ["http", "https"];

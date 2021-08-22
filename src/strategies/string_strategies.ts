@@ -131,7 +131,6 @@ export class URLStrategy extends Strategy<string> {
   }
 
   private _getSchema(): string {
-    // mailto, etc
     const index = this._random(constant.URL_SCHEMAS.length - 1);
     return constant.URL_SCHEMAS[index];
   }
