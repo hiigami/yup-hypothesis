@@ -1,13 +1,6 @@
 import * as yup from "yup";
 
-import { DefaultSpecs, Specs } from "../data";
-import {
-  PresenceType,
-  SchemaType,
-  Sign,
-  TestName,
-  TestParameter,
-} from "../data/enumerations";
+import { enumerations, specs as dSpecs } from "../data";
 import { ITestSearch } from "../test_search";
 import * as common from "./common";
 
@@ -24,19 +17,22 @@ export abstract class Spec {
     this.testSearch = testSearch;
   }
 
-  private _getPresence(): PresenceType {
+  private _getPresence(): enumerations.PresenceType {
     const keyName = `${this.schema.spec.presence
       .charAt(0)
       .toUpperCase()}${this.schema.spec.presence.slice(1)}`;
-    return PresenceType[keyName as keyof typeof PresenceType];
+    return enumerations.PresenceType[
+      keyName as keyof typeof enumerations.PresenceType
+    ];
   }
 
-  protected abstract _getType(): SchemaType;
+  protected abstract _getType(): enumerations.SchemaType;
   protected _getChoices(): unknown[] {
     return this.schema.describe().oneOf;
   }
-  protected _get(): DefaultSpecs {
+  protected _get(): dSpecs.Specs {
     return {
+      type: this._getType(),
       default: this.schema.spec.default,
       choices: this.schema.describe().oneOf,
       nullable: this.schema.spec.nullable,
@@ -44,20 +40,23 @@ export abstract class Spec {
     };
   }
 
-  abstract get(): Specs;
+  abstract get(): dSpecs.Specs;
 }
 
 export class NumberSpec extends Spec {
-  protected _getType(): SchemaType {
-    const isInteger = this.testSearch.has(TestName.Integer);
+  protected _getType(): enumerations.SchemaType {
+    const isInteger = this.testSearch.has(enumerations.TestName.Integer);
     if (isInteger) {
-      return SchemaType.Number;
+      return enumerations.SchemaType.Number;
     }
-    return SchemaType.Float;
+    return enumerations.SchemaType.Float;
   }
   private _isPositive(min?: number): boolean {
     const minCheck = common.isPositiveByMin(min);
-    const more = this.testSearch.getParameter(TestParameter.More, TestName.Min);
+    const more = this.testSearch.getParameter(
+      enumerations.TestParameter.More,
+      enumerations.TestName.Min
+    );
     if (more !== undefined || minCheck) {
       return true;
     }
@@ -65,7 +64,10 @@ export class NumberSpec extends Spec {
   }
   private _isNegative(max?: number): boolean {
     const maxCheck = common.isNegativeByMax(max);
-    const less = this.testSearch.getParameter(TestParameter.Less, TestName.Max);
+    const less = this.testSearch.getParameter(
+      enumerations.TestParameter.Less,
+      enumerations.TestName.Max
+    );
     if (less !== undefined || maxCheck) {
       return true;
     }
@@ -73,75 +75,94 @@ export class NumberSpec extends Spec {
   }
   private _positiveOrIndifferent(min?: number) {
     if (this._isPositive(min)) {
-      return Sign.Positive;
+      return enumerations.Sign.Positive;
     }
-    return Sign.Indifferent;
+    return enumerations.Sign.Indifferent;
   }
-  protected _getSign(max?: number, min?: number): Sign {
+  protected _getSign(max?: number, min?: number): enumerations.Sign {
     if (this._isNegative(max)) {
-      return Sign.Negative;
+      return enumerations.Sign.Negative;
     }
     return this._positiveOrIndifferent(min);
   }
-  get(): Specs {
-    const specs = Object.assign(
-      { type: this._getType() },
-      this._get()
-    ) as Specs;
-    specs.min = this.testSearch.getParameter<number>(TestParameter.Min);
-    specs.max = this.testSearch.getParameter<number>(TestParameter.Max);
+  get(): dSpecs.Specs {
+    const specs = this._get();
+    specs.min = this.testSearch.getParameter<number>(
+      enumerations.TestParameter.Min
+    );
+    specs.max = this.testSearch.getParameter<number>(
+      enumerations.TestParameter.Max
+    );
     specs.sign = this._getSign(specs.max, specs.min);
     return specs;
   }
 }
 
 export class StringSpec extends Spec {
-  private _emailOrString(): SchemaType {
-    if (this.testSearch.has(TestName.Email)) {
-      return SchemaType.Email;
+  private _emailOrString(): enumerations.SchemaType {
+    if (this.testSearch.has(enumerations.TestName.Email)) {
+      return enumerations.SchemaType.Email;
     }
-    return SchemaType.String;
+    return enumerations.SchemaType.String;
   }
-  private _urlOrEmailOrString(): SchemaType {
-    if (this.testSearch.has(TestName.URL)) {
-      return SchemaType.URL;
+  private _urlOrEmailOrString(): enumerations.SchemaType {
+    if (this.testSearch.has(enumerations.TestName.URL)) {
+      return enumerations.SchemaType.URL;
     }
     return this._emailOrString();
   }
-  protected _getType(): SchemaType {
-    if (this.testSearch.has(TestName.UUID)) {
-      return SchemaType.UUID;
+  protected _getType(): enumerations.SchemaType {
+    if (this.testSearch.has(enumerations.TestName.UUID)) {
+      return enumerations.SchemaType.UUID;
     }
     return this._urlOrEmailOrString();
   }
-  get(): Specs {
-    const specs = Object.assign(
-      { type: this._getType() },
-      this._get()
-    ) as Specs;
-    specs.min = this.testSearch.getParameter<number>(TestParameter.Min);
-    specs.max = this.testSearch.getParameter<number>(TestParameter.Max);
-    specs.trim = this.testSearch.has(TestName.Trim);
+
+  private _getMutations(): dSpecs.SpecMutation[] {
+    /**@todo create better logic */
+    const mutations = [];
+    const upper = this.testSearch.getMutation(
+      enumerations.TestMutation.Upper,
+      enumerations.TestName.StringCase
+    );
+    if (upper !== undefined) {
+      mutations.push(upper);
+    }
+    const lower = this.testSearch.getMutation(
+      enumerations.TestMutation.Upper,
+      enumerations.TestName.StringCase
+    );
+    if (lower !== undefined) {
+      mutations.push(lower);
+    }
+    return mutations;
+  }
+  get(): dSpecs.Specs {
+    const specs = this._get();
+    specs.min = this.testSearch.getParameter<number>(
+      enumerations.TestParameter.Min
+    );
+    specs.max = this.testSearch.getParameter<number>(
+      enumerations.TestParameter.Max
+    );
+    specs.trim = this.testSearch.has(enumerations.TestName.Trim);
+    specs.mutations = this._getMutations();
     return specs;
   }
 }
 
 export class BooleanSpec extends Spec {
-  protected _getType(): SchemaType {
-    return SchemaType.Boolean;
+  protected _getType(): enumerations.SchemaType {
+    return enumerations.SchemaType.Boolean;
   }
-  get(): Specs {
-    const specs = Object.assign(
-      { type: this._getType() },
-      this._get()
-    ) as Specs;
-    return specs;
+  get(): dSpecs.Specs {
+    return this._get();
   }
 }
 
 export class DateSpec extends Spec {
-  protected _getType(): SchemaType {
-    return SchemaType.Date;
+  protected _getType(): enumerations.SchemaType {
+    return enumerations.SchemaType.Date;
   }
   private _limitFromStringOrDefault(
     val?: string | number | undefined
@@ -151,20 +172,17 @@ export class DateSpec extends Spec {
     }
     return val;
   }
-  private _getLimit(param: TestParameter): number | undefined {
+  private _getLimit(param: enumerations.TestParameter): number | undefined {
     const val = this.testSearch.getParameter<number | Date>(param);
     if (val instanceof Date) {
       return val.getTime();
     }
     return this._limitFromStringOrDefault(val);
   }
-  get(): Specs {
-    const specs = Object.assign(
-      { type: this._getType() },
-      this._get()
-    ) as Specs;
-    specs.min = this._getLimit(TestParameter.Min);
-    specs.max = this._getLimit(TestParameter.Max);
+  get(): dSpecs.Specs {
+    const specs = this._get();
+    specs.min = this._getLimit(enumerations.TestParameter.Min);
+    specs.max = this._getLimit(enumerations.TestParameter.Max);
     return specs;
   }
 }

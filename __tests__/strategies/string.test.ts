@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
-import { Specs } from "../../src/data";
-import { PresenceType, SchemaType } from "../../src/data/enumerations";
+import { enumerations, specs as dSpecs } from "../../src/data";
 import { StringStrategy } from "../../src/strategies";
 import * as constant from "../../src/strategies/constant";
 
 test("should be a string", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
   };
 
   randomMock.mockReturnValue(0);
@@ -20,53 +19,11 @@ test("should be a string", () => {
   expect(typeof val).toEqual("string");
 });
 
-test("should be nullable", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
-    nullable: true,
-    presence: PresenceType.Required,
-  };
-
-  randomMock.mockReturnValue(constant.IS_NULLABLE + 0.05);
-
-  const val = new StringStrategy(specs).draw();
-  expect(val).toBeNull();
-});
-
-test("should be default", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
-    nullable: true,
-    presence: PresenceType.Required,
-    default: false,
-  };
-
-  randomMock.mockReturnValue(constant.IS_DEFAULT + 0.05);
-
-  const val = new StringStrategy(specs).draw();
-  expect(val).toBe(specs.default);
-});
-
-test("should be one of", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
-    nullable: false,
-    presence: PresenceType.Required,
-    choices: ["tesr@example.com", "jopk@jnoi.org", "nubiuhg@text.com"],
-  };
-
-  const index = 0;
-  randomIntInclusiveMock.mockReturnValue(index);
-
-  const val = new StringStrategy(specs).draw();
-  expect(val).toBe(specs.choices![index]);
-});
-
 test("should be trim", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     trim: true,
     length: 11,
   };
@@ -79,10 +36,10 @@ test("should be trim", () => {
 });
 
 test("should not be trim", () => {
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     trim: false,
     length: 10,
   };
@@ -96,10 +53,10 @@ test("should not be trim", () => {
 
 test("should respect default max and min limits", () => {
   const defaults = constant.STRING_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     max: defaults.max + 1,
     min: defaults.min - 1,
   };
@@ -117,10 +74,10 @@ test("should respect default max and min limits", () => {
 
 test("should respect max and min within limits", () => {
   const defaults = constant.STRING_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     max: defaults.max - 1,
     min: defaults.min + 1,
   };
@@ -139,10 +96,10 @@ test("should respect max and min within limits", () => {
 
 test("should respect default length", () => {
   const defaults = constant.STRING_DEFAULTS;
-  const specs: Specs = {
-    type: SchemaType.String,
+  const specs: dSpecs.Specs = {
+    type: enumerations.SchemaType.String,
     nullable: false,
-    presence: PresenceType.Required,
+    presence: enumerations.PresenceType.Required,
     length: defaults.max + 1,
   };
 

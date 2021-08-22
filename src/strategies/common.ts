@@ -1,40 +1,59 @@
-import { Constrain, Specs } from "../data";
+import { constrains, enumerations, specs } from "../data";
 import { Sign } from "../data/enumerations";
 import { random, randomIntInclusive } from "../random";
 import { SIGN_CHANGE } from "./constant";
 
-export function getSign(sign?: Sign): number {
-  if (sign === Sign.Negative) {
+export function getSign(sign?: enumerations.Sign): number {
+  if (sign === enumerations.Sign.Negative) {
     return -1;
-  } else if (sign === Sign.Positive) {
+  } else if (sign === enumerations.Sign.Positive) {
     return 1;
   }
   return random() < SIGN_CHANGE ? 1 : -1;
 }
 
-export function getCorrectMaxMin(max: number, min: number): number[] {
+function minOrNegative(min: number, sign: Sign): number {
+  if (min > 0 && sign === Sign.Negative) {
+    return -1;
+  }
+  return min;
+}
+
+export function getMinBasedOnSign(min: number, sign: Sign): number {
+  if (min <= 0 && sign === Sign.Positive) {
+    return 1;
+  }
+  return minOrNegative(min, sign);
+}
+function getCorrectMaxMin(max: number, min: number): number[] {
   if (max < min) {
     return [min, max];
   }
   return [max, min];
 }
 
-export function withinConstrain(val: number, constrain: Constrain): boolean {
+function withinConstrain(
+  val: number,
+  constrain: constrains.Constrain
+): boolean {
   if (constrain.min <= val && val <= constrain.max) {
     return true;
   }
   return false;
 }
 
-export function getLength(val: number, constrain: Constrain): number {
+export function getLength(
+  val: number,
+  constrain: constrains.Constrain
+): number {
   if (withinConstrain(val, constrain)) {
     return val;
   }
   return randomIntInclusive(constrain.max, constrain.min);
 }
 
-export function getValidValue(
-  constrain: Constrain,
+function getValidValue(
+  constrain: constrains.Constrain,
   defaults: number,
   val?: number
 ): number {
@@ -44,7 +63,10 @@ export function getValidValue(
   return defaults;
 }
 
-export function getValidValueOrBest(constrain: Constrain, val: number): number {
+export function getValidValueOrBest(
+  constrain: constrains.Constrain,
+  val: number
+): number {
   if (withinConstrain(val, constrain)) {
     return val;
   }
@@ -55,8 +77,8 @@ export function getValidValueOrBest(constrain: Constrain, val: number): number {
 }
 
 export function getLengthForStrings(
-  specs: Specs,
-  constrains: Constrain,
+  specs: specs.Specs,
+  constrains: constrains.Constrain,
   strict = false
 ): number {
   if (specs.length !== undefined) {

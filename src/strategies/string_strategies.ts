@@ -1,10 +1,5 @@
-import {
-  StringSpecs,
-  Constrain,
-  EmailConstrain,
-  StringConstrain,
-} from "../data";
-import { PresenceType, SchemaType } from "../data/enumerations";
+import { constrains, enumerations, specs as dSpecs } from "../data";
+
 import { random } from "../random";
 
 import { Strategy } from "./base_strategies";
@@ -21,9 +16,9 @@ export class UUIDStrategy extends Strategy<string> {
 }
 
 export class StringStrategy extends Strategy<string> {
-  private defaults: StringConstrain;
+  private defaults: constrains.StringConstrain;
 
-  constructor(specs: StringSpecs) {
+  constructor(specs: dSpecs.StringSpecs) {
     super(specs);
     this.defaults = constant.STRING_DEFAULTS;
   }
@@ -41,9 +36,9 @@ export class StringStrategy extends Strategy<string> {
 }
 
 export class EmailStrategy extends Strategy<string> {
-  private defaults: EmailConstrain;
+  private defaults: constrains.EmailConstrain;
 
-  constructor(specs: StringSpecs) {
+  constructor(specs: dSpecs.StringSpecs) {
     super(specs);
     this.defaults = constant.EMAIL_DEFAULTS;
   }
@@ -51,7 +46,7 @@ export class EmailStrategy extends Strategy<string> {
   private _getSectionLength(
     size: number,
     offset: number,
-    constrain: Constrain
+    constrain: constrains.Constrain
   ): number {
     const proposedLimit = size - offset;
     const max = common.getValidValueOrBest(constrain, proposedLimit);
@@ -94,9 +89,9 @@ export class EmailStrategy extends Strategy<string> {
 }
 
 export class URLStrategy extends Strategy<string> {
-  private defaults: Constrain;
+  private defaults: constrains.Constrain;
 
-  constructor(specs: StringSpecs) {
+  constructor(specs: dSpecs.StringSpecs) {
     super(specs);
     this.defaults = constant.URL_DEFAULTS;
   }
@@ -119,8 +114,8 @@ export class URLStrategy extends Strategy<string> {
 
   private _getValueFromEmail(size: number): string {
     const emailStrategy = new EmailStrategy({
-      type: SchemaType.Email,
-      presence: PresenceType.Required,
+      type: enumerations.SchemaType.Email,
+      presence: enumerations.PresenceType.Required,
       nullable: false,
       max: size,
     });
@@ -136,7 +131,6 @@ export class URLStrategy extends Strategy<string> {
   }
 
   private _getSchema(): string {
-    // mailto, etc
     const index = this._random(constant.URL_SCHEMAS.length - 1);
     return constant.URL_SCHEMAS[index];
   }
