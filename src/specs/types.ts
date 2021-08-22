@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-import { enumerations, specs } from "../data";
+import { enumerations, specs as dSpecs } from "../data";
 import { ITestSearch } from "../test_search";
 import * as common from "./common";
 
@@ -30,7 +30,7 @@ export abstract class Spec {
   protected _getChoices(): unknown[] {
     return this.schema.describe().oneOf;
   }
-  protected _get(): specs.Specs {
+  protected _get(): dSpecs.Specs {
     return {
       type: this._getType(),
       default: this.schema.spec.default,
@@ -40,7 +40,7 @@ export abstract class Spec {
     };
   }
 
-  abstract get(): specs.Specs;
+  abstract get(): dSpecs.Specs;
 }
 
 export class NumberSpec extends Spec {
@@ -85,7 +85,7 @@ export class NumberSpec extends Spec {
     }
     return this._positiveOrIndifferent(min);
   }
-  get(): specs.Specs {
+  get(): dSpecs.Specs {
     const specs = this._get();
     specs.min = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Min
@@ -117,7 +117,27 @@ export class StringSpec extends Spec {
     }
     return this._urlOrEmailOrString();
   }
-  get(): specs.Specs {
+
+  private _getMutations(): dSpecs.SpecMutation[] {
+    /**@todo create better logic */
+    const mutations = [];
+    const upper = this.testSearch.getMutation(
+      enumerations.TestMutation.Upper,
+      enumerations.TestName.StringCase
+    );
+    if (upper !== undefined) {
+      mutations.push(upper);
+    }
+    const lower = this.testSearch.getMutation(
+      enumerations.TestMutation.Upper,
+      enumerations.TestName.StringCase
+    );
+    if (lower !== undefined) {
+      mutations.push(lower);
+    }
+    return mutations;
+  }
+  get(): dSpecs.Specs {
     const specs = this._get();
     specs.min = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Min
@@ -126,15 +146,7 @@ export class StringSpec extends Spec {
       enumerations.TestParameter.Max
     );
     specs.trim = this.testSearch.has(enumerations.TestName.Trim);
-    /**@todo mutations logic */
-    specs.mutations = [];
-    const upper = this.testSearch.getMutation(
-      enumerations.TestMutation.Upper,
-      enumerations.TestName.StringCase
-    );
-    if (upper !== undefined) {
-      specs.mutations.push(upper);
-    }
+    specs.mutations = this._getMutations();
     return specs;
   }
 }
@@ -143,7 +155,7 @@ export class BooleanSpec extends Spec {
   protected _getType(): enumerations.SchemaType {
     return enumerations.SchemaType.Boolean;
   }
-  get(): specs.Specs {
+  get(): dSpecs.Specs {
     return this._get();
   }
 }
@@ -167,7 +179,7 @@ export class DateSpec extends Spec {
     }
     return this._limitFromStringOrDefault(val);
   }
-  get(): specs.Specs {
+  get(): dSpecs.Specs {
     const specs = this._get();
     specs.min = this._getLimit(enumerations.TestParameter.Min);
     specs.max = this._getLimit(enumerations.TestParameter.Max);

@@ -6,9 +6,7 @@ import * as rnd from "../src/random";
 import * as yup from "yup";
 import yh from "../src/main";
 
-import * as mockUtils from "./utils";
-
-test("should render all types correctly", () => {
+test("should render all types correctly", async () => {
   const TestSchema = yup.object({
     bool: yup.boolean().required(),
     date: yup.date().required(),
@@ -16,17 +14,13 @@ test("should render all types correctly", () => {
     float: yup.number().required(),
     int: yup.number().integer().required(),
     str: yup.string().required(),
+    str_upper: yup.string().uppercase().required(),
+    str_lower: yup.string().uppercase().required(),
+    str_trim: yup.string().trim().required(),
     url: yup.string().url().required(),
     uuid: yup.string().uuid().required(),
   });
 
   const example = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
-  expect(typeof example.bool).toEqual("boolean");
-  expect(example.date).toBeInstanceOf(Date);
-  expect(mockUtils.emailCheck(example.email)).toBeTruthy();
-  expect(!Number.isInteger(example.float)).toBeTruthy();
-  expect(Number.isInteger(example.int)).toBeTruthy();
-  expect(typeof example.str).toEqual("string");
-  expect(mockUtils.urlCheck(example.url)).toBeTruthy();
-  expect(mockUtils.uuidCheck(example.uuid)).toBeTruthy();
+  await expect(TestSchema.validate(example)).toBeTruthy();
 });

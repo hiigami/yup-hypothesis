@@ -82,12 +82,22 @@ export abstract class Strategy<T> {
     return this._draw();
   }
 
+  private _applyMutations(value: ReturnType<T>): ReturnType<T> {
+    if (this.specs.mutations === undefined || value === null) {
+      return value;
+    }
+    for (const fn of this.specs.mutations) {
+      value = fn(value) as T;
+    }
+    return value;
+  }
+
   draw(): ReturnType<T> {
     const result = this._defaultOrNull();
     if (result.apply) {
       return result.value;
     }
-    return this._choiceOrDraw();
+    return this._applyMutations(this._choiceOrDraw());
   }
 }
 
