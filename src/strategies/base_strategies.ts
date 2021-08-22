@@ -1,8 +1,7 @@
-import { constrains, specs as dSpecs } from "../data";
+import { specs as dSpecs } from "../data";
 import { randomIntInclusive, random } from "../random";
 
 import * as constant from "./constant";
-import * as common from "./common";
 
 type ReturnType<T> = T | null;
 
@@ -10,6 +9,7 @@ interface Result<T> {
   apply: boolean;
   value: ReturnType<T>;
 }
+
 interface IStrategy {
   draw(): unknown;
 }
@@ -111,44 +111,5 @@ export class DateStrategy extends Strategy<Date> {
       : new Date().getTime();
     const timestamp = this._random(max, min);
     return new Date(timestamp);
-  }
-}
-
-export class NumberStrategy extends Strategy<number> {
-  private defaults: constrains.Constrain;
-
-  constructor(specs: dSpecs.NumberSpecs) {
-    super(specs);
-    this.defaults = constant.NUMBER_DEFAULTS;
-  }
-
-  protected _draw(): number {
-    const sign = common.getSign(this.specs.sign);
-    return (
-      sign *
-      this._random(
-        this.specs.max || this.defaults.max,
-        this.specs.min || this.defaults.min
-      )
-    );
-  }
-}
-
-export class FloatStrategy extends Strategy<number> {
-  private defaults: constrains.FloatConstrain;
-
-  constructor(specs: dSpecs.FloatSpecs) {
-    super(specs);
-    this.defaults = constant.FLOAT_DEFAULTS;
-  }
-
-  protected _draw(): number {
-    const sign = common.getSign(this.specs.sign);
-    const precision = this.specs.precision || this.defaults.precision;
-    const byNum = Math.pow(10, precision);
-    const max = (this.specs.max || this.defaults.max) * byNum;
-    const min = this.specs.min ? this.specs.min * byNum : 0;
-    const num = this._random(max, min);
-    return sign * +(num / byNum).toFixed(precision);
   }
 }

@@ -45,7 +45,7 @@ test("should be positive", () => {
   randomIntInclusiveMock.mockReturnValue(1);
 
   const val = new FloatStrategy(specs).draw();
-  expect(val).toBeGreaterThanOrEqual(0);
+  expect(val).toBeGreaterThan(0);
 });
 
 test("should be negative with indifferent sign", () => {
@@ -75,7 +75,7 @@ test("should be positive with indifferent sign", () => {
   randomIntInclusiveMock.mockReturnValue(1);
 
   const val = new FloatStrategy(specs).draw();
-  expect(val).toBeGreaterThanOrEqual(0);
+  expect(val).toBeGreaterThan(0);
 });
 
 test("should respect max and min", () => {
@@ -83,7 +83,7 @@ test("should respect max and min", () => {
     type: enumerations.SchemaType.Float,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Positive,
+    sign: enumerations.Sign.Indifferent,
     max: 0.5,
     min: 0.0001,
   };
@@ -94,7 +94,11 @@ test("should respect max and min", () => {
   const val = new FloatStrategy(specs).draw();
 
   const precision = constant.FLOAT_DEFAULTS.precision;
-  expect(val).toEqual(addDecimals(expected, precision));
+  if (val !== null && val < 0) {
+    expect(val).toEqual(-addDecimals(expected, precision));
+  } else {
+    expect(val).toEqual(addDecimals(expected, precision));
+  }
   const byNum = Math.pow(10, precision);
   expect(randomIntInclusiveMock.mock.calls).toEqual([
     [specs.max! * byNum, specs.min! * byNum],

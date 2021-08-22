@@ -44,7 +44,7 @@ test("should be positive", () => {
   randomIntInclusiveMock.mockReturnValue(1);
 
   const val = new NumberStrategy(specs).draw();
-  expect(val).toBeGreaterThanOrEqual(0);
+  expect(val).toBeGreaterThan(0);
 });
 
 test("should be negative with indifferent sign", () => {
@@ -74,7 +74,7 @@ test("should be positive with indifferent sign", () => {
   randomIntInclusiveMock.mockReturnValue(1);
 
   const val = new NumberStrategy(specs).draw();
-  expect(val).toBeGreaterThanOrEqual(0);
+  expect(val).toBeGreaterThan(0);
 });
 
 test("should respect max and min", () => {
@@ -82,7 +82,7 @@ test("should respect max and min", () => {
     type: enumerations.SchemaType.Number,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Positive,
+    sign: enumerations.Sign.Indifferent,
     max: 5,
     min: 3,
   };
@@ -91,6 +91,10 @@ test("should respect max and min", () => {
   randomIntInclusiveMock.mockReturnValue(expected);
 
   const val = new NumberStrategy(specs).draw();
-  expect(val).toBe(expected);
+  if (val !== null && val < 0) {
+    expect(val).toBe(-expected);
+  } else {
+    expect(val).toBe(expected);
+  }
   expect(randomIntInclusiveMock.mock.calls).toEqual([[specs.max, specs.min]]);
 });

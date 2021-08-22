@@ -126,7 +126,7 @@ export class StringSpec extends Spec {
       enumerations.TestParameter.Max
     );
     specs.trim = this.testSearch.has(enumerations.TestName.Trim);
-    /**@todo */
+    /**@todo mutations logic */
     specs.mutations = [];
     const upper = this.testSearch.getMutation(
       enumerations.TestMutation.Upper,
