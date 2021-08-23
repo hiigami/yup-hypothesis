@@ -69,8 +69,14 @@ export class EmailStrategy extends Strategy<string> {
     let _size = size - 2;
     // offset = entity (x1) TLD (x2)
     const uSize = this._getSectionLength(_size, 3, this.defaults.username);
-    const username = common.textGenerator(uSize, UChars);
-    _size = _size - uSize;
+    let username = common.textGenerator(uSize, UChars).replace("..", ".");
+    if (username[0] === ".") {
+      username = username.slice(1);
+    }
+    if (username[username.length - 1] === ".") {
+      username = username.slice(0, username.length - 1);
+    }
+    _size = _size - username.length;
     // offset = TLD (x2)
     const eSize = this._getSectionLength(_size, 2, this.defaults.entity);
     const entity = common.textGenerator(eSize, entityChars);
