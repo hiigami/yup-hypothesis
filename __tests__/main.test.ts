@@ -22,5 +22,17 @@ test("should render all types correctly", async () => {
   });
 
   const example = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
-  await expect(TestSchema.validate(example)).toBeTruthy();
+  await expect(TestSchema.isValid(example)).resolves.toBeTruthy();
+});
+
+test("should have valid email and url", async () => {
+  for (let index = 0; index < 250; index++) {
+    const TestSchema = yup.object({
+      email: yup.string().email().required(),
+      url: yup.string().url().required(),
+    });
+
+    const example = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
+    await expect(TestSchema.validate(example)).resolves.toEqual(example);
+  }
 });

@@ -15,7 +15,10 @@ test("should be a URL", () => {
 
   randomMock.mockReturnValue(97);
   for (let i = 0; i < constant.URL_SCHEMAS.length; i++) {
-    randomIntInclusiveMock.mockReturnValue(i);
+    randomIntInclusiveMock
+      .mockReturnValue(i + 1)
+      .mockReturnValueOnce(i)
+      .mockReturnValueOnce(i);
     const val = new URLStrategy(specs).draw();
     expect(mockUtils.urlCheck(val!)).toBeTruthy();
     randomIntInclusiveMock.mockReset();

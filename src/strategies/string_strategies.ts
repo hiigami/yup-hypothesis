@@ -60,31 +60,37 @@ export class EmailStrategy extends Strategy<string> {
     return this._random(size, 2);
   }
 
+  private _genText(size: number, chars: string): string {
+    let txt = common.textGenerator(size, chars);
+    txt = txt.replace(/[-+.]{2}/g, "");
+    if ([".", "-", "+"].lastIndexOf(txt[0]) > -1) {
+      txt = txt.slice(1);
+    }
+    if ([".", "-", "+"].lastIndexOf(txt[txt.length - 1]) > -1) {
+      txt = txt.slice(0, txt.length - 1);
+    }
+    if (txt.length === 0) {
+      return this._genText(size, constant.LETTERS);
+    }
+    return txt;
+  }
+
   private _gen(size: number): string {
     /**@todo create a better email generation logic*/
-    const UChars = constant.LETTERS + "_.+-";
+    const UChars = constant.LETTERS + ".+-";
     const entityChars = constant.LETTERS + "-.";
 
     // offset = dot (x1)  @ (x1)
     let _size = size - 2;
-    // offset = entity (x1) TLD (x2)
-    const uSize = this._getSectionLength(_size, 3, this.defaults.username);
-    let username = common.textGenerator(uSize, UChars).replace("..", ".");
-    if (username[0] === ".") {
-      username = username.slice(1);
-    }
-    if (username[username.length - 1] === ".") {
-      username = username.slice(0, username.length - 1);
-    }
+    // offset = entity (x1) TLD (x3)
+    const uSize = this._getSectionLength(_size, 4, this.defaults.username);
+    const username = this._genText(uSize, UChars);
     _size = _size - username.length;
-    // offset = TLD (x2)
-    const eSize = this._getSectionLength(_size, 2, this.defaults.entity);
-    const entity = common.textGenerator(eSize, entityChars);
-    _size = _size - eSize;
-    const tld = common.textGenerator(
-      this._getTLDLength(_size),
-      constant.LETTERS
-    );
+    // offset = TLD (x3)
+    const eSize = this._getSectionLength(_size, 3, this.defaults.entity);
+    const entity = this._genText(eSize, entityChars);
+    _size = _size - entity.length;
+    const tld = this._genText(this._getTLDLength(_size), constant.LETTERS);
     return `${username}@${entity}.${tld}`;
   }
 
@@ -110,6 +116,12 @@ export class URLStrategy extends Strategy<string> {
   }
 
   private _validateHost(host: string): string {
+    if ([".", "-", "+"].lastIndexOf(host[0]) > -1) {
+      host = host.slice(1);
+    }
+    if ([".", "-", "+"].lastIndexOf(host[host.length - 1]) > -1) {
+      host = host.slice(0, host.length - 1);
+    }
     if (host.indexOf(".") === -1) {
       return host.length < 3
         ? `${host}.${host}`
