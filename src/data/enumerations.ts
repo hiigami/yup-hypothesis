@@ -16,9 +16,9 @@ export enum SchemaType {
 }
 
 export enum Sign {
-  Positive,
-  Negative,
-  Indifferent,
+  Indifferent = 0,
+  Negative = -1,
+  Positive = 1,
 }
 
 export enum TestName {
@@ -41,6 +41,7 @@ export enum TestParameter {
 }
 
 export enum TestMutation {
-  Upper = "upper case",
   Lower = "lower case",
+  Upper = "upper case",
+  Trim = "trim",
 }

@@ -30,8 +30,7 @@ export class StringStrategy extends Strategy<string> {
       const c = this._random(chars.max, chars.min);
       s.push(String.fromCharCode(c));
     }
-    const text = s.join("");
-    return this.specs.trim ? text.trim() : text;
+    return s.join("");
   }
 }
 

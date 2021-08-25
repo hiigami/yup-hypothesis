@@ -83,7 +83,7 @@ test("should respect max and min", () => {
     type: enumerations.SchemaType.Float,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Indifferent,
+    sign: enumerations.Sign.Positive,
     max: 0.5,
     min: 0.0001,
   };
@@ -94,16 +94,14 @@ test("should respect max and min", () => {
   const val = new FloatStrategy(specs).draw();
 
   const precision = constant.FLOAT_DEFAULTS.precision;
-  if (val !== null && val < 0) {
-    expect(val).toEqual(-addDecimals(expected, precision));
-  } else {
-    expect(val).toEqual(addDecimals(expected, precision));
-  }
+  expect(val).toEqual(addDecimals(expected, precision));
   const byNum = Math.pow(10, precision);
   expect(randomIntInclusiveMock.mock.calls).toEqual([
     [specs.max! * byNum, specs.min! * byNum],
   ]);
 });
+
+test.todo("indifferent with max and min");
 
 test("should respect precision", () => {
   const specs: dSpecs.Specs = {

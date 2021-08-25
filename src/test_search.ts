@@ -24,6 +24,16 @@ export interface ITestSearch {
   ): dSpecs.SpecMutation | undefined;
 }
 
+function hasMutation(
+  msg: string,
+  mutation: enumerations.TestMutation
+): boolean {
+  if (msg.lastIndexOf(mutation) > -1) {
+    return true;
+  }
+  return false;
+}
+
 export class TestSearch {
   private mapper: Mapper;
 
@@ -42,15 +52,20 @@ export class TestSearch {
     mapper: Map<string, unknown>,
     options: TestOptions
   ): void {
-    if (
-      options.name === enumerations.TestName.StringCase &&
-      (options.message as string)
-        .toLowerCase()
-        .lastIndexOf(enumerations.TestMutation.Upper) > -1
-    ) {
-      mapper.set(
+    if (options.name === enumerations.TestName.StringCase) {
+      const msg = (options.message as string).toLowerCase();
+      for (const m of [
         enumerations.TestMutation.Upper,
-        mutations.mapper.get(enumerations.TestMutation.Upper)
+        enumerations.TestMutation.Lower,
+      ]) {
+        if (hasMutation(msg, m)) {
+          mapper.set(m, mutations.mapper.get(m));
+        }
+      }
+    } else if (options.name === enumerations.TestName.Trim) {
+      mapper.set(
+        enumerations.TestMutation.Trim,
+        mutations.mapper.get(enumerations.TestMutation.Trim)
       );
     }
   }

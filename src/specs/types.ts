@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 import { enumerations, specs as dSpecs } from "../data";
+import { STRING_MUTATIONS } from "../mutation";
 import { ITestSearch } from "../test_search";
 import * as common from "./common";
 
@@ -121,19 +122,11 @@ export class StringSpec extends Spec {
   private _getMutations(): dSpecs.SpecMutation[] {
     /**@todo create better logic */
     const mutations = [];
-    const upper = this.testSearch.getMutation(
-      enumerations.TestMutation.Upper,
-      enumerations.TestName.StringCase
-    );
-    if (upper !== undefined) {
-      mutations.push(upper);
-    }
-    const lower = this.testSearch.getMutation(
-      enumerations.TestMutation.Upper,
-      enumerations.TestName.StringCase
-    );
-    if (lower !== undefined) {
-      mutations.push(lower);
+    for (const item of STRING_MUTATIONS) {
+      const m = this.testSearch.getMutation(item.name, item.test);
+      if (m !== undefined) {
+        mutations.push(m);
+      }
     }
     return mutations;
   }
@@ -145,7 +138,6 @@ export class StringSpec extends Spec {
     specs.max = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Max
     );
-    specs.trim = this.testSearch.has(enumerations.TestName.Trim);
     specs.mutations = this._getMutations();
     return specs;
   }

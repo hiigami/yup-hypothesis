@@ -24,7 +24,6 @@ export interface StringSpecs extends BaseSpecs {
   min?: number;
   max?: number;
   length?: number;
-  trim?: boolean;
 }
 
 export interface NumberSpecs extends BaseSpecs {

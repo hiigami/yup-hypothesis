@@ -82,9 +82,9 @@ test("should respect max and min", () => {
     type: enumerations.SchemaType.Number,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Indifferent,
-    max: 5,
-    min: 3,
+    sign: enumerations.Sign.Negative,
+    max: -5,
+    min: -3,
   };
 
   const expected = 2;
@@ -98,3 +98,5 @@ test("should respect max and min", () => {
   }
   expect(randomIntInclusiveMock.mock.calls).toEqual([[specs.max, specs.min]]);
 });
+
+test.todo("indifferent with max and min");

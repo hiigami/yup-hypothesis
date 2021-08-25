@@ -13,7 +13,7 @@ export function getSign(sign?: enumerations.Sign): number {
 }
 
 function minOrNegative(min: number, sign: Sign): number {
-  if (min > 0 && sign === Sign.Negative) {
+  if (min >= 0 && sign === Sign.Negative) {
     return -1;
   }
   return min;

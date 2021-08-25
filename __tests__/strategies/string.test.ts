@@ -2,6 +2,7 @@
 import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
 import { enumerations, specs as dSpecs } from "../../src/data";
+import { mapper } from "../../src/mutation";
 import { StringStrategy } from "../../src/strategies";
 import * as constant from "../../src/strategies/constant";
 
@@ -24,8 +25,10 @@ test("should be trim", () => {
     type: enumerations.SchemaType.String,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    trim: true,
     length: 11,
+    mutations: [
+      mapper.get(enumerations.TestMutation.Trim) as dSpecs.SpecMutation,
+    ],
   };
 
   const index = 32; // space
@@ -40,7 +43,6 @@ test("should not be trim", () => {
     type: enumerations.SchemaType.String,
     nullable: false,
     presence: enumerations.PresenceType.Required,
-    trim: false,
     length: 10,
   };
 
