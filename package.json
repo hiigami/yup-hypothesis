@@ -39,7 +39,6 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@types/faker": "^5.5.7",
     "@types/jest": "^26.0.24",
     "@types/node": "^16.4.13",
     "@types/yup": "^0.29.13",
