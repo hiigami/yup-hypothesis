@@ -2,7 +2,6 @@ import * as yup from "yup";
 
 import { enumerations, specs as dSpecs } from "../data";
 import { ITestSearch } from "../test_search";
-import * as common from "./common";
 
 export interface SpecConstructor {
   new (schema: yup.AnySchema, testSearch: ITestSearch): Spec;
@@ -50,66 +49,6 @@ export abstract class Spec {
     };
   }
   abstract get(): dSpecs.Specs;
-}
-
-export class NumberSpec extends Spec {
-  protected _getType(): enumerations.SchemaType {
-    const isInteger = this.testSearch.has(enumerations.TestName.Integer);
-    if (isInteger) {
-      return enumerations.SchemaType.Number;
-    }
-    return enumerations.SchemaType.Float;
-  }
-  private _checkSign(
-    valueFlag: boolean,
-    param: enumerations.TestParameter,
-    test: enumerations.TestName
-  ): boolean {
-    const exists = this.testSearch.getParameter(param, test);
-    if (exists !== undefined || valueFlag) {
-      return true;
-    }
-    return false;
-  }
-  private _isPositive(min?: number): boolean {
-    const minFlag = common.isPositiveByMin(min);
-    return this._checkSign(
-      minFlag,
-      enumerations.TestParameter.More,
-      enumerations.TestName.Min
-    );
-  }
-  private _isNegative(max?: number): boolean {
-    const maxFlag = common.isNegativeByMax(max);
-    return this._checkSign(
-      maxFlag,
-      enumerations.TestParameter.Less,
-      enumerations.TestName.Max
-    );
-  }
-  private _positiveOrIndifferent(min?: number) {
-    if (this._isPositive(min)) {
-      return enumerations.Sign.Positive;
-    }
-    return enumerations.Sign.Indifferent;
-  }
-  protected _getSign(max?: number, min?: number): enumerations.Sign {
-    if (this._isNegative(max)) {
-      return enumerations.Sign.Negative;
-    }
-    return this._positiveOrIndifferent(min);
-  }
-  get(): dSpecs.Specs {
-    const specs = this._get();
-    specs.min = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Min
-    );
-    specs.max = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Max
-    );
-    specs.sign = this._getSign(specs.max, specs.min);
-    return specs;
-  }
 }
 
 export class BooleanSpec extends Spec {
