@@ -22,6 +22,7 @@ export enum Sign {
 }
 
 export enum TestName {
+  Defined = "defined",
   Email = "email",
   Integer = "integer",
   Max = "max",

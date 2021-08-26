@@ -22,6 +22,9 @@ export abstract class Spec {
     const keyName = `${this.schema.spec.presence
       .charAt(0)
       .toUpperCase()}${this.schema.spec.presence.slice(1)}`;
+    if (this.testSearch.has(enumerations.TestName.Defined)) {
+      return enumerations.PresenceType.Defined;
+    }
     return enumerations.PresenceType[
       keyName as keyof typeof enumerations.PresenceType
     ];
@@ -130,11 +133,20 @@ export class StringSpec extends Spec {
     }
     return mutations;
   }
-  get(): dSpecs.Specs {
-    const specs = this._get();
-    specs.min = this.testSearch.getParameter<number>(
+
+  private _getMin(presence: enumerations.PresenceType): number | undefined {
+    const min = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Min
     );
+    if (common.minByPresence(presence, min)) {
+      return 1;
+    }
+    return min;
+  }
+
+  get(): dSpecs.Specs {
+    const specs = this._get();
+    specs.min = this._getMin(specs.presence);
     specs.max = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Max
     );

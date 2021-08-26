@@ -29,7 +29,7 @@ const TestSchema = yup.object({
     email: yup.string().email().required(),
     float: yup.number().required(),
     float_positive: yup.number().positive().required(),
-    float_min_max: yup.number().min(34).max(120).optional(),
+    float_min_max: yup.number().min(34.0001).max(120.5).optional(),
     int: yup.number().integer().required(),
     int_min_max: yup.number().integer().min(6).max(30).optional(),
     int_negative: yup.number().integer().negative().required(),
@@ -41,6 +41,7 @@ const TestSchema = yup.object({
     str_not_req: yup.string().notRequired(),
     str_one_of: yup.string().oneOf(["a", "b", "c"]).required(),
     str_trim: yup.string().trim().optional(),
+    str_null_def: yup.string().nullable().defined(),
     url: yup.string().url().required(),
     uuid: yup.string().uuid().required(),
 });
