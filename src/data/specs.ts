@@ -6,14 +6,12 @@ export interface SpecMutation {
 
 export type DefaultFn = () => unknown;
 
-export interface DefaultSpecs {
+export interface BaseSpecs {
   default?: unknown | DefaultFn;
   choices?: Array<unknown>;
+  exclude?: Set<unknown>;
   nullable: boolean;
   presence: PresenceType;
-}
-
-export interface BaseSpecs extends DefaultSpecs {
   type: SchemaType;
   mutations?: SpecMutation[];
 }

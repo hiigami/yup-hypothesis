@@ -1,7 +1,2 @@
-export {
-  BooleanSpec,
-  DateSpec,
-  NumberSpec,
-  SpecConstructor,
-  StringSpec,
-} from "./types";
+export { BooleanSpec, DateSpec, NumberSpec, SpecConstructor } from "./types";
+export { StringSpec } from "./string_type";

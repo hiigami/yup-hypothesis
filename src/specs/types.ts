@@ -1,7 +1,6 @@
 import * as yup from "yup";
 
 import { enumerations, specs as dSpecs } from "../data";
-import { STRING_MUTATIONS } from "../mutation";
 import { ITestSearch } from "../test_search";
 import * as common from "./common";
 
@@ -17,7 +16,6 @@ export abstract class Spec {
     this.schema = schema;
     this.testSearch = testSearch;
   }
-
   private _getPresence(): enumerations.PresenceType {
     const keyName = `${this.schema.spec.presence
       .charAt(0)
@@ -29,21 +27,28 @@ export abstract class Spec {
       keyName as keyof typeof enumerations.PresenceType
     ];
   }
-
   protected abstract _getType(): enumerations.SchemaType;
-  protected _getChoices(): unknown[] {
-    return this.schema.describe().oneOf;
+  protected _getChoices(exclude: Set<unknown>): unknown[] {
+    const choices = this.schema.describe().oneOf;
+    const output = [];
+    for (const item of choices) {
+      if (!exclude.has(item)) {
+        output.push(item);
+      }
+    }
+    return output;
   }
   protected _get(): dSpecs.Specs {
+    const exclude = new Set(this.schema.describe().notOneOf);
     return {
       type: this._getType(),
       default: this.schema.spec.default,
-      choices: this.schema.describe().oneOf,
+      choices: this._getChoices(exclude),
+      exclude: exclude,
       nullable: this.schema.spec.nullable,
       presence: this._getPresence(),
     };
   }
-
   abstract get(): dSpecs.Specs;
 }
 
@@ -55,27 +60,32 @@ export class NumberSpec extends Spec {
     }
     return enumerations.SchemaType.Float;
   }
-  private _isPositive(min?: number): boolean {
-    const minCheck = common.isPositiveByMin(min);
-    const more = this.testSearch.getParameter(
-      enumerations.TestParameter.More,
-      enumerations.TestName.Min
-    );
-    if (more !== undefined || minCheck) {
+  private _checkSign(
+    valueFlag: boolean,
+    param: enumerations.TestParameter,
+    test: enumerations.TestName
+  ): boolean {
+    const exists = this.testSearch.getParameter(param, test);
+    if (exists !== undefined || valueFlag) {
       return true;
     }
     return false;
   }
+  private _isPositive(min?: number): boolean {
+    const minFlag = common.isPositiveByMin(min);
+    return this._checkSign(
+      minFlag,
+      enumerations.TestParameter.More,
+      enumerations.TestName.Min
+    );
+  }
   private _isNegative(max?: number): boolean {
-    const maxCheck = common.isNegativeByMax(max);
-    const less = this.testSearch.getParameter(
+    const maxFlag = common.isNegativeByMax(max);
+    return this._checkSign(
+      maxFlag,
       enumerations.TestParameter.Less,
       enumerations.TestName.Max
     );
-    if (less !== undefined || maxCheck) {
-      return true;
-    }
-    return false;
   }
   private _positiveOrIndifferent(min?: number) {
     if (this._isPositive(min)) {
@@ -98,59 +108,6 @@ export class NumberSpec extends Spec {
       enumerations.TestParameter.Max
     );
     specs.sign = this._getSign(specs.max, specs.min);
-    return specs;
-  }
-}
-
-export class StringSpec extends Spec {
-  private _emailOrString(): enumerations.SchemaType {
-    if (this.testSearch.has(enumerations.TestName.Email)) {
-      return enumerations.SchemaType.Email;
-    }
-    return enumerations.SchemaType.String;
-  }
-  private _urlOrEmailOrString(): enumerations.SchemaType {
-    if (this.testSearch.has(enumerations.TestName.URL)) {
-      return enumerations.SchemaType.URL;
-    }
-    return this._emailOrString();
-  }
-  protected _getType(): enumerations.SchemaType {
-    if (this.testSearch.has(enumerations.TestName.UUID)) {
-      return enumerations.SchemaType.UUID;
-    }
-    return this._urlOrEmailOrString();
-  }
-
-  private _getMutations(): dSpecs.SpecMutation[] {
-    /**@todo create better logic */
-    const mutations = [];
-    for (const item of STRING_MUTATIONS) {
-      const m = this.testSearch.getMutation(item.name, item.test);
-      if (m !== undefined) {
-        mutations.push(m);
-      }
-    }
-    return mutations;
-  }
-
-  private _getMin(presence: enumerations.PresenceType): number | undefined {
-    const min = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Min
-    );
-    if (common.minByPresence(presence, min)) {
-      return 1;
-    }
-    return min;
-  }
-
-  get(): dSpecs.Specs {
-    const specs = this._get();
-    specs.min = this._getMin(specs.presence);
-    specs.max = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Max
-    );
-    specs.mutations = this._getMutations();
     return specs;
   }
 }
