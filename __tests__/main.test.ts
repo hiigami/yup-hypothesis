@@ -113,6 +113,13 @@ test("should render integer", async () => {
   await testXTimes(TestSchema);
 });
 
+test("should render uuid", async () => {
+  const TestSchema = yup.object({
+    uuid: yup.string().uuid().required(),
+  });
+  await testXTimes(TestSchema);
+});
+
 test("should render an email", async () => {
   const TestSchema = yup.object({
     email: yup.string().email().required(),
