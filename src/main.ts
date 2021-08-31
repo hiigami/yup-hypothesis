@@ -14,7 +14,8 @@ function example<
 ): yup.InferType<typeof schema> {
   const handler = new ObjectHandler();
   if (handler.canHandle(schema.type)) {
-    return handler.handle(schema)?.draw() as yup.InferType<typeof schema>;
+    const strategy = handler.handle(schema);
+    return strategy?.draw() as yup.InferType<typeof schema>;
   }
   return undefined as yup.InferType<typeof schema>;
 }

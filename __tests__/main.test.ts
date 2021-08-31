@@ -133,3 +133,21 @@ test("should render a url", async () => {
   });
   await testXTimes(TestSchema, 250);
 });
+
+test("should render nested objects", async () => {
+  const TestSchema = yup.object({
+    str: yup.string(),
+    nested: yup.object({
+      int: yup.number().integer().positive(),
+      uuid: yup.string().uuid(),
+      nested: yup.object({
+        float: yup.number(),
+        date: yup.date(),
+        nested: yup.object({
+          bool: yup.boolean(),
+        }),
+      }),
+    }),
+  });
+  await testXTimes(TestSchema, 100);
+});
