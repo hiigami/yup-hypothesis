@@ -12,6 +12,7 @@ function signHelper(
   }
   return max;
 }
+
 interface SignMapper {
   readonly with: string;
   readonly test: enumerations.TestName;

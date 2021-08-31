@@ -1,4 +1,4 @@
-import { specs as dSpecs } from "../data";
+import { enumerations, specs as dSpecs, strategy as dStrategy } from "../data";
 import { randomIntInclusive, random } from "../random";
 
 import * as constant from "./constant";
@@ -10,12 +10,8 @@ interface Result<T> {
   value: ReturnType<T>;
 }
 
-interface IStrategy {
-  draw(): unknown;
-}
-
 export interface StrategyConstructor {
-  new (specs: dSpecs.Specs): IStrategy;
+  new (specs: dSpecs.Specs): dStrategy.IStrategy;
 }
 
 function createResult<T>(
@@ -81,6 +77,12 @@ export abstract class Strategy<T> {
       value = fn(value) as T;
     }
     return value;
+  }
+  isDefined(): boolean {
+    if (this.specs.presence === enumerations.PresenceType.Optional) {
+      return random() > constant.IS_DEFINED;
+    }
+    return true;
   }
   draw(): ReturnType<T> {
     const result = this._defaultOrNull();

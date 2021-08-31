@@ -2,8 +2,7 @@ import * as yup from "yup";
 import * as yupObject from "yup/lib/object";
 import * as yupTypes from "yup/lib/types";
 
-import { FieldHandler } from "./handler";
-import { SchemaBuilder } from "./schema_builder";
+import { ObjectHandler } from "./handler";
 
 function example<
   TShape extends yupObject.ObjectShape,
@@ -13,16 +12,12 @@ function example<
 >(
   schema: yup.ObjectSchema<TShape, TContext, TIn, TOut>
 ): yup.InferType<typeof schema> {
-  const item: Record<string, unknown> = {};
-  const handler = new FieldHandler();
-  for (const x in schema.fields) {
-    const field = schema.fields[x] as yup.AnySchema;
-    const specs = new SchemaBuilder(field).specs();
-    if (specs !== undefined && handler.canHandle(specs.presence)) {
-      item[x] = handler.handle(specs) as [typeof x];
-    }
+  const handler = new ObjectHandler();
+  if (handler.canHandle(schema.type)) {
+    const strategy = handler.handle(schema);
+    return strategy?.draw() as yup.InferType<typeof schema>;
   }
-  return item as yup.InferType<typeof schema>;
+  return undefined as yup.InferType<typeof schema>;
 }
 
 export default { example };

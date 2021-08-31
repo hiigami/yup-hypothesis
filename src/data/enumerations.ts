@@ -10,6 +10,7 @@ export enum SchemaType {
   Email = "email",
   Float = "float",
   Number = "number",
+  Object = "object",
   String = "string",
   URL = "url",
   UUID = "uuid",
