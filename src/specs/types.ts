@@ -1,6 +1,7 @@
 import * as yup from "yup";
 
 import { enumerations, specs as dSpecs } from "../data";
+import { title } from "../common";
 import { ITestSearch } from "../test_search";
 
 export interface SpecConstructor {
@@ -16,9 +17,7 @@ export abstract class Spec {
     this.testSearch = testSearch;
   }
   private _getPresence(): enumerations.PresenceType {
-    const keyName = `${this.schema.spec.presence
-      .charAt(0)
-      .toUpperCase()}${this.schema.spec.presence.slice(1)}`;
+    const keyName = title(this.schema.spec.presence);
     if (this.testSearch.has(enumerations.TestName.Defined)) {
       return enumerations.PresenceType.Defined;
     }

@@ -5,10 +5,11 @@ import * as specs from "./specs";
 import { TestSearch } from "./test_search";
 
 const mapper = new Map<enumerations.SchemaType, specs.SpecConstructor>([
-  [enumerations.SchemaType.String, specs.StringSpec],
-  [enumerations.SchemaType.Number, specs.NumberSpec],
-  [enumerations.SchemaType.Date, specs.DateSpec],
   [enumerations.SchemaType.Boolean, specs.BooleanSpec],
+  [enumerations.SchemaType.Date, specs.DateSpec],
+  [enumerations.SchemaType.Number, specs.NumberSpec],
+  [enumerations.SchemaType.Object, specs.ObjectSpec],
+  [enumerations.SchemaType.String, specs.StringSpec],
 ]);
 
 export class SchemaBuilder {

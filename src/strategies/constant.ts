@@ -13,6 +13,7 @@ export const FLOAT_DEFAULTS: constrains.FloatConstrain = {
   precision: 4,
 };
 export const IS_DEFAULT = 0.75;
+export const IS_DEFINED = 0.45;
 export const IS_NULLABLE = 0.75;
 export const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 export const NUMBER_DEFAULTS: constrains.Constrain = {
