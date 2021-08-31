@@ -46,3 +46,5 @@ test("should respect precision", () => {
   const val = new FloatStrategy(specs).draw();
   expect(val).toEqual(specs.max);
 });
+
+test.todo("indifferent with max and min for float");

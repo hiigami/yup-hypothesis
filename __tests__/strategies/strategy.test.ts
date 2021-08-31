@@ -80,3 +80,50 @@ test("should be one of", () => {
   const val = new DummyStrategy(specs).draw();
   expect(val).toBe(specs.choices![index]);
 });
+
+test.each([
+  {
+    specs: {
+      type: enumerations.SchemaType.String,
+      nullable: false,
+      presence: enumerations.PresenceType.Optional,
+    },
+    randValue: constant.IS_DEFINED + 0.01,
+    expected: true,
+  },
+  {
+    specs: {
+      type: enumerations.SchemaType.String,
+      nullable: false,
+      presence: enumerations.PresenceType.Optional,
+    },
+    randValue: constant.IS_DEFINED - 0.01,
+    expected: false,
+  },
+  {
+    specs: {
+      type: enumerations.SchemaType.String,
+      nullable: false,
+      presence: enumerations.PresenceType.Required,
+    },
+    randValue: constant.IS_DEFINED - 0.0001,
+    expected: true,
+  },
+  {
+    specs: {
+      type: enumerations.SchemaType.String,
+      nullable: false,
+      presence: enumerations.PresenceType.Defined,
+    },
+    randValue: constant.IS_DEFINED - 0.001,
+    expected: true,
+  },
+])(
+  "should return $expected with random:$randValue, presence:$specs.presence",
+  ({ specs, randValue, expected }) => {
+    randomMock.mockReturnValue(randValue);
+
+    const val = new DummyStrategy(specs).isDefined();
+    expect(val).toBe(expected);
+  }
+);
