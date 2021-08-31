@@ -137,17 +137,33 @@ test("should render a url", async () => {
 test("should render nested objects", async () => {
   const TestSchema = yup.object({
     str: yup.string(),
-    nested: yup.object({
-      int: yup.number().integer().positive(),
-      uuid: yup.string().uuid(),
-      nested: yup.object({
-        float: yup.number(),
-        date: yup.date(),
-        nested: yup.object({
-          bool: yup.boolean(),
-        }),
-      }),
-    }),
+    nested: yup
+      .object({
+        int: yup.number().integer().positive(),
+        uuid: yup.string().uuid(),
+        nested: yup
+          .object({
+            float: yup.number(),
+            date: yup.date(),
+            nested: yup
+              .object({
+                bool: yup.boolean(),
+              })
+              .required(),
+          })
+          .optional(),
+      })
+      .defined(),
+    obj_default: yup.object({ str: yup.string() }).default({ str: "a" }),
+    obj_not_req: yup.object({ str: yup.string() }).notRequired(),
+    obj_null: yup.object({ str: yup.string() }).nullable(),
+    obj_one_of: yup
+      .object({ str: yup.string() })
+      .oneOf([{ str: "b" }, { str: "c" }]),
+    obj_req_not_null: yup
+      .object({ str: yup.string() })
+      .nullable(false)
+      .required(),
   });
-  await testXTimes(TestSchema, 100);
+  await testXTimes(TestSchema, 200);
 });

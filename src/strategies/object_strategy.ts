@@ -14,8 +14,8 @@ export class ObjectStrategy extends Strategy<Dict> {
     const result = {} as Dict;
     for (const x in this.fields) {
       const field = this.fields[x];
-      if (field?.isDefined()) {
-        result[x] = field.draw();
+      if (field?.isDefined() || this.specs.choices !== undefined) {
+        result[x] = field?.draw();
       }
     }
     return result;
