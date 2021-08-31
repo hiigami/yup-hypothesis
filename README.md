@@ -33,6 +33,7 @@ const TestSchema = yup.object({
     int: yup.number().integer().required(),
     int_min_max: yup.number().integer().min(6).max(30).optional(),
     int_negative: yup.number().integer().negative().required(),
+    nested: yup.object({ str: yup.string() }).oneOf([{ str: "b" }, { str: "c" }]),
     str: yup.string().required(),
     str_default: yup.string().default("abc"),
     str_ensure: yup.string().ensure(),
