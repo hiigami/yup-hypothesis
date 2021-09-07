@@ -36,15 +36,25 @@ export abstract class Spec {
     }
     return output;
   }
+  private _getMutations(): dSpecs.SpecMutation<yup.AnySchema>[] {
+    const mutations = [];
+    for (const x in this.schema.transforms) {
+      if (this.schema.transforms[x].name !== "coerce") {
+        mutations.push(this.schema.transforms[x]);
+      }
+    }
+    return mutations;
+  }
   protected _get(): dSpecs.Specs {
     const exclude = new Set(this.schema.describe().notOneOf);
     return {
-      type: this._getType(),
-      default: this.schema.spec.default,
       choices: this._getChoices(exclude),
+      default: this.schema.spec.default,
       exclude: exclude,
+      mutations: this._getMutations(),
       nullable: this.schema.spec.nullable,
       presence: this._getPresence(),
+      type: this._getType(),
     };
   }
   abstract get(): dSpecs.Specs;

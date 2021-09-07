@@ -1,3 +1,5 @@
+import { AnySchema } from "yup";
+
 import { constrains, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
@@ -7,8 +9,8 @@ import * as common from "./common";
 export class NumberStrategy extends Strategy<number> {
   private defaults: constrains.Constrain;
 
-  constructor(specs: dSpecs.NumberSpecs) {
-    super(specs);
+  constructor(specs: dSpecs.NumberSpecs, schema: AnySchema) {
+    super(specs, schema);
     this.defaults = constant.NUMBER_DEFAULTS;
   }
 
@@ -25,8 +27,8 @@ export class NumberStrategy extends Strategy<number> {
 export class FloatStrategy extends Strategy<number> {
   private defaults: constrains.FloatConstrain;
 
-  constructor(specs: dSpecs.FloatSpecs) {
-    super(specs);
+  constructor(specs: dSpecs.FloatSpecs, schema: AnySchema) {
+    super(specs, schema);
     this.defaults = constant.FLOAT_DEFAULTS;
   }
 

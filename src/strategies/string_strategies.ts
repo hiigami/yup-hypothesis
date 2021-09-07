@@ -1,3 +1,4 @@
+import { AnySchema } from "yup";
 import { constrains, enumerations, specs as dSpecs } from "../data";
 
 import { random } from "../random";
@@ -18,8 +19,8 @@ export class UUIDStrategy extends Strategy<string> {
 export class StringStrategy extends Strategy<string> {
   private defaults: constrains.StringConstrain;
 
-  constructor(specs: dSpecs.StringSpecs) {
-    super(specs);
+  constructor(specs: dSpecs.StringSpecs, schema: AnySchema) {
+    super(specs, schema);
     this.defaults = constant.STRING_DEFAULTS;
   }
   protected _draw(): string {
@@ -37,8 +38,8 @@ export class StringStrategy extends Strategy<string> {
 export class EmailStrategy extends Strategy<string> {
   private defaults: constrains.EmailConstrain;
 
-  constructor(specs: dSpecs.StringSpecs) {
-    super(specs);
+  constructor(specs: dSpecs.StringSpecs, schema: AnySchema) {
+    super(specs, schema);
     this.defaults = constant.EMAIL_DEFAULTS;
   }
 
@@ -102,8 +103,8 @@ export class EmailStrategy extends Strategy<string> {
 export class URLStrategy extends Strategy<string> {
   private defaults: constrains.Constrain;
 
-  constructor(specs: dSpecs.StringSpecs) {
-    super(specs);
+  constructor(specs: dSpecs.StringSpecs, schema: AnySchema) {
+    super(specs, schema);
     this.defaults = constant.URL_DEFAULTS;
   }
 
@@ -130,12 +131,15 @@ export class URLStrategy extends Strategy<string> {
   }
 
   private _getValueFromEmail(size: number): string {
-    const emailStrategy = new EmailStrategy({
-      type: enumerations.SchemaType.Email,
-      presence: enumerations.PresenceType.Required,
-      nullable: false,
-      max: size,
-    });
+    const emailStrategy = new EmailStrategy(
+      {
+        type: enumerations.SchemaType.Email,
+        presence: enumerations.PresenceType.Required,
+        nullable: false,
+        max: size,
+      },
+      this.schema
+    );
     let email = emailStrategy.draw() as string;
     if (!this._withAuthority()) {
       email = email.replace(/^.*?@/, "");
