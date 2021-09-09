@@ -36,7 +36,7 @@ export class FieldHandler implements Handler {
       return undefined;
     }
     const strategy = mapper.get(specs.type) as strategies.StrategyConstructor;
-    return new strategy(specs);
+    return new strategy(specs, schema);
   }
 }
 
@@ -73,6 +73,6 @@ export class ObjectHandler implements Handler {
       return undefined;
     }
     const fields = this._getFields(schema);
-    return new strategies.ObjectStrategy(specs, fields);
+    return new strategies.ObjectStrategy(specs, schema, fields);
   }
 }

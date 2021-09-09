@@ -19,9 +19,12 @@ async function testXTimes<
 ): Promise<void> {
   for (let index = 0; index < nTimes; index++) {
     const example = yh.example(schema) as yup.InferType<typeof schema>;
-    // console.log(example);
-    // const r = await schema.validate(example);
-    // console.log(r);
+    // const a = await schema.isValid(example);
+    // if (!a) {
+    //   console.log(example);
+    //   const r = await schema.validate(example);
+    //   console.log(r);
+    // }
     await expect(schema.isValid(example)).resolves.toBeTruthy();
   }
 }
@@ -154,6 +157,12 @@ test("should render nested objects", async () => {
           .optional(),
       })
       .defined(),
+    obj_camel_case: yup
+      .object({
+        str_sub_1: yup.string(),
+        strSub2: yup.string(),
+      })
+      .camelCase(),
     obj_default: yup.object({ str: yup.string() }).default({ str: "a" }),
     obj_not_req: yup.object({ str: yup.string() }).notRequired(),
     obj_null: yup.object({ str: yup.string() }).nullable(),
@@ -164,6 +173,12 @@ test("should render nested objects", async () => {
       .object({ str: yup.string() })
       .nullable(false)
       .required(),
+    obj_snake_case: yup
+      .object({
+        str_sub_1: yup.string(),
+        strSub2: yup.string(),
+      })
+      .snakeCase(),
   });
   await testXTimes(TestSchema, 200);
 });

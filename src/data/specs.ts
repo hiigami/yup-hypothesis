@@ -1,19 +1,21 @@
+import { AnySchema } from "yup";
+
 import { PresenceType, SchemaType, Sign } from "./enumerations";
 
-export interface SpecMutation {
-  (value: unknown): unknown;
+export interface SpecMutation<T> {
+  (this: T, value: unknown, originalValue: unknown, schema: T): unknown;
 }
 
 export type DefaultFn = () => unknown;
 
 export interface BaseSpecs {
-  default?: unknown | DefaultFn;
   choices?: Array<unknown>;
+  default?: unknown | DefaultFn;
   exclude?: Set<unknown>;
+  mutations?: SpecMutation<AnySchema>[];
   nullable: boolean;
   presence: PresenceType;
   type: SchemaType;
-  mutations?: SpecMutation[];
 }
 
 export type BooleanSpecs = BaseSpecs;
