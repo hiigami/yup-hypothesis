@@ -42,6 +42,9 @@ export class StringSpec extends Spec {
   }
   get(): dSpecs.Specs {
     const specs = this._get();
+    specs.length = this.testSearch.getParameter(
+      enumerations.TestParameter.Length
+    );
     specs.min = this._getMin(specs.presence);
     specs.max = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Max

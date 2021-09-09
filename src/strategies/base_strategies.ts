@@ -1,7 +1,7 @@
 import { AnySchema } from "yup";
 
 import { enumerations, specs as dSpecs, strategy as dStrategy } from "../data";
-import { randomIntInclusive, random } from "../random";
+import { randomChoice, randomIntInclusive, random } from "../random";
 
 import * as constant from "./constant";
 
@@ -56,10 +56,6 @@ export abstract class Strategy<T> {
     }
     return createResult(false);
   }
-  private _oneOf(choices: Array<ReturnType<T>>): ReturnType<T> {
-    const index = this._random(choices.length - 1);
-    return Array.from(choices)[index];
-  }
   private _defaultOrNull(): Result<T> {
     const defaultResult = this._shouldBeDefault();
     if (defaultResult.apply) {
@@ -69,11 +65,12 @@ export abstract class Strategy<T> {
   }
   private _choiceOrDraw(): ReturnType<T> {
     if (this.specs.choices && this.specs.choices.length > 0) {
-      return this._oneOf(this.specs.choices as ReturnType<T>[]);
+      return randomChoice<ReturnType<T>>(this.specs.choices as ReturnType<T>[]);
     }
     return this._draw();
   }
   private _applyMutations(value: ReturnType<T>): ReturnType<T> {
+    // ??? what if null
     if (this.specs.mutations === undefined || value === null) {
       return value;
     }

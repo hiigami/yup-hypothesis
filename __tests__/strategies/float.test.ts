@@ -1,17 +1,24 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { randomIntInclusiveMock } from "../../jest.setup";
-import { addDecimals } from "../utils";
 
+import * as yup from "yup";
+
+import { addDecimals } from "../utils";
 import { enumerations, specs as dSpecs } from "../../src/data";
 import { FloatStrategy } from "../../src/strategies";
 import * as constant from "../../src/strategies/constant";
 
+const specs: dSpecs.Specs = {
+  type: enumerations.SchemaType.Float,
+  nullable: false,
+  presence: enumerations.PresenceType.Required,
+  sign: enumerations.Sign.Positive,
+};
+const schema = yup.number().required();
+
 test("should respect max and min for float", () => {
-  const specs: dSpecs.Specs = {
-    type: enumerations.SchemaType.Float,
-    nullable: false,
-    presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Positive,
+  const _specs = {
+    ...specs,
     max: 0.5,
     min: 0.0001,
   };
@@ -19,22 +26,22 @@ test("should respect max and min for float", () => {
   const expected = 2;
   randomIntInclusiveMock.mockReturnValue(expected);
 
-  const val = new FloatStrategy(specs).draw();
+  const val = new FloatStrategy(
+    _specs,
+    schema.min(_specs.min).max(_specs.max)
+  ).draw();
 
   const precision = constant.FLOAT_DEFAULTS.precision;
   expect(val).toEqual(addDecimals(expected, precision));
   const byNum = Math.pow(10, precision);
   expect(randomIntInclusiveMock.mock.calls).toEqual([
-    [specs.max! * byNum, specs.min! * byNum],
+    [_specs.max! * byNum, _specs.min! * byNum],
   ]);
 });
 
 test("should respect precision", () => {
-  const specs: dSpecs.Specs = {
-    type: enumerations.SchemaType.Float,
-    nullable: false,
-    presence: enumerations.PresenceType.Required,
-    sign: enumerations.Sign.Positive,
+  const _specs = {
+    ...specs,
     precision: 7,
     max: 0.0000002,
     min: 0.0000001,
@@ -43,8 +50,9 @@ test("should respect precision", () => {
   const expected = 2;
   randomIntInclusiveMock.mockReturnValue(expected);
 
-  const val = new FloatStrategy(specs).draw();
-  expect(val).toEqual(specs.max);
+  const val = new FloatStrategy(
+    _specs,
+    schema.min(_specs.min).max(_specs.max)
+  ).draw();
+  expect(val).toEqual(_specs.max);
 });
-
-test.todo("indifferent with max and min for float");

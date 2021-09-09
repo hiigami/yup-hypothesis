@@ -3,8 +3,8 @@ import { AnySchema } from "yup";
 import { constrains, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
+import { digits } from "./common";
 import * as constant from "./constant";
-import * as common from "./common";
 
 export class NumberStrategy extends Strategy<number> {
   private defaults: constrains.Constrain;
@@ -15,8 +15,8 @@ export class NumberStrategy extends Strategy<number> {
   }
 
   protected _draw(): number {
-    const sign = common.getSign(this.specs.sign);
-    const min = common.getMinBasedOnSign(
+    const sign = digits.getSign(this.specs.sign);
+    const min = digits.getMinBasedOnSign(
       this.specs.min || this.defaults.min,
       sign
     );
@@ -33,10 +33,10 @@ export class FloatStrategy extends Strategy<number> {
   }
 
   protected _draw(): number {
-    const sign = common.getSign(this.specs.sign);
+    const sign = digits.getSign(this.specs.sign);
     const precision = this.specs.precision || this.defaults.precision;
     const byNum = Math.pow(10, precision);
-    const _min = common.getMinBasedOnSign(
+    const _min = digits.getMinBasedOnSign(
       this.specs.min || this.defaults.min,
       sign
     );
