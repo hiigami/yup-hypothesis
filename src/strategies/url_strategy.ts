@@ -29,7 +29,12 @@ export class URLStrategy extends Strategy<string> {
     const authority = internet.genUrl(
       size - (schema.length + 3),
       this.defaults,
-      { includeUserInfo: isMinSize ? false : random() > 0.5 }
+      {
+        includeUserInfo: isMinSize ? false : random() > 0.5,
+        includePath: isMinSize ? false : random() > 0.5,
+        includeQuery: false,
+        includeFragment: false,
+      }
     );
     return `${schema}://${authority}`;
   }
