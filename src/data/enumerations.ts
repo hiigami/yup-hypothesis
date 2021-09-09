@@ -28,8 +28,6 @@ export enum TestName {
   Integer = "integer",
   Max = "max",
   Min = "min",
-  StringCase = "string_case",
-  Trim = "trim",
   URL = "url",
   UUID = "uuid",
 }
@@ -40,10 +38,4 @@ export enum TestParameter {
   Max = "max",
   Min = "min",
   More = "more",
-}
-
-export enum TestMutation {
-  Lower = "lower case",
-  Upper = "upper case",
-  Trim = "trim",
 }
