@@ -15,23 +15,14 @@ export class URLStrategy extends Strategy<string> {
     this.defaults = constant.URL_DEFAULTS;
   }
 
-  private _getRandomSchema(isMinSize: boolean): string {
-    if (isMinSize) {
-      return "ftp";
-    }
-    const index = this._random(constant.URL_SCHEMAS.length - 1);
-    return constant.URL_SCHEMAS[index];
-  }
-
   private _gen(size: number): string {
     const isMinSize = size === this.defaults.min;
-    const schema = this._getRandomSchema(isMinSize);
-    const authority = internet.genUrl(
-      size - (schema.length + 3),
-      this.defaults,
-      { includeUserInfo: isMinSize ? false : random() > 0.5 }
-    );
-    return `${schema}://${authority}`;
+    return internet.genUrl(size, this.defaults, {
+      includeUserInfo: isMinSize ? false : random() > 0.5,
+      includePath: isMinSize ? false : random() > 0.5,
+      includeQuery: isMinSize ? false : random() > 0.5,
+      includeFragment: false,
+    });
   }
 
   protected _draw(): string {
