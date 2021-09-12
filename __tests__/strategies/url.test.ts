@@ -1,4 +1,9 @@
-import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import {
+  randomChoiceMock,
+  randomIntInclusiveMock,
+  randomMock,
+} from "../../jest.setup";
 
 import * as yup from "yup";
 
@@ -14,14 +19,18 @@ test("should be a URL", () => {
     presence: enumerations.PresenceType.Required,
   };
 
-  randomMock.mockReturnValue(97);
+  randomMock.mockReturnValue(Math.random());
   for (let i = 0; i < constant.URL_SCHEMAS.length; i++) {
-    randomIntInclusiveMock
-      .mockReturnValue(i + 1)
-      .mockReturnValueOnce(i)
-      .mockReturnValueOnce(i);
+    randomChoiceMock
+      .mockReturnValue("a")
+      .mockReturnValueOnce(constant.URL_SCHEMAS[i]);
+    randomIntInclusiveMock.mockReturnValue(i + 1).mockReturnValueOnce(12 + i);
+
     const val = new URLStrategy(specs, yup.string().url().required()).draw();
+
     expect(mockUtils.urlCheck(val!)).toBeTruthy();
+
     randomIntInclusiveMock.mockReset();
+    randomChoiceMock.mockReset();
   }
 });

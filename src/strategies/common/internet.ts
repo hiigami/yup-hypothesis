@@ -72,14 +72,12 @@ function genEntity(size: number): string {
 
 function genHost(size: number, defaults: HostDefaults, strict = false) {
   // offset = TLD (x1)
-  const entitySize = getSectionLength(size, 1, defaults.entity);
+  const _size = strict ? size - defaults.tld.max : size;
+  const entitySize = getSectionLength(_size, 1, defaults.entity);
   const entity = genEntity(entitySize);
-  const tldSize = getSectionLength(
-    size - entity.length,
-    0,
-    defaults.tld,
-    strict
-  );
+  const tldSize = strict
+    ? size - entity.length
+    : getSectionLength(size - entity.length, 0, defaults.tld, strict);
   const tld = genEntity(tldSize);
   return `${entity}.${tld}`;
 }
@@ -93,7 +91,7 @@ export function genEmail(
   // offset = tld(x1) entity(x1)
   const userSize = getSectionLength(_size, 2, defaults.username);
   const username = genSection(userSize, EXTRA_CHARS.slice(0, 3));
-  const host = genHost(_size - username.length, defaults);
+  const host = genHost(_size - username.length, defaults, true);
   return `${username}@${host}`;
 }
 
@@ -133,7 +131,7 @@ function genAuthority(
   return stack.join("");
 }
 
-function _genPath(size: number, strict: boolean): string {
+function _genSections(size: number, joinChar: string, strict: boolean): string {
   const stack = [""];
   const sections = randomIntInclusive(size, 1);
   let _size = size - sections;
@@ -143,7 +141,7 @@ function _genPath(size: number, strict: boolean): string {
     _size -= path.length + 1;
     stack.push(path);
   }
-  const output = stack.join("/");
+  const output = stack.join(joinChar);
   return strict
     ? output + genSection(size - output.length, EXTRA_CHARS)
     : output;
@@ -153,7 +151,38 @@ function genPath(size: number, options: GenOptions): string {
   if (!options.include || size === 0) {
     return "";
   }
-  return size === 1 ? "/" : _genPath(size, options.strict);
+  return size === 1 ? "/" : _genSections(size, "/", options.strict);
+}
+
+function getRandomSchema(size: number, default_min: number): string {
+  if (size === default_min) {
+    return "ftp";
+  }
+  return randomChoice(constant.URL_SCHEMAS);
+}
+
+function genSearchParams(url: URL, size: number, options: GenOptions) {
+  if (!options.include) {
+    return;
+  }
+  let _size = size - 1;
+  const items = [];
+  while (_size > 0) {
+    const qSize = randomIntInclusive(_size - 2, 1);
+    const q = genSection(qSize, []);
+    _size -= q.length + 1;
+    if (items.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      url.searchParams.set(items.pop()!, q);
+    } else {
+      items.push(q);
+    }
+  }
+  _size = size - (url.searchParams.toString().length + 1);
+  if (options.strict && _size > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    url.searchParams.set(genSection(_size, []), "");
+  }
 }
 
 export function genUrl(
@@ -162,23 +191,34 @@ export function genUrl(
   options: URLOptions
 ): string {
   /**@todo implement all url options */
+  const schema = getRandomSchema(size, defaults.min);
   let strict = !(
     options.includePath ||
     options.includeQuery ||
     options.includeFragment
   );
-  const stack = [
-    genAuthority(size, defaults, {
-      include: options.includeUserInfo,
-      strict: strict,
-    }),
-  ];
+  let _size = size - (schema.length + 3);
+  const authority = genAuthority(_size, defaults, {
+    include: options.includeUserInfo,
+    strict: strict,
+  });
+  _size -= authority.length;
   strict = !(options.includeQuery || options.includeFragment);
-  stack.push(
-    genPath(size - stack[0].length, {
-      include: options.includePath,
-      strict: strict,
-    })
-  );
-  return stack.join("");
+  const path = genPath(_size, {
+    include: options.includePath,
+    strict: strict,
+  });
+  _size -= path.length;
+  const url = new URL(`${schema}://${authority}${path}`);
+  genSearchParams(url, _size, {
+    include: options.includeQuery,
+    strict: !options.includeFragment,
+  });
+  const _url = url.toString();
+  if (_url.length > size) {
+    return _url.slice(0, size);
+  }
+  return _url.length === size
+    ? _url
+    : _url + _genSection(size - _url.length, []);
 }

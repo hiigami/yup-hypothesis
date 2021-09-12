@@ -19,9 +19,10 @@ test("should be an email", () => {
   };
 
   randomMock.mockReturnValue(0);
-  randomIntInclusiveMock.mockReturnValue(2).mockReturnValueOnce(6);
+  randomIntInclusiveMock.mockReturnValue(2).mockReturnValueOnce(12);
   randomChoiceMock.mockReturnValue("a");
 
   const val = new EmailStrategy(specs, yup.string().email().required()).draw();
+
   expect(mockUtils.emailCheck(val!)).toBeTruthy();
 });
