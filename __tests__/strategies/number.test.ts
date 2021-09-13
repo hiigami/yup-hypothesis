@@ -2,9 +2,9 @@ import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
 import * as yup from "yup";
 
-import { enumerations, specs as dSpecs, specs } from "../../src/data";
+import { enumerations, specs as dSpecs } from "../../src/data";
 import { FloatStrategy, NumberStrategy } from "../../src/strategies";
-import * as constant from "../../src/strategies/constant";
+import { STRATEGY_DEFAULTS } from "../../src/strategies/constant";
 
 const specsInt: dSpecs.Specs = {
   type: enumerations.SchemaType.Number,
@@ -100,7 +100,7 @@ test.each([
     name: "negative",
     strategy: NumberStrategy,
     schema: schemaInt,
-    randVal: constant.SIGN_CHANGE + 0.05,
+    randVal: STRATEGY_DEFAULTS.sign + 0.05,
     randIntVal: 1,
     check: (x: number) => expect(x).toBeLessThan(0),
   },
@@ -112,7 +112,7 @@ test.each([
     name: "positive",
     strategy: NumberStrategy,
     schema: schemaInt,
-    randVal: constant.SIGN_CHANGE - 0.05,
+    randVal: STRATEGY_DEFAULTS.sign - 0.05,
     randIntVal: 1,
     check: (x: number) => expect(x).toBeGreaterThan(0),
   },
@@ -124,7 +124,7 @@ test.each([
     name: "negative",
     strategy: FloatStrategy,
     schema: schemaFloat,
-    randVal: constant.SIGN_CHANGE + 0.05,
+    randVal: STRATEGY_DEFAULTS.sign + 0.05,
     randIntVal: 1,
     check: (x: number) => expect(x).toBeLessThan(0),
   },
@@ -136,7 +136,7 @@ test.each([
     name: "positive",
     strategy: FloatStrategy,
     schema: schemaFloat,
-    randVal: constant.SIGN_CHANGE - 0.05,
+    randVal: STRATEGY_DEFAULTS.sign - 0.05,
     randIntVal: 1,
     check: (x: number) => expect(x).toBeGreaterThan(0),
   },

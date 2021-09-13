@@ -3,7 +3,7 @@ import { AnySchema } from "yup";
 import { enumerations, specs as dSpecs, strategy as dStrategy } from "../data";
 import { randomChoice, randomIntInclusive, random } from "../random";
 
-import * as constant from "./constant";
+import { STRATEGY_DEFAULTS } from "./constant";
 
 type ReturnType<T> = T | null;
 
@@ -45,13 +45,16 @@ export abstract class Strategy<T> {
     return this.specs.default as ReturnType<T>;
   }
   private _shouldBeDefault(): Result<T> {
-    if (this.specs.default !== undefined && random() > constant.IS_DEFAULT) {
+    if (
+      this.specs.default !== undefined &&
+      random() > STRATEGY_DEFAULTS.default
+    ) {
       return createResult(true, this._getDefaultValue());
     }
     return createResult(false);
   }
   private _shouldBeNull(): Result<T> {
-    if (this.specs.nullable && random() > constant.IS_NULLABLE) {
+    if (this.specs.nullable && random() > STRATEGY_DEFAULTS.nullable) {
       return createResult(true);
     }
     return createResult(false);
@@ -81,7 +84,7 @@ export abstract class Strategy<T> {
   }
   isDefined(): boolean {
     if (this.specs.presence === enumerations.PresenceType.Optional) {
-      return random() > constant.IS_DEFINED;
+      return random() > STRATEGY_DEFAULTS.defined;
     }
     return true;
   }
@@ -100,7 +103,7 @@ export class BooleanStrategy extends Strategy<boolean> {
     super(specs, schema);
   }
   protected _draw(): boolean {
-    return random() < constant.BOOL_CHANGE;
+    return random() < STRATEGY_DEFAULTS.bool;
   }
 }
 

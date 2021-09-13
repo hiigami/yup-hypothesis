@@ -1,45 +1,59 @@
 import { constrains } from "../data";
 
-const internetConstrains = (min: number, max: number, key: string) => ({
-  min: min,
-  max: max,
-  [key]: { max: 64, min: 2 },
-  entity: { max: 186, min: 1 },
-  tld: { max: 16, min: 1 },
-});
+enum InternetConstrainType {
+  UserInfo = "userInfo",
+  Username = "username",
+}
 
-export const BOOL_CHANGE = 0.5;
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const EMAIL_DEFAULTS: constrains.EmailConstrain = internetConstrains(
+type InternetConstrain = constrains.EmailConstrain | constrains.URLConstrain;
+
+function createConstrain(min: number, max: number): constrains.Constrain {
+  return { min, max };
+}
+
+function internetConstrain<T extends InternetConstrain>(
+  min: number,
+  max: number,
+  key: InternetConstrainType
+): T {
+  return {
+    ...createConstrain(min, max),
+    [key]: { max: 64, min: 2 },
+    entity: { max: 186, min: 1 },
+    tld: { max: 16, min: 1 },
+  } as T;
+}
+
+export const EMAIL_DEFAULTS = internetConstrain<constrains.EmailConstrain>(
   6,
   256,
-  "username"
+  InternetConstrainType.Username
 );
+
 export const FLOAT_DEFAULTS: constrains.FloatConstrain = {
-  min: 0,
-  max: 99999,
+  ...createConstrain(0, 99999),
   precision: 4,
 };
-export const IS_DEFAULT = 0.75;
-export const IS_DEFINED = 0.4;
-export const IS_NULLABLE = 0.75;
-export const LETTERS = "abcdefghijklmnopqrstuvwxyz".split("");
-export const NUMBER_DEFAULTS: constrains.Constrain = {
-  min: 0,
-  max: 99999,
-};
-export const SIGN_CHANGE = 0.5;
+
+export const NUMBER_DEFAULTS = createConstrain(0, 99999);
+
+export const STRATEGY_DEFAULTS = Object.freeze({
+  bool: 0.5,
+  default: 0.75,
+  defined: 0.4,
+  nullable: 0.75,
+  sign: 0.5,
+});
+
 export const STRING_DEFAULTS: constrains.StringConstrain = {
-  min: 0,
-  max: 255,
-  chars: { min: 32, max: 126 },
+  ...createConstrain(0, 255),
+  chars: createConstrain(32, 126),
 };
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const URL_DEFAULTS: constrains.URLConstrain = internetConstrains(
+
+export const URL_DEFAULTS = internetConstrain<constrains.URLConstrain>(
   9,
   2000,
-  "userInfo"
+  InternetConstrainType.UserInfo
 );
-export const URL_SCHEMAS = ["http", "https", "ftp"];
+
+export const URL_SCHEMAS = Object.freeze(["http", "https", "ftp"]);

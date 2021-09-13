@@ -1,6 +1,7 @@
-import { constrains } from "../../data";
+import { constrains, ReadOnlyArray } from "../../data";
 import { random, randomChoice, randomIntInclusive } from "../../random";
-import * as constant from "../constant";
+
+import { URL_SCHEMAS } from "../constant";
 
 import { getValidValueOrBest } from "./general";
 
@@ -21,7 +22,35 @@ interface HostDefaults {
   tld: constrains.Constrain;
 }
 
-const EXTRA_CHARS = [".", "-", "+", "~"];
+const LETTERS = Object.freeze([
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "q",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "w",
+  "x",
+  "y",
+  "z",
+]);
+const EXTRA_CHARS = Object.freeze([".", "-", "+", "~"]);
 
 function getSectionLength(
   size: number,
@@ -34,16 +63,20 @@ function getSectionLength(
   return strict ? max : randomIntInclusive(max, constrain.min);
 }
 
-function isInvalidChar(val1: string, val2: string, options: string[]): boolean {
+function isInvalidChar(
+  val1: string,
+  val2: string,
+  options: ReadOnlyArray<string>
+): boolean {
   if (options.lastIndexOf(val1) === -1 || options.lastIndexOf(val2) === -1) {
     return true;
   }
   return false;
 }
 
-function _genSection(size: number, extraChars: string[]) {
-  const chars = [...constant.LETTERS, ...extraChars];
-  const stack = [randomChoice<string>(constant.LETTERS)];
+function _genSection(size: number, extraChars: ReadOnlyArray<string>) {
+  const chars = [...LETTERS, ...extraChars];
+  const stack = [randomChoice<string>(LETTERS)];
   let _size = size - 1;
   while (_size > 0) {
     const c = randomChoice<string>(chars);
@@ -54,12 +87,12 @@ function _genSection(size: number, extraChars: string[]) {
   }
   if (extraChars.lastIndexOf(stack[stack.length - 1]) > -1) {
     stack.pop();
-    stack.push(randomChoice<string>(constant.LETTERS));
+    stack.push(randomChoice<string>(LETTERS));
   }
   return stack.join("");
 }
 
-function genSection(size: number, extraChars: string[]) {
+function genSection(size: number, extraChars: ReadOnlyArray<string>) {
   if (size <= 0) {
     return "";
   }
@@ -158,7 +191,7 @@ function getRandomSchema(size: number, default_min: number): string {
   if (size === default_min) {
     return "ftp";
   }
-  return randomChoice(constant.URL_SCHEMAS);
+  return randomChoice(URL_SCHEMAS);
 }
 
 function genSearchParams(url: URL, size: number, options: GenOptions) {

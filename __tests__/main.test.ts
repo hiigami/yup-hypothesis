@@ -7,7 +7,6 @@ import * as yup from "yup";
 import * as yupObject from "yup/lib/object";
 import * as yupTypes from "yup/lib/types";
 import yh from "../src/main";
-import * as constants from "../src/strategies/constant";
 
 async function testXTimes<
   TShape extends yupObject.ObjectShape,
@@ -136,65 +135,6 @@ test("should render a url", async () => {
     url: yup.string().url().required(),
   });
   await testXTimes(TestSchema, 250);
-});
-
-const randomURLLength = (length: number) => {
-  return yup.object({
-    url: yup.string().url().required().length(length),
-  });
-};
-
-const randomEmailLength = (length: number) => {
-  return yup.object({
-    url: yup.string().email().required().length(length),
-  });
-};
-
-test.each([
-  {
-    type: "url",
-    length: constants.URL_DEFAULTS.min,
-    times: 1,
-    gen: randomURLLength,
-  },
-  {
-    type: "url",
-    length: constants.URL_DEFAULTS.max,
-    times: 20,
-    gen: randomURLLength,
-  },
-  {
-    type: "url",
-    length: rnd.randomIntInclusive(
-      constants.URL_DEFAULTS.max,
-      constants.URL_DEFAULTS.min
-    ),
-    times: 80,
-    gen: randomURLLength,
-  },
-  {
-    type: "email",
-    length: constants.EMAIL_DEFAULTS.min,
-    times: 1,
-    gen: randomEmailLength,
-  },
-  {
-    type: "email",
-    length: constants.EMAIL_DEFAULTS.max,
-    times: 20,
-    gen: randomEmailLength,
-  },
-  {
-    type: "email",
-    length: rnd.randomIntInclusive(
-      constants.EMAIL_DEFAULTS.max,
-      constants.EMAIL_DEFAULTS.min
-    ),
-    times: 80,
-    gen: randomEmailLength,
-  },
-])("should $type be of length $length", async ({ length, times, gen }) => {
-  await testXTimes(gen(length), times);
 });
 
 test("should render nested objects", async () => {

@@ -1,10 +1,10 @@
 import { enumerations } from "../../data";
 import { Sign } from "../../data/enumerations";
 import { random } from "../../random";
-import { SIGN_CHANGE } from "../constant";
+import { STRATEGY_DEFAULTS } from "../constant";
 
 function getRandomSign(): number {
-  return random() < SIGN_CHANGE ? 1 : -1;
+  return random() < STRATEGY_DEFAULTS.sign ? 1 : -1;
 }
 
 export function getSign(sign?: enumerations.Sign): number {
