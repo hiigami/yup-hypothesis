@@ -230,10 +230,10 @@ function genSearchParams(
 }
 
 function genFragment(size: number, include: boolean): string {
-  if (!include) {
-    return "";
+  if (include) {
+    return "#" + _genSection(size - 1, []);
   }
-  return size > 0 ? "#" + _genSection(size - 1, []) : "";
+  return "";
 }
 
 export function genUrl(
@@ -254,12 +254,11 @@ export function genUrl(
   _size -= path.length;
   const queryParams = genSearchParams(
     _size,
-    options.includeQuery,
+    options.includeQuery && _size > 0,
     !options.includeFragment
   );
-  const fragment = genFragment(
-    _size - queryParams.length,
-    options.includeFragment
-  );
+  _size -= queryParams.length;
+  const includeFragment = options.includeFragment && _size > 0;
+  const fragment = genFragment(_size, includeFragment);
   return `${schema}://${authority}${path}${queryParams}${fragment}`;
 }
