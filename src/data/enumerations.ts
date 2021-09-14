@@ -1,3 +1,8 @@
+export enum InternetConstrainType {
+  UserInfo = "userInfo",
+  Username = "username",
+}
+
 export enum PresenceType {
   Defined = "defined",
   Optional = "optional",

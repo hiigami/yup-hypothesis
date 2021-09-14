@@ -1,3 +1,6 @@
+import { enumerations } from "../../src/data";
+import { createConstrain } from "../../src/common";
+
 export function addDecimals(n: number, precision: number): number {
   let zeros: number[] = [];
   zeros.length = precision - 1;
@@ -42,3 +45,43 @@ export function randIntIncMaxEqDefaultAndMinEq0Is1OrMax(maxDefault: number) {
     return max;
   };
 }
+
+const createSpecs = (args?: {
+  min?: number;
+  max?: number;
+  length?: number;
+}) => ({
+  type: enumerations.SchemaType.String,
+  nullable: false,
+  presence: enumerations.PresenceType.Required,
+  min: args?.min,
+  max: args?.max,
+  length: args?.length,
+});
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const createTestItem = (args: {
+  constrain?: {
+    min: number;
+    max: number;
+  };
+  specs?: {
+    min?: number;
+    max?: number;
+    length?: number;
+  };
+  expected: unknown;
+  strict?: boolean;
+  randIntVal?: number;
+  toBeCalledWith?: unknown[];
+}) => ({
+  specs: createSpecs(args.specs),
+  randIntVal: args.randIntVal,
+  toBeCalledWith: args.toBeCalledWith,
+  strict: args.strict,
+  constrain:
+    args.constrain === undefined
+      ? undefined
+      : createConstrain(args.constrain?.min, args.constrain?.max),
+  expected: args.expected,
+});

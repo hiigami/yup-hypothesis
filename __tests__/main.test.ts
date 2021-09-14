@@ -175,8 +175,8 @@ test("should render nested objects", async () => {
       .required(),
     obj_snake_case: yup
       .object({
-        str_sub_1: yup.string(),
-        strSub2: yup.string(),
+        str_sub_3: yup.string(),
+        strSub4: yup.string(),
       })
       .snakeCase(),
   });

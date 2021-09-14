@@ -7,6 +7,10 @@ import { Strategy } from "./base_strategies";
 import { characters, internet } from "./common";
 import * as constant from "./constant";
 
+function getOptionValue(off: boolean): boolean {
+  return off ? false : random() > 0.5;
+}
+
 export class URLStrategy extends Strategy<string> {
   private defaults: constrains.URLConstrain;
 
@@ -18,10 +22,10 @@ export class URLStrategy extends Strategy<string> {
   private _gen(size: number): string {
     const isMinSize = size === this.defaults.min;
     return internet.genUrl(size, this.defaults, {
-      includeUserInfo: isMinSize ? false : random() > 0.5,
-      includePath: isMinSize ? false : random() > 0.5,
-      includeQuery: isMinSize ? false : random() > 0.5,
-      includeFragment: false,
+      includeUserInfo: getOptionValue(isMinSize),
+      includePath: getOptionValue(isMinSize),
+      includeQuery: getOptionValue(isMinSize),
+      includeFragment: getOptionValue(isMinSize),
     });
   }
 

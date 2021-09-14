@@ -5,11 +5,6 @@ import { URL_SCHEMAS } from "../constant";
 
 import { getValidValueOrBest } from "./general";
 
-interface GenOptions {
-  strict: boolean;
-  include: boolean;
-}
-
 interface URLOptions {
   includeUserInfo: boolean;
   includePath: boolean;
@@ -140,28 +135,39 @@ function _genUserInfo(size: number): string {
   return stack.join("");
 }
 
-function genUserInfo(size: number): string {
-  return size === 2 ? ":@" : _genUserInfo(size);
+function genUserInfo(
+  include: boolean,
+  size: number,
+  constrain: constrains.Constrain
+): string {
+  if (!include) {
+    return "";
+  }
+  // offset = entity (x1) TLD (x3)
+  const _size = getSectionLength(size, 4, constrain);
+  return _size === 2 ? ":@" : _genUserInfo(_size);
 }
 
 function genAuthority(
   size: number,
   defaults: constrains.URLConstrain,
-  options: GenOptions
+  options: URLOptions
 ) {
   // offset = .(x1)
-  let _size = size - 1;
-  const stack = [];
-  if (options.include && _size > 4) {
-    // offset = entity (x1) TLD (x3)
-    const userInfoSize = getSectionLength(_size, 4, defaults.userInfo);
-    const userInfo = genUserInfo(userInfoSize);
-    _size -= userInfo.length;
-    stack.push(userInfo);
-  }
+  const _size = size - 1;
+  const userInfo = genUserInfo(
+    options.includeUserInfo && _size > 4,
+    _size,
+    defaults.userInfo
+  );
   /**@todo missing port, could be ip address instead */
-  stack.push(genHost(_size, defaults, options.strict));
-  return stack.join("");
+  const strict = !(
+    options.includePath ||
+    options.includeQuery ||
+    options.includeFragment
+  );
+  const host = genHost(_size - userInfo.length, defaults, strict);
+  return `${userInfo}${host}`;
 }
 
 function _genSections(size: number, joinChar: string, strict: boolean): string {
@@ -180,42 +186,54 @@ function _genSections(size: number, joinChar: string, strict: boolean): string {
     : output;
 }
 
-function genPath(size: number, options: GenOptions): string {
-  if (!options.include || size === 0) {
+function genPath(size: number, include: boolean, strict: boolean): string {
+  if (!include) {
     return "";
   }
-  return size === 1 ? "/" : _genSections(size, "/", options.strict);
+  return size === 1 ? "/" : _genSections(size, "/", strict);
 }
 
-function getRandomSchema(size: number, default_min: number): string {
-  if (size === default_min) {
+function getRandomSchema(size: number): string {
+  if (size === 9) {
     return "ftp";
   }
   return randomChoice(URL_SCHEMAS);
 }
 
-function genSearchParams(url: URL, size: number, options: GenOptions) {
-  if (!options.include) {
-    return;
-  }
-  let _size = size - 1;
-  const items = [];
+function _genSearchParams(size: number): string {
+  const stack = [];
+  let _size = size;
   while (_size > 0) {
-    const qSize = randomIntInclusive(_size - 2, 1);
-    const q = genSection(qSize, []);
-    _size -= q.length + 1;
-    if (items.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      url.searchParams.set(items.pop()!, q);
-    } else {
-      items.push(q);
-    }
+    const k = genSection(randomIntInclusive(_size - 2, 1), []);
+    _size -= k.length + 1;
+    const v = genSection(randomIntInclusive(_size - 2, 1), []);
+    _size -= v.length + 1;
+    stack.push(k);
+    stack.push("=");
+    stack.push(v);
   }
-  _size = size - (url.searchParams.toString().length + 1);
-  if (options.strict && _size > 0) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    url.searchParams.set(genSection(_size, []), "");
+  return stack.join("");
+}
+
+function genSearchParams(
+  size: number,
+  include: boolean,
+  strict: boolean
+): string {
+  if (include) {
+    const searchParams = _genSearchParams(size - 1);
+    const _size = size - (searchParams.length + 1);
+    const missing = strict ? genSection(_size, []) : "";
+    return `?${searchParams}${missing}`;
   }
+  return "";
+}
+
+function genFragment(size: number, include: boolean): string {
+  if (!include) {
+    return "";
+  }
+  return size > 0 ? "#" + _genSection(size - 1, []) : "";
 }
 
 export function genUrl(
@@ -224,34 +242,24 @@ export function genUrl(
   options: URLOptions
 ): string {
   /**@todo implement all url options */
-  const schema = getRandomSchema(size, defaults.min);
-  let strict = !(
-    options.includePath ||
-    options.includeQuery ||
+  const schema = getRandomSchema(size);
+  let _size = size - (schema.length + 3);
+  const authority = genAuthority(_size, defaults, options);
+  _size -= authority.length;
+  const path = genPath(
+    _size,
+    options.includePath && _size > 0,
+    !(options.includeQuery || options.includeFragment)
+  );
+  _size -= path.length;
+  const queryParams = genSearchParams(
+    _size,
+    options.includeQuery,
+    !options.includeFragment
+  );
+  const fragment = genFragment(
+    _size - queryParams.length,
     options.includeFragment
   );
-  let _size = size - (schema.length + 3);
-  const authority = genAuthority(_size, defaults, {
-    include: options.includeUserInfo,
-    strict: strict,
-  });
-  _size -= authority.length;
-  strict = !(options.includeQuery || options.includeFragment);
-  const path = genPath(_size, {
-    include: options.includePath,
-    strict: strict,
-  });
-  _size -= path.length;
-  const url = new URL(`${schema}://${authority}${path}`);
-  genSearchParams(url, _size, {
-    include: options.includeQuery,
-    strict: !options.includeFragment,
-  });
-  const _url = url.toString();
-  if (_url.length > size) {
-    return _url.slice(0, size);
-  }
-  return _url.length === size
-    ? _url
-    : _url + _genSection(size - _url.length, []);
+  return `${schema}://${authority}${path}${queryParams}${fragment}`;
 }
