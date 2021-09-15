@@ -22,31 +22,20 @@ import yh from "yup-hypothesis";
  * const yh = require('yup-hypothesis').default;
  */
 
-const TestSchema = yup.object({
+// -- Objects --
+const TestObjectSchema = yup.object({
     bool: yup.boolean().required(),
-    date: yup.date().required(),
-    date_min_max: yup.date().min(new Date(5)).max(new Date(10)).required(),
-    email: yup.string().email().required(),
-    float: yup.number().required(),
-    float_positive: yup.number().positive().required(),
-    float_min_max: yup.number().min(34.0001).max(120.5).optional(),
-    int: yup.number().integer().required(),
-    int_min_max: yup.number().integer().min(6).max(30).optional(),
-    int_negative: yup.number().integer().negative().required(),
-    nested: yup.object({ str: yup.string() }).oneOf([{ str: "b" }, { str: "c" }]),
-    str: yup.string().required(),
-    str_default: yup.string().default("abc"),
-    str_ensure: yup.string().ensure(),
-    str_min_upper: yup.string().min(4).uppercase().required(),
-    str_max_lower: yup.string().max(145).lowercase().required(),
-    str_not_req: yup.string().notRequired(),
-    str_one_of: yup.string().oneOf(["a", "b", "c"]).required(),
-    str_trim: yup.string().trim().optional(),
-    str_null_def: yup.string().nullable().defined(),
-    url: yup.string().url().required(),
-    uuid: yup.string().uuid().required(),
 });
+const objExample = yh.example(TestObjectSchema) as yup.InferType<typeof TestObjectSchema>;
+console.log(objExample);
 
-const example = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
-console.log(example);
+// -- Arrays --
+const TestArraySchema = yup.array(TestObjectSchema);
+const arrayExample = yh.example(TestArraySchema) as yup.InferType<typeof TestArraySchema>;
+console.log(arrayExample);
+
+// -- AnySchema --
+const TestSchema = yup.string().required();
+const arrayExample = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
+console.log(TestSchema);
 ```

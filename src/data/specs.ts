@@ -18,13 +18,15 @@ export interface BaseSpecs {
   type: SchemaType;
 }
 
-export type BooleanSpecs = BaseSpecs;
-
-export interface StringSpecs extends BaseSpecs {
+export interface ArraySpecs extends BaseSpecs {
   min?: number;
   max?: number;
   length?: number;
 }
+
+export type BooleanSpecs = BaseSpecs;
+
+export type StringSpecs = ArraySpecs;
 
 export interface NumberSpecs extends BaseSpecs {
   min?: number;

@@ -11,7 +11,7 @@ export class ArrayStrategy extends Strategy<List> {
   private element;
   private defaults: constrains.Constrain;
   constructor(
-    specs: dSpecs.BaseSpecs,
+    specs: dSpecs.ArraySpecs,
     schema: AnySchema,
     element: handlers.Field
   ) {
