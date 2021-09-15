@@ -157,7 +157,7 @@ function genAuthority(
   // offset = .(x1)
   const _size = size - 1;
   const userInfo = genUserInfo(
-    options.includeUserInfo && _size > 4,
+    options.includeUserInfo && _size > 3,
     _size,
     defaults.userInfo
   );
