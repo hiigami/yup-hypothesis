@@ -11,5 +11,12 @@
   },
   "plugins": ["@typescript-eslint"],
   "ignorePatterns": ["**/lib/*.{js,ts}", "**/README.md"],
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  }
 }

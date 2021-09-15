@@ -2,7 +2,7 @@ import { randomIntInclusiveMock } from "../../../jest.setup";
 
 import { createTestItem } from "../../utils";
 import { constrains } from "../../../src/data";
-import { characters } from "../../../src/strategies/common";
+import { arrays } from "../../../src/strategies/common";
 
 test.each([
   createTestItem({
@@ -32,7 +32,7 @@ test.each([
 ])(
   "should return valid length $expected with (strict: $strict, length: $specs.length)",
   ({ specs, constrain, strict, expected }) => {
-    const length = characters.getLength(
+    const length = arrays.getLength(
       specs,
       constrain as constrains.Constrain,
       strict
@@ -126,10 +126,7 @@ test.each([
   ({ specs, constrain, randIntVal, toBeCalledWith, expected }) => {
     randomIntInclusiveMock.mockReturnValue(randIntVal as number);
 
-    const length = characters.getLength(
-      specs,
-      constrain as constrains.Constrain
-    );
+    const length = arrays.getLength(specs, constrain as constrains.Constrain);
 
     expect(length).toEqual(expected);
     expect(randomIntInclusiveMock.mock.calls).toEqual([toBeCalledWith]);

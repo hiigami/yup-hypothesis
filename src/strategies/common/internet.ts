@@ -1,4 +1,5 @@
-import { constrains, ReadOnlyArray } from "../../data";
+import { constrains } from "../../data";
+import { ReadOnlyArray } from "../../data/types";
 import { random, randomChoice, randomIntInclusive } from "../../random";
 
 import { URL_SCHEMAS } from "../constant";
@@ -231,7 +232,7 @@ function genSearchParams(
 
 function genFragment(size: number, include: boolean): string {
   if (include) {
-    return "#" + _genSection(size - 1, []);
+    return size === 1 ? "#" : "#" + _genSection(size - 1, []);
   }
   return "";
 }

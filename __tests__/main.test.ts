@@ -4,19 +4,9 @@ jest.unmock("../src/random");
 import * as rnd from "../src/random";
 
 import * as yup from "yup";
-import * as yupObject from "yup/lib/object";
-import * as yupTypes from "yup/lib/types";
 import yh from "../src/main";
 
-async function testXTimes<
-  TShape extends yupObject.ObjectShape,
-  TContext,
-  TIn extends yupTypes.Maybe<yupObject.TypeOfShape<TShape>>,
-  TOut extends yupTypes.Maybe<yupObject.AssertsShape<TShape>>
->(
-  schema: yup.ObjectSchema<TShape, TContext, TIn, TOut>,
-  nTimes = 50
-): Promise<void> {
+async function testXTimes(schema: yup.AnySchema, nTimes = 50): Promise<void> {
   for (let index = 0; index < nTimes; index++) {
     const example = yh.example(schema) as yup.InferType<typeof schema>;
     // const a = await schema.isValid(example);
@@ -181,4 +171,14 @@ test("should render nested objects", async () => {
       .snakeCase(),
   });
   await testXTimes(TestSchema, 200);
+});
+
+test("should render an array", async () => {
+  const SubSchema = yup.array(yup.number().required()).min(2).max(5);
+  const TestSchema = yup.object({
+    email: yup.string().required(),
+    sub: SubSchema,
+  });
+  await testXTimes(TestSchema);
+  await testXTimes(SubSchema);
 });
