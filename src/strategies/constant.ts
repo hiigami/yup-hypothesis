@@ -10,10 +10,11 @@ export const EMAIL_DEFAULTS =
     enumerations.InternetConstrainType.Username
   );
 
-export const FLOAT_DEFAULTS: constrains.FloatConstrain = {
-  ...createConstrain(0, 99999),
-  precision: 4,
-};
+export const FLOAT_DEFAULTS: Readonly<constrains.FloatConstrain> =
+  Object.freeze({
+    ...createConstrain(0, 99999),
+    precision: 4,
+  });
 
 export const NUMBER_DEFAULTS = createConstrain(0, 99999);
 
@@ -25,10 +26,11 @@ export const STRATEGY_DEFAULTS = Object.freeze({
   sign: 0.5,
 });
 
-export const STRING_DEFAULTS: constrains.StringConstrain = {
-  ...createConstrain(0, 255),
-  chars: createConstrain(32, 126),
-};
+export const STRING_DEFAULTS: Readonly<constrains.StringConstrain> =
+  Object.freeze({
+    ...createConstrain(0, 255),
+    chars: createConstrain(32, 126),
+  });
 
 export const URL_DEFAULTS = createInternetConstrain<constrains.URLConstrain>(
   9,

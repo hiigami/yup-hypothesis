@@ -5,21 +5,21 @@ type InternetConstrain = constrains.EmailConstrain | constrains.URLConstrain;
 export function createConstrain(
   min: number,
   max: number
-): constrains.Constrain {
-  return { min, max };
+): Readonly<constrains.Constrain> {
+  return Object.freeze({ min, max });
 }
 
 export function createInternetConstrain<T extends InternetConstrain>(
   min: number,
   max: number,
   key: enumerations.InternetConstrainType
-): T {
-  return {
+): Readonly<T> {
+  return Object.freeze({
     ...createConstrain(min, max),
-    [key]: { max: 64, min: 2 },
-    entity: { max: 186, min: 1 },
-    tld: { max: 16, min: 1 },
-  } as T;
+    [key]: createConstrain(2, 64),
+    entity: createConstrain(1, 186),
+    tld: createConstrain(1, 16),
+  } as T);
 }
 
 export function title(s: string): string {
