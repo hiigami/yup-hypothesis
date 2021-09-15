@@ -1,9 +1,5 @@
 export { ArrayStrategy } from "./array_strategy";
-export {
-  BooleanStrategy,
-  DateStrategy,
-  StrategyConstructor,
-} from "./base_strategies";
+export { BooleanStrategy, DateStrategy } from "./base_strategies";
 export { EmailStrategy } from "./email_strategy";
 export { FloatStrategy, NumberStrategy } from "./number_strategies";
 export { ObjectStrategy } from "./object_strategy";

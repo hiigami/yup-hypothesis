@@ -1,6 +1,6 @@
 import { AnySchema } from "yup";
 
-import { enumerations, specs as dSpecs, strategy as dStrategy } from "../data";
+import { enumerations, specs as dSpecs } from "../data";
 import { randomChoice, randomIntInclusive, random } from "../random";
 
 import { STRATEGY_DEFAULTS } from "./constant";
@@ -10,10 +10,6 @@ type ReturnType<T> = T | null;
 interface Result<T> {
   apply: boolean;
   value: ReturnType<T>;
-}
-
-export interface StrategyConstructor {
-  new (specs: dSpecs.Specs, schema: AnySchema): dStrategy.IStrategy;
 }
 
 function createResult<T>(
