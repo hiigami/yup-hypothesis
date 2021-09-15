@@ -34,8 +34,8 @@ const TestArraySchema = yup.array(TestObjectSchema);
 const arrayExample = yh.example(TestArraySchema) as yup.InferType<typeof TestArraySchema>;
 console.log(arrayExample);
 
-// -- AnySchema --
+// -- string, number, boolean, date --
 const TestSchema = yup.string().required();
-const arrayExample = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
-console.log(TestSchema);
+const anyExample = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
+console.log(anyExample);
 ```
