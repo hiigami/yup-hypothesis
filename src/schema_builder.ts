@@ -5,6 +5,7 @@ import * as specs from "./specs";
 import { TestSearch } from "./test_search";
 
 const mapper = new Map<enumerations.SchemaType, specs.SpecConstructor>([
+  [enumerations.SchemaType.Array, specs.ArraySpec],
   [enumerations.SchemaType.Boolean, specs.BooleanSpec],
   [enumerations.SchemaType.Date, specs.DateSpec],
   [enumerations.SchemaType.Number, specs.NumberSpec],

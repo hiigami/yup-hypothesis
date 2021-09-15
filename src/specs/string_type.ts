@@ -1,6 +1,5 @@
-import { enumerations, specs as dSpecs } from "../data";
-import { Spec } from "./types";
-import * as common from "./common";
+import { enumerations } from "../data";
+import { ArraySpec } from "./array_type";
 
 interface TypeMapper {
   readonly test: enumerations.TestName;
@@ -22,7 +21,7 @@ const typeMapper: TypeMapper[] = [
   },
 ];
 
-export class StringSpec extends Spec {
+export class StringSpec extends ArraySpec {
   protected _getType(): enumerations.SchemaType {
     for (const item of typeMapper) {
       if (this.testSearch.has(item.test)) {
@@ -30,25 +29,5 @@ export class StringSpec extends Spec {
       }
     }
     return enumerations.SchemaType.String;
-  }
-  private _getMin(presence: enumerations.PresenceType): number | undefined {
-    const min = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Min
-    );
-    if (common.minByPresence(presence, min)) {
-      return 1;
-    }
-    return min;
-  }
-  get(): dSpecs.Specs {
-    const specs = this._get();
-    specs.length = this.testSearch.getParameter(
-      enumerations.TestParameter.Length
-    );
-    specs.min = this._getMin(specs.presence);
-    specs.max = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Max
-    );
-    return specs;
   }
 }

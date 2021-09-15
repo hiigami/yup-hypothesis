@@ -3,7 +3,7 @@ import { AnySchema } from "yup";
 import { constrains, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
-import { characters, internet } from "./common";
+import { arrays, internet } from "./common";
 import * as constant from "./constant";
 
 export class EmailStrategy extends Strategy<string> {
@@ -15,7 +15,7 @@ export class EmailStrategy extends Strategy<string> {
   }
 
   protected _draw(): string {
-    const size = characters.getLength(this.specs, this.defaults, true);
+    const size = arrays.getLength(this.specs, this.defaults, true);
     return internet.genEmail(size, this.defaults);
   }
 }

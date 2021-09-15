@@ -1,4 +1,4 @@
-import { ReadOnlyArray } from "./data";
+import { ReadOnlyArray } from "./data/types";
 
 export function random(): number {
   return Math.random();

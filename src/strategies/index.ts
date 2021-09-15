@@ -1,3 +1,4 @@
+export { ArrayStrategy } from "./array_strategy";
 export {
   BooleanStrategy,
   DateStrategy,

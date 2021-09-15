@@ -1,23 +1,12 @@
-import * as yup from "yup";
-import * as yupObject from "yup/lib/object";
-import * as yupTypes from "yup/lib/types";
+import { AnySchema, InferType } from "yup";
+import { Processor } from "./processor";
 
-import { ObjectHandler } from "./handler";
-
-function example<
-  TShape extends yupObject.ObjectShape,
-  TContext,
-  TIn extends yupTypes.Maybe<yupObject.TypeOfShape<TShape>>,
-  TOut extends yupTypes.Maybe<yupObject.AssertsShape<TShape>>
->(
-  schema: yup.ObjectSchema<TShape, TContext, TIn, TOut>
-): yup.InferType<typeof schema> {
-  const handler = new ObjectHandler();
-  if (handler.canHandle(schema.type)) {
-    const strategy = handler.handle(schema);
-    return strategy?.draw() as yup.InferType<typeof schema>;
+function example(schema: AnySchema): InferType<typeof schema> {
+  const strategy = new Processor().run(schema);
+  if (strategy === undefined) {
+    return undefined as InferType<typeof schema>;
   }
-  return undefined as yup.InferType<typeof schema>;
+  return strategy?.draw() as InferType<typeof schema>;
 }
 
 export default { example };

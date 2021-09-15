@@ -10,6 +10,7 @@ export enum PresenceType {
 }
 
 export enum SchemaType {
+  Array = "array",
   Boolean = "boolean",
   Date = "date",
   Email = "email",

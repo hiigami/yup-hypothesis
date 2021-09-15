@@ -3,7 +3,7 @@ import { AnySchema } from "yup";
 import { constrains, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
-import { characters } from "./common";
+import { arrays } from "./common";
 import * as constant from "./constant";
 
 export class StringStrategy extends Strategy<string> {
@@ -14,7 +14,7 @@ export class StringStrategy extends Strategy<string> {
     this.defaults = constant.STRING_DEFAULTS;
   }
   protected _draw(): string {
-    const size = characters.getLength(this.specs, this.defaults);
+    const size = arrays.getLength(this.specs, this.defaults);
     const chars = this.defaults.chars;
     const s = [];
     for (let i = 0; i < size; i++) {

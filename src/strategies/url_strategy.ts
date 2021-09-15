@@ -4,7 +4,7 @@ import { constrains, specs as dSpecs } from "../data";
 import { random } from "../random";
 
 import { Strategy } from "./base_strategies";
-import { characters, internet } from "./common";
+import { arrays, internet } from "./common";
 import * as constant from "./constant";
 
 function getOptionValue(off: boolean): boolean {
@@ -30,7 +30,7 @@ export class URLStrategy extends Strategy<string> {
   }
 
   protected _draw(): string {
-    const size = characters.getLength(this.specs, this.defaults, true);
+    const size = arrays.getLength(this.specs, this.defaults, true);
     return this._gen(size);
   }
 }

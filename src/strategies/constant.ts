@@ -1,6 +1,8 @@
 import { constrains, enumerations } from "../data";
 import { createConstrain, createInternetConstrain } from "../common";
 
+export const ARRAY_DEFAULTS = createConstrain(0, 99);
+
 export const EMAIL_DEFAULTS =
   createInternetConstrain<constrains.EmailConstrain>(
     6,
