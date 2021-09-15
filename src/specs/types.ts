@@ -1,18 +1,18 @@
-import * as yup from "yup";
+import { AnySchema } from "yup";
 
-import { enumerations, specs as dSpecs } from "../data";
+import { enumerations, specs as dSpecs, types } from "../data";
 import { title } from "../common";
 import { ITestSearch } from "../test_search";
 
 export interface SpecConstructor {
-  new (schema: yup.AnySchema, testSearch: ITestSearch): Spec;
+  new (schema: AnySchema, testSearch: ITestSearch): Spec;
 }
 
 export abstract class Spec {
-  protected schema: yup.AnySchema;
+  protected schema: AnySchema;
   protected testSearch: ITestSearch;
 
-  constructor(schema: yup.AnySchema, testSearch: ITestSearch) {
+  constructor(schema: AnySchema, testSearch: ITestSearch) {
     this.schema = schema;
     this.testSearch = testSearch;
   }
@@ -36,7 +36,7 @@ export abstract class Spec {
     }
     return output;
   }
-  private _getMutations(): dSpecs.SpecMutation<yup.AnySchema>[] {
+  private _getMutations(): dSpecs.SpecMutation<AnySchema>[] {
     const mutations = [];
     for (const x in this.schema.transforms) {
       if (this.schema.transforms[x].name !== "coerce") {
@@ -60,28 +60,19 @@ export abstract class Spec {
   abstract get(): dSpecs.Specs;
 }
 
-export class BooleanSpec extends Spec {
-  protected _getType(): enumerations.SchemaType {
-    return enumerations.SchemaType.Boolean;
-  }
-  get(): dSpecs.Specs {
-    return this._get();
-  }
-}
-
 export class DateSpec extends Spec {
   protected _getType(): enumerations.SchemaType {
     return enumerations.SchemaType.Date;
   }
   private _limitFromStringOrDefault(
-    val?: string | number | undefined
-  ): number | undefined {
+    val?: types.Maybe<string | number>
+  ): types.Maybe<number> {
     if (typeof val === "string") {
       return new Date(val).getTime();
     }
     return val;
   }
-  private _getLimit(param: enumerations.TestParameter): number | undefined {
+  private _getLimit(param: enumerations.TestParameter): types.Maybe<number> {
     const val = this.testSearch.getParameter<number | Date>(param);
     if (val instanceof Date) {
       return val.getTime();

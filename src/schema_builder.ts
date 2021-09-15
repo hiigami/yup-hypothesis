@@ -1,35 +1,36 @@
-import * as yup from "yup";
+import { AnySchema } from "yup";
 
-import { enumerations, specs as dSpecs } from "./data";
+import { schemas } from "./data";
+import { SchemaType } from "./data/enumerations";
+import { Specs } from "./data/specs";
+import { Maybe } from "./data/types";
 import * as specs from "./specs";
 import { TestSearch } from "./test_search";
 
-const mapper = new Map<enumerations.SchemaType, specs.SpecConstructor>([
-  [enumerations.SchemaType.Array, specs.ArraySpec],
-  [enumerations.SchemaType.Boolean, specs.BooleanSpec],
-  [enumerations.SchemaType.Date, specs.DateSpec],
-  [enumerations.SchemaType.Number, specs.NumberSpec],
-  [enumerations.SchemaType.Object, specs.ObjectSpec],
-  [enumerations.SchemaType.String, specs.StringSpec],
+const mapper = new Map<SchemaType, specs.SpecConstructor>([
+  [SchemaType.Array, specs.ArraySpec],
+  [SchemaType.Boolean, specs.BooleanSpec],
+  [SchemaType.Date, specs.DateSpec],
+  [SchemaType.Number, specs.NumberSpec],
+  [SchemaType.Object, specs.ObjectSpec],
+  [SchemaType.String, specs.StringSpec],
 ]);
 
-export class SchemaBuilder {
-  private schema: yup.AnySchema;
+export class SchemaBuilder implements schemas.ISchemaBuilder {
+  private schema: AnySchema;
 
-  constructor(schema: yup.AnySchema) {
+  constructor(schema: AnySchema) {
     this.schema = schema;
   }
 
-  private _getInitialType(): enumerations.SchemaType {
+  private _getInitialType(): SchemaType {
     const keyName = `${this.schema.type
       .charAt(0)
       .toUpperCase()}${this.schema.type.slice(1)}`;
-    return enumerations.SchemaType[
-      keyName as keyof typeof enumerations.SchemaType
-    ];
+    return SchemaType[keyName as keyof typeof SchemaType];
   }
 
-  specs(): dSpecs.Specs | undefined {
+  specs(): Maybe<Specs> {
     const type = this._getInitialType();
     const spec = mapper.get(type);
     if (spec === undefined) {

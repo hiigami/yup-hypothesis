@@ -1,8 +1,8 @@
 import { AnySchema } from "yup";
 
-import { enumerations, handlers, strategy } from "../data";
+import { SchemaType } from "../data/enumerations";
+import { Field, Fields, StrategyConstructor } from "../data/strategies";
 import { title } from "../common";
-import { SchemaBuilder } from "../schema_builder";
 import {
   BooleanStrategy,
   DateStrategy,
@@ -14,33 +14,31 @@ import {
   UUIDStrategy,
 } from "../strategies";
 
-const mapper = new Map<enumerations.SchemaType, strategy.StrategyConstructor>([
-  [enumerations.SchemaType.Boolean, BooleanStrategy],
-  [enumerations.SchemaType.Date, DateStrategy],
-  [enumerations.SchemaType.Email, EmailStrategy],
-  [enumerations.SchemaType.Float, FloatStrategy],
-  [enumerations.SchemaType.Number, NumberStrategy],
-  [enumerations.SchemaType.String, StringStrategy],
-  [enumerations.SchemaType.URL, URLStrategy],
-  [enumerations.SchemaType.UUID, UUIDStrategy],
+import { Handler } from "./handler";
+
+const mapper = new Map<SchemaType, StrategyConstructor>([
+  [SchemaType.Boolean, BooleanStrategy],
+  [SchemaType.Date, DateStrategy],
+  [SchemaType.Email, EmailStrategy],
+  [SchemaType.Float, FloatStrategy],
+  [SchemaType.Number, NumberStrategy],
+  [SchemaType.String, StringStrategy],
+  [SchemaType.URL, URLStrategy],
+  [SchemaType.UUID, UUIDStrategy],
 ]);
 
-export class FieldHandler implements handlers.IHandler {
-  getFields(_schema: AnySchema): handlers.Schemas {
-    return undefined;
-  }
+export class FieldHandler extends Handler {
   canHandle(t: string): boolean {
     const key = title(t);
-    const schemaType =
-      enumerations.SchemaType[key as keyof typeof enumerations.SchemaType];
+    const schemaType = SchemaType[key as keyof typeof SchemaType];
     return mapper.has(schemaType);
   }
-  handle(schema: AnySchema, _fields?: handlers.Fields): handlers.Field {
-    const specs = new SchemaBuilder(schema).specs();
+  handle(schema: AnySchema, _fields?: Fields): Field {
+    const specs = this.getSpecs(schema);
     if (specs === undefined) {
       return undefined;
     }
-    const strategy = mapper.get(specs.type) as strategy.StrategyConstructor;
+    const strategy = mapper.get(specs.type) as StrategyConstructor;
     return new strategy(specs, schema);
   }
 }

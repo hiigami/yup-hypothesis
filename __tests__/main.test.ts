@@ -19,6 +19,11 @@ async function testXTimes(schema: yup.AnySchema, nTimes = 50): Promise<void> {
   }
 }
 
+test("should render object", async () => {
+  await testXTimes(yup.object(), 5);
+  await testXTimes(yup.object().required(), 1);
+});
+
 test("should render date", async () => {
   const TestSchema = yup.object({
     date: yup.date(),
@@ -174,10 +179,20 @@ test("should render nested objects", async () => {
 });
 
 test("should render an array", async () => {
+  await testXTimes(yup.array().required(), 1);
+  await testXTimes(yup.array().ensure(), 1);
+  await testXTimes(
+    yup
+      .array(yup.string().min(1).max(1))
+      .oneOf([["a", "b", "c"], ["g", "h"], ["z"]])
+  );
+
   const SubSchema = yup.array(yup.number().required()).min(2).max(5);
   const TestSchema = yup.object({
     email: yup.string().required(),
     sub: SubSchema,
+    sub2: yup.array(yup.date()).notRequired(),
+    sub3: yup.array(yup.boolean()).optional(),
   });
   await testXTimes(TestSchema);
   await testXTimes(SubSchema);

@@ -20,8 +20,8 @@ export class Processor {
     }
     return undefined;
   }
-  private processFields(schemas: AnySchema[]): handlers.Fields {
-    const fields: handlers.Fields = {};
+  private processFields(schemas: AnySchema[]): strategy.Fields {
+    const fields: strategy.Fields = {};
     for (const name in schemas) {
       fields[name] = this.run(schemas[name]);
     }

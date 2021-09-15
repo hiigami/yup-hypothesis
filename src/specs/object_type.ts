@@ -1,11 +1,8 @@
-import { enumerations, specs as dSpecs } from "../data";
-import { Spec } from "./types";
+import { enumerations } from "../data";
+import { BooleanSpec } from "./boolean_type";
 
-export class ObjectSpec extends Spec {
+export class ObjectSpec extends BooleanSpec {
   protected _getType(): enumerations.SchemaType {
     return enumerations.SchemaType.Object;
-  }
-  get(): dSpecs.Specs {
-    return this._get();
   }
 }

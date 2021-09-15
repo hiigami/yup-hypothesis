@@ -1,10 +1,8 @@
 import { AnySchema } from "yup";
 
-import { IStrategy } from "./strategies";
-import { Dict, Maybe } from "./types";
+import { Fields, Field } from "./strategies";
+import { Maybe } from "./types";
 
-export type Field = Maybe<IStrategy>;
-export type Fields = Dict<Field>;
 export type Schemas = Maybe<AnySchema[]>;
 
 export interface IHandler {

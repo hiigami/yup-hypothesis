@@ -1,21 +1,21 @@
 import { AnyObjectSchema } from "yup";
 
-import { enumerations, handlers } from "../data";
-import { SchemaBuilder } from "../schema_builder";
+import { handlers } from "../data";
+import { SchemaType } from "../data/enumerations";
+import { Field, Fields } from "../data/strategies";
 import { ObjectStrategy } from "../strategies";
 
-export class ObjectHandler implements handlers.IHandler {
+import { Handler } from "./handler";
+
+export class ObjectHandler extends Handler {
+  constructor() {
+    super(SchemaType.Object);
+  }
   getFields(schema: AnyObjectSchema): handlers.Schemas {
     return schema.fields;
   }
-  canHandle(t: string): boolean {
-    if (t === enumerations.SchemaType.Object.toString()) {
-      return true;
-    }
-    return false;
-  }
-  handle(schema: AnyObjectSchema, fields?: handlers.Fields): handlers.Field {
-    const specs = new SchemaBuilder(schema).specs();
+  handle(schema: AnyObjectSchema, fields?: Fields): Field {
+    const specs = this.getSpecs(schema);
     if (specs === undefined) {
       return undefined;
     }

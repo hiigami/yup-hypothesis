@@ -1,24 +1,24 @@
 import { ArraySchema } from "yup";
 
-import { enumerations, handlers } from "../data";
-import { SchemaBuilder } from "../schema_builder";
+import { handlers } from "../data";
+import { SchemaType } from "../data/enumerations";
+import { Field, Fields } from "../data/strategies";
 import { ArrayStrategy } from "../strategies";
+
+import { Handler } from "./handler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ArraySchemaAny = ArraySchema<any, any, any, any>;
 
-export class ArrayHandler implements handlers.IHandler {
+export class ArrayHandler extends Handler {
+  constructor() {
+    super(SchemaType.Array);
+  }
   getFields(schema: ArraySchemaAny): handlers.Schemas {
     return schema.innerType === undefined ? undefined : [schema.innerType];
   }
-  canHandle(t: string): boolean {
-    if (t === enumerations.SchemaType.Array.toString()) {
-      return true;
-    }
-    return false;
-  }
-  handle(schema: ArraySchemaAny, fields?: handlers.Fields): handlers.Field {
-    const specs = new SchemaBuilder(schema).specs();
+  handle(schema: ArraySchemaAny, fields?: Fields): Field {
+    const specs = this.getSpecs(schema);
     if (specs === undefined) {
       return undefined;
     }

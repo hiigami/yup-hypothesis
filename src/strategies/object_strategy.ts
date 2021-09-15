@@ -1,5 +1,5 @@
 import { AnySchema } from "yup";
-import { handlers, specs as dSpecs, types } from "../data";
+import { strategy, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
 
@@ -10,7 +10,7 @@ export class ObjectStrategy extends Strategy<Dict> {
   constructor(
     specs: dSpecs.BaseSpecs,
     schema: AnySchema,
-    fields: types.Maybe<handlers.Fields>
+    fields?: strategy.Fields
   ) {
     super(specs, schema);
     this.fields = fields;

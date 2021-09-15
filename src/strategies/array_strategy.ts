@@ -1,5 +1,5 @@
 import { AnySchema } from "yup";
-import { constrains, handlers, specs as dSpecs } from "../data";
+import { constrains, strategy, specs as dSpecs } from "../data";
 
 import { Strategy } from "./base_strategies";
 import { arrays } from "./common";
@@ -13,7 +13,7 @@ export class ArrayStrategy extends Strategy<List> {
   constructor(
     specs: dSpecs.ArraySpecs,
     schema: AnySchema,
-    element: handlers.Field
+    element: strategy.Field
   ) {
     super(specs, schema);
     this.element = element;
