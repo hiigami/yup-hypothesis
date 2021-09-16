@@ -38,4 +38,4 @@ export const URL_DEFAULTS = createInternetConstrain<constrains.URLConstrain>(
   enumerations.InternetConstrainType.UserInfo
 );
 
-export const URL_SCHEMAS = Object.freeze(["http", "https", "ftp"]);
+export const URL_SCHEMAS = Object.freeze(["ftp", "http", "https"]);

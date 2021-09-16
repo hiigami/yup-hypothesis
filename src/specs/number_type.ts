@@ -1,80 +1,65 @@
-import { enumerations, specs as dSpecs } from "../data";
+import {
+  SchemaType,
+  Sign,
+  TestParameter,
+  TestName,
+} from "../data/enumerations";
+import { LimitOption, Specs } from "../data/specs";
+import { Maybe } from "../data/types";
 import { Spec } from "./types";
-import * as common from "./common";
+import * as digits from "./utils/digits";
 
-function signHelper(
-  use: string,
-  max?: number,
-  min?: number
-): number | undefined {
-  if (use === "min") {
-    return min;
-  }
-  return max;
-}
+const limitOptionsMapper = {
+  min: [
+    digits.createLimitOption(TestParameter.Min),
+    digits.createLimitOption(TestParameter.More, +1, TestName.Min),
+  ],
+  max: [
+    digits.createLimitOption(TestParameter.Max),
+    digits.createLimitOption(TestParameter.Less, -1, TestName.Max),
+  ],
+};
 
-interface SignMapper {
-  readonly with: string;
-  readonly test: enumerations.TestName;
-  readonly param: enumerations.TestParameter;
-  readonly sign: enumerations.Sign;
-  fn: (num?: number) => boolean;
-}
-
-const signMapper: SignMapper[] = [
-  {
-    with: "min",
-    test: enumerations.TestName.Min,
-    param: enumerations.TestParameter.More,
-    sign: enumerations.Sign.Positive,
-    fn: common.isPositiveByMin,
-  },
-  {
-    with: "max",
-    test: enumerations.TestName.Max,
-    param: enumerations.TestParameter.Less,
-    sign: enumerations.Sign.Negative,
-    fn: common.isNegativeByMax,
-  },
+const signMapper = [
+  digits.createSingMapper("min", Sign.Positive, digits.isPositiveByMin),
+  digits.createSingMapper("max", Sign.Negative, digits.isNegativeByMax),
 ];
 
 export class NumberSpec extends Spec {
-  protected _getType(): enumerations.SchemaType {
-    const isInteger = this.testSearch.has(enumerations.TestName.Integer);
+  protected _getType(): SchemaType {
+    const isInteger = this.testSearch.has(TestName.Integer);
     if (isInteger) {
-      return enumerations.SchemaType.Number;
+      return SchemaType.Number;
     }
-    return enumerations.SchemaType.Float;
+    return SchemaType.Float;
   }
-  private _checkSign(
-    valueFlag: boolean,
-    param: enumerations.TestParameter,
-    test: enumerations.TestName
-  ): boolean {
-    const exists = this.testSearch.getParameter(param, test);
-    if (exists !== undefined || valueFlag) {
-      return true;
-    }
-    return false;
-  }
-  protected _getSign(max?: number, min?: number): enumerations.Sign {
+  protected _getSign(max?: number, min?: number): Sign {
     for (const item of signMapper) {
-      const val = signHelper(item.with, max, min);
+      const val = digits.signHelper(item.with, max, min);
       const flag = item.fn(val);
-      if (this._checkSign(flag, item.param, item.test)) {
+      if (flag) {
         return item.sign;
       }
     }
-    return enumerations.Sign.Indifferent;
+    return Sign.Indifferent;
   }
-  get(): dSpecs.Specs {
+  private _getLimit(options: LimitOption[], type: SchemaType): Maybe<number> {
+    for (const option of options) {
+      const val = this.testSearch.getParameter<number>(
+        option.param,
+        option.test
+      );
+      if (val !== undefined) {
+        const _offset = digits.getCorrectOffset(option.offset, type);
+        return val + _offset;
+      }
+    }
+    return undefined;
+  }
+  get(): Specs {
     const specs = this._get();
-    specs.min = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Min
-    );
-    specs.max = this.testSearch.getParameter<number>(
-      enumerations.TestParameter.Max
-    );
+    specs.min = this._getLimit(limitOptionsMapper.min, specs.type);
+    specs.max = this._getLimit(limitOptionsMapper.max, specs.type);
     specs.sign = this._getSign(specs.max, specs.min);
     return specs;
   }

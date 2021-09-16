@@ -1,5 +1,5 @@
 import { enumerations, specs as dSpecs } from "../data";
-import * as common from "./common";
+import { minByPresence } from "./utils/common";
 import { Spec } from "./types";
 
 export class ArraySpec extends Spec {
@@ -10,7 +10,7 @@ export class ArraySpec extends Spec {
     const min = this.testSearch.getParameter<number>(
       enumerations.TestParameter.Min
     );
-    if (common.minByPresence(presence, min)) {
+    if (minByPresence(presence, min)) {
       return 1;
     }
     return min;

@@ -82,6 +82,7 @@ test("should render float", async () => {
     float_def_null: yup.number().nullable().defined(),
     float_default: yup.number().default(0.0001),
     float_min_max: yup.number().min(34.0002).max(34.01),
+    float_more_less: yup.number().moreThan(1.0002).lessThan(1.2),
     float_neg: yup.number().negative(),
     float_not_req: yup.number().notRequired(),
     float_one_of: yup.number().oneOf([0.002, 23.5, 1000]),
@@ -100,6 +101,7 @@ test("should render integer", async () => {
     int_def_null: yup.number().integer().nullable().defined(),
     int_default: yup.number().integer().default(1),
     int_min_max: yup.number().integer().min(17).max(25),
+    int_more_less: yup.number().moreThan(1).lessThan(3),
     int_neg: yup.number().integer().negative(),
     int_not_req: yup.number().integer().notRequired(),
     int_one_of: yup.number().integer().oneOf([1, 2, 3]),
@@ -196,4 +198,5 @@ test("should render an array", async () => {
   });
   await testXTimes(TestSchema);
   await testXTimes(SubSchema);
+  await testXTimes(yup.array().of(TestSchema));
 });

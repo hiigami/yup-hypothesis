@@ -14,16 +14,21 @@ export function getSign(sign?: enumerations.Sign): number {
   return sign === enumerations.Sign.Positive ? 1 : -1;
 }
 
-function minOrNegative(min: number, sign: Sign): number {
+function minOrNegative(min: number, defaultVal: number, sign: Sign): number {
   if (min >= 0 && sign === Sign.Negative) {
-    return -1;
+    return defaultVal;
   }
   return min;
 }
 
-export function getMinBasedOnSign(min: number, sign: Sign): number {
+export function getLimitBasedOnSign(
+  min: number,
+  defaultPositive: number,
+  defaultNegative: number,
+  sign: Sign
+): number {
   if (min <= 0 && sign === Sign.Positive) {
-    return 1;
+    return defaultPositive;
   }
-  return minOrNegative(min, sign);
+  return minOrNegative(min, defaultNegative, sign);
 }

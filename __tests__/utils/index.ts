@@ -1,5 +1,7 @@
+import { AnySchema } from "yup";
 import { enumerations } from "../../src/data";
 import { createConstrain } from "../../src/common";
+import { StrategyConstructor } from "../../src/data/strategies";
 
 export function addDecimals(n: number, precision: number): number {
   let zeros: number[] = [];
@@ -47,13 +49,18 @@ export function randIntIncMaxEqDefaultAndMinEq0Is1OrMax(maxDefault: number) {
 }
 
 const createSpecs = (args?: {
+  type?: enumerations.SchemaType;
+  presence?: enumerations.PresenceType;
+  sign?: enumerations.Sign;
+  nullable?: boolean;
   min?: number;
   max?: number;
   length?: number;
 }) => ({
-  type: enumerations.SchemaType.String,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
+  type: args?.type || enumerations.SchemaType.String,
+  nullable: args?.nullable || false,
+  presence: args?.presence || enumerations.PresenceType.Required,
+  sign: args?.sign,
   min: args?.min,
   max: args?.max,
   length: args?.length,
@@ -61,24 +68,39 @@ const createSpecs = (args?: {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createTestItem = (args: {
+  name?: string;
   constrain?: {
     min: number;
     max: number;
   };
   specs?: {
-    min?: number;
-    max?: number;
+    nullable?: boolean;
     length?: number;
+    max?: number;
+    min?: number;
+    presence?: enumerations.PresenceType;
+    sign?: enumerations.Sign;
+    type?: enumerations.SchemaType;
   };
   expected: unknown;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  check?: Function;
+  schema?: AnySchema;
+  strategy?: StrategyConstructor;
   strict?: boolean;
   randIntVal?: number;
+  randVal?: number;
   toBeCalledWith?: unknown[];
 }) => ({
   specs: createSpecs(args.specs),
   randIntVal: args.randIntVal,
+  randVal: args.randVal,
   toBeCalledWith: args.toBeCalledWith,
   strict: args.strict,
+  schema: args.schema,
+  strategy: args.strategy,
+  name: args.name,
+  check: args.check,
   constrain:
     args.constrain === undefined
       ? undefined

@@ -1,6 +1,12 @@
 import { AnySchema } from "yup";
 
-import { PresenceType, SchemaType, Sign } from "./enumerations";
+import {
+  PresenceType,
+  SchemaType,
+  Sign,
+  TestParameter,
+  TestName,
+} from "./enumerations";
 
 export interface SpecMutation<T> {
   (this: T, value: unknown, originalValue: unknown, schema: T): unknown;
@@ -49,3 +55,17 @@ export interface Specs
     StringSpecs,
     FloatSpecs,
     DateSpecs {}
+
+export type SignFN = (num?: number) => boolean;
+
+export interface SignMapper {
+  readonly with: string;
+  readonly sign: Sign;
+  fn: SignFN;
+}
+
+export interface LimitOption {
+  readonly param: TestParameter;
+  readonly test?: TestName;
+  readonly offset: number;
+}

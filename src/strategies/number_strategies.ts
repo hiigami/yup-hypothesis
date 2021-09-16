@@ -16,11 +16,19 @@ export class NumberStrategy extends Strategy<number> {
 
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign);
-    const min = digits.getMinBasedOnSign(
+    const min = digits.getLimitBasedOnSign(
       this.specs.min || this.defaults.min,
+      1,
+      -this.defaults.max,
       sign
     );
-    return sign * this._random(this.specs.max || this.defaults.max, min);
+    const max = digits.getLimitBasedOnSign(
+      this.specs.max || this.defaults.max,
+      this.defaults.max,
+      -1,
+      sign
+    );
+    return this._random(max, min);
   }
 }
 
@@ -36,13 +44,22 @@ export class FloatStrategy extends Strategy<number> {
     const sign = digits.getSign(this.specs.sign);
     const precision = this.specs.precision || this.defaults.precision;
     const byNum = Math.pow(10, precision);
-    const _min = digits.getMinBasedOnSign(
-      this.specs.min || this.defaults.min,
-      sign
-    );
-    const min = _min * byNum;
-    const max = (this.specs.max || this.defaults.max) * byNum;
-    const num = this._random(max, min);
-    return sign * +(num / byNum).toFixed(precision);
+    const defaultPositive = 1 / byNum;
+    const _min =
+      digits.getLimitBasedOnSign(
+        this.specs.min || this.defaults.min,
+        defaultPositive,
+        -this.defaults.max,
+        sign
+      ) * byNum;
+    const max =
+      digits.getLimitBasedOnSign(
+        this.specs.max || this.defaults.max,
+        this.defaults.max,
+        -defaultPositive,
+        sign
+      ) * byNum;
+    const num = this._random(max, _min);
+    return +(num / byNum).toFixed(precision);
   }
 }
