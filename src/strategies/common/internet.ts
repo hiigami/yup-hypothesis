@@ -196,9 +196,11 @@ function genPath(size: number, include: boolean, strict: boolean): string {
 
 function getRandomSchema(size: number): string {
   if (size === 9) {
-    return "ftp";
+    return URL_SCHEMAS[0];
   }
-  return randomChoice(URL_SCHEMAS);
+  return size === 10
+    ? randomChoice(URL_SCHEMAS.slice(0, 2))
+    : randomChoice(URL_SCHEMAS);
 }
 
 function _genSearchParams(size: number): string {
