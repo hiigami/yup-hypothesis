@@ -1,7 +1,25 @@
-import { AnySchema } from "yup";
+import { AnySchema, InferType } from "yup";
+
+import yh from "../../src/main";
 import { enumerations } from "../../src/data";
 import { createConstrain } from "../../src/common";
 import { StrategyConstructor } from "../../src/data/strategies";
+
+export async function testXTimes(
+  schema: AnySchema,
+  nTimes = 50
+): Promise<void> {
+  for (let index = 0; index < nTimes; index++) {
+    const example = yh.example(schema) as InferType<typeof schema>;
+    // const a = await schema.isValid(example);
+    // if (!a) {
+    //   console.log(example);
+    //   const r = await schema.validate(example);
+    //   console.log(r);
+    // }
+    await expect(schema.isValid(example)).resolves.toBeTruthy();
+  }
+}
 
 export function addDecimals(n: number, precision: number): number {
   let zeros: number[] = [];
