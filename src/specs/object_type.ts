@@ -1,8 +1,16 @@
-import { enumerations } from "../data";
-import { BooleanSpec } from "./boolean_type";
+import { ObjectSchemaSpec } from "yup/lib/object";
 
-export class ObjectSpec extends BooleanSpec {
-  protected _getType(): enumerations.SchemaType {
-    return enumerations.SchemaType.Object;
+import { SchemaType } from "../data/enumerations";
+import { Specs } from "../data/specs";
+import { Spec } from "./types";
+
+export class ObjectSpec extends Spec {
+  protected _getType(): SchemaType {
+    return SchemaType.Object;
+  }
+  get(): Specs {
+    const specs = this._get();
+    specs.noUnknown = (this.schema.spec as ObjectSchemaSpec).noUnknown;
+    return specs;
   }
 }

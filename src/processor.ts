@@ -23,7 +23,9 @@ export class Processor {
   private processFields(schemas: AnySchema[]): strategy.Fields {
     const fields: strategy.Fields = {};
     for (const name in schemas) {
-      fields[name] = this.run(schemas[name]);
+      if (schemas[name].spec.strip !== true) {
+        fields[name] = this.run(schemas[name]);
+      }
     }
     return fields;
   }

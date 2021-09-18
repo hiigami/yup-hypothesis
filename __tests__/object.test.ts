@@ -67,6 +67,7 @@ test("should render nested objects", async () => {
         strSub4: yup.string(),
       })
       .snakeCase(),
+    strip: yup.string().strip(),
   });
   await testXTimes(TestSchema, 200);
 });
