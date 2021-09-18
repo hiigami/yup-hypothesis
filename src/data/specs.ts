@@ -30,13 +30,16 @@ export interface ArraySpecs extends BaseSpecs {
   length?: number;
 }
 
-export type BooleanSpecs = BaseSpecs;
-
-export type StringSpecs = ArraySpecs;
-
-export interface NumberSpecs extends BaseSpecs {
+export interface DateSpecs extends BaseSpecs {
   min?: number;
   max?: number;
+}
+
+export interface ObjectSpecs extends BaseSpecs {
+  noUnknown?: boolean;
+}
+
+export interface NumberSpecs extends DateSpecs {
   sign?: Sign;
 }
 
@@ -44,17 +47,9 @@ export interface FloatSpecs extends NumberSpecs {
   precision?: number;
 }
 
-export interface DateSpecs extends BaseSpecs {
-  min?: number;
-  max?: number;
-}
+export type StringSpecs = ArraySpecs;
 
-export interface Specs
-  extends BaseSpecs,
-    BooleanSpecs,
-    StringSpecs,
-    FloatSpecs,
-    DateSpecs {}
+export interface Specs extends BaseSpecs, ArraySpecs, FloatSpecs, ObjectSpecs {}
 
 export type SignFN = (num?: number) => boolean;
 

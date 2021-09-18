@@ -4,6 +4,7 @@ import { schemas } from "./data";
 import { SchemaType } from "./data/enumerations";
 import { Specs } from "./data/specs";
 import { Maybe } from "./data/types";
+import { title } from "./common";
 import * as specs from "./specs";
 import { TestSearch } from "./test_search";
 
@@ -24,9 +25,7 @@ export class SchemaBuilder implements schemas.ISchemaBuilder {
   }
 
   private _getInitialType(): SchemaType {
-    const keyName = `${this.schema.type
-      .charAt(0)
-      .toUpperCase()}${this.schema.type.slice(1)}`;
+    const keyName = title(this.schema.type);
     return SchemaType[keyName as keyof typeof SchemaType];
   }
 

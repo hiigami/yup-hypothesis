@@ -96,7 +96,7 @@ export abstract class Strategy<T> {
 }
 
 export class BooleanStrategy extends Strategy<boolean> {
-  constructor(specs: dSpecs.BooleanSpecs, schema: AnySchema) {
+  constructor(specs: dSpecs.BaseSpecs, schema: AnySchema) {
     super(specs, schema);
   }
   protected _draw(): boolean {

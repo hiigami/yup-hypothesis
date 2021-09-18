@@ -1,15 +1,16 @@
 import { AnySchema } from "yup";
 
-import { constrains, specs as dSpecs } from "../data";
+import { StringConstrain } from "../data/constrains";
+import { StringSpecs } from "../data/specs";
 
 import { Strategy } from "./base_strategies";
 import { arrays } from "./common";
 import * as constant from "./constant";
 
 export class StringStrategy extends Strategy<string> {
-  private defaults: constrains.StringConstrain;
+  private defaults: StringConstrain;
 
-  constructor(specs: dSpecs.StringSpecs, schema: AnySchema) {
+  constructor(specs: StringSpecs, schema: AnySchema) {
     super(specs, schema);
     this.defaults = constant.STRING_DEFAULTS;
   }

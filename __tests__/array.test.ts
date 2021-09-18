@@ -14,19 +14,15 @@ test("should render an array", async () => {
       .array(yup.string().min(1).max(1))
       .oneOf([["a", "b", "c"], ["g", "h"], ["z"]])
   );
-
-  const SubSchema = yup.array(yup.number().required()).min(2).max(5);
   const TestSchema = yup.object({
     compact: yup
       .array(yup.string().nullable().oneOf(["", "1", "0", "4", null]))
       .compact(),
-    email: yup.string().required(),
-    sub: SubSchema,
+    str: yup.string().required(),
+    sub: yup.array().of(yup.number().required()).min(2).max(5),
     sub2: yup.array(yup.date()).notRequired(),
     sub3: yup.array(yup.boolean()).optional(),
     sub4: yup.array(yup.boolean()).defined(),
   });
-  await testXTimes(TestSchema);
-  await testXTimes(SubSchema);
   await testXTimes(yup.array().of(TestSchema));
 });

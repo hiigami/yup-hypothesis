@@ -1,6 +1,13 @@
 import { AnySchema } from "yup";
 
-import { enumerations, specs as dSpecs, types } from "../data";
+import { Specs, SpecMutation } from "../data/specs";
+import {
+  PresenceType,
+  SchemaType,
+  TestParameter,
+  TestName,
+} from "../data/enumerations";
+import { Maybe } from "../data/types";
 import { title } from "../common";
 import { ITestSearch } from "../test_search";
 
@@ -16,16 +23,14 @@ export abstract class Spec {
     this.schema = schema;
     this.testSearch = testSearch;
   }
-  private _getPresence(): enumerations.PresenceType {
+  private _getPresence(): PresenceType {
     const keyName = title(this.schema.spec.presence);
-    if (this.testSearch.has(enumerations.TestName.Defined)) {
-      return enumerations.PresenceType.Defined;
+    if (this.testSearch.has(TestName.Defined)) {
+      return PresenceType.Defined;
     }
-    return enumerations.PresenceType[
-      keyName as keyof typeof enumerations.PresenceType
-    ];
+    return PresenceType[keyName as keyof typeof PresenceType];
   }
-  protected abstract _getType(): enumerations.SchemaType;
+  protected abstract _getType(): SchemaType;
   protected _getChoices(exclude: Set<unknown>): unknown[] {
     const choices = this.schema.describe().oneOf;
     const output = [];
@@ -36,7 +41,7 @@ export abstract class Spec {
     }
     return output;
   }
-  private _getMutations(): dSpecs.SpecMutation<AnySchema>[] {
+  private _getMutations(): SpecMutation<AnySchema>[] {
     const mutations = [];
     for (const x in this.schema.transforms) {
       if (this.schema.transforms[x].name !== "coerce") {
@@ -45,7 +50,7 @@ export abstract class Spec {
     }
     return mutations;
   }
-  protected _get(): dSpecs.Specs {
+  protected _get(): Specs {
     const exclude = new Set(this.schema.describe().notOneOf);
     return {
       choices: this._getChoices(exclude),
@@ -57,32 +62,30 @@ export abstract class Spec {
       type: this._getType(),
     };
   }
-  abstract get(): dSpecs.Specs;
+  abstract get(): Specs;
 }
 
 export class DateSpec extends Spec {
-  protected _getType(): enumerations.SchemaType {
-    return enumerations.SchemaType.Date;
+  protected _getType(): SchemaType {
+    return SchemaType.Date;
   }
-  private _limitFromStringOrDefault(
-    val?: types.Maybe<string | number>
-  ): types.Maybe<number> {
+  private _limitFromStringOrDefault(val?: string | number): Maybe<number> {
     if (typeof val === "string") {
       return new Date(val).getTime();
     }
     return val;
   }
-  private _getLimit(param: enumerations.TestParameter): types.Maybe<number> {
+  private _getLimit(param: TestParameter): Maybe<number> {
     const val = this.testSearch.getParameter<number | Date>(param);
     if (val instanceof Date) {
       return val.getTime();
     }
     return this._limitFromStringOrDefault(val);
   }
-  get(): dSpecs.Specs {
+  get(): Specs {
     const specs = this._get();
-    specs.min = this._getLimit(enumerations.TestParameter.Min);
-    specs.max = this._getLimit(enumerations.TestParameter.Max);
+    specs.min = this._getLimit(TestParameter.Min);
+    specs.max = this._getLimit(TestParameter.Max);
     return specs;
   }
 }

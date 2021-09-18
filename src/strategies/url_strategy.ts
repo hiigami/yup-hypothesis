@@ -1,6 +1,7 @@
 import { AnySchema } from "yup";
 
-import { constrains, specs as dSpecs } from "../data";
+import { URLConstrain } from "../data/constrains";
+import { StringSpecs } from "../data/specs";
 import { random } from "../random";
 
 import { Strategy } from "./base_strategies";
@@ -12,9 +13,9 @@ function getOptionValue(off: boolean): boolean {
 }
 
 export class URLStrategy extends Strategy<string> {
-  private defaults: constrains.URLConstrain;
+  private defaults: URLConstrain;
 
-  constructor(specs: dSpecs.StringSpecs, schema: AnySchema) {
+  constructor(specs: StringSpecs, schema: AnySchema) {
     super(specs, schema);
     this.defaults = constant.URL_DEFAULTS;
   }
