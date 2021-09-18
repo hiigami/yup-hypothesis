@@ -69,14 +69,15 @@ export abstract class Strategy<T> {
     return this._draw();
   }
   private _applyMutations(value: ReturnType<T>): ReturnType<T> {
-    // ??? what if null
+    // ???: what if null
     if (this.specs.mutations === undefined || value === null) {
       return value;
     }
+    let mutated = value;
     for (const fn of this.specs.mutations) {
-      value = fn.call(this.schema, value, value, this.schema) as T;
+      mutated = fn.call(this.schema, mutated, value, this.schema) as T;
     }
-    return value;
+    return mutated;
   }
   isDefined(): boolean {
     if (this.specs.presence === enumerations.PresenceType.Optional) {
