@@ -22,17 +22,25 @@ test.each([
   expect(val.length).toEqual(size);
 });
 
-const createUrlOptions = () => ({
-  includeUserInfo: Math.random() > 0.5,
-  includePath: Math.random() > 0.5,
-  includeQuery: Math.random() > 0.5,
-  includeFragment: Math.random() > 0.5,
-});
+const createUrlOptions = (size: number) => {
+  return {
+    includeUserInfo: size < 12 ? false : Math.random() > 0.5,
+    includePath: Math.random() > 0.5,
+    includeQuery: Math.random() > 0.5,
+    includeFragment: Math.random() > 0.5,
+  };
+};
 
-const randURL = () => ({
-  size: rnd.randomIntInclusive(URL_DEFAULTS.max - 1, URL_DEFAULTS.min + 1),
-  options: createUrlOptions(),
-});
+const randURL = () => {
+  const size = rnd.randomIntInclusive(
+    URL_DEFAULTS.max - 1,
+    URL_DEFAULTS.min + 1
+  );
+  return {
+    size,
+    options: createUrlOptions(size),
+  };
+};
 
 test.each([
   {
@@ -44,7 +52,7 @@ test.each([
       includeFragment: false,
     },
   },
-  { size: URL_DEFAULTS.max, options: createUrlOptions() },
+  { size: URL_DEFAULTS.max, options: createUrlOptions(URL_DEFAULTS.max) },
   randURL(),
   randURL(),
   randURL(),

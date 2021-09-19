@@ -23,7 +23,7 @@ export class URLStrategy extends Strategy<string> {
   private _gen(size: number): string {
     const isMinSize = size === this.defaults.min;
     return internet.genUrl(size, this.defaults, {
-      includeUserInfo: getOptionValue(isMinSize),
+      includeUserInfo: size < 12 ? false : getOptionValue(isMinSize),
       includePath: getOptionValue(isMinSize),
       includeQuery: getOptionValue(isMinSize),
       includeFragment: getOptionValue(isMinSize),
