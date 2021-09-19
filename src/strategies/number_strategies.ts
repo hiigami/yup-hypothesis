@@ -1,30 +1,26 @@
 import { AnySchema } from "yup";
 
-import { constrains, specs as dSpecs } from "../data";
+import { FloatSpecs, NumberSpecs } from "../data/specs";
 
 import { Strategy } from "./base_strategies";
 import { digits } from "./common";
-import * as constant from "./constant";
+import { FLOAT_DEFAULTS, NUMBER_DEFAULTS } from "./constant";
 
 export class NumberStrategy extends Strategy<number> {
-  private defaults: constrains.Constrain;
-
-  constructor(specs: dSpecs.NumberSpecs, schema: AnySchema) {
+  constructor(specs: NumberSpecs, schema: AnySchema) {
     super(specs, schema);
-    this.defaults = constant.NUMBER_DEFAULTS;
   }
-
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign);
     const min = digits.getLimitBasedOnSign(
-      this.specs.min || this.defaults.min,
+      this.specs.min || NUMBER_DEFAULTS.min,
       1,
-      -this.defaults.max,
+      -NUMBER_DEFAULTS.max,
       sign
     );
     const max = digits.getLimitBasedOnSign(
-      this.specs.max || this.defaults.max,
-      this.defaults.max,
+      this.specs.max || NUMBER_DEFAULTS.max,
+      NUMBER_DEFAULTS.max,
       -1,
       sign
     );
@@ -33,29 +29,25 @@ export class NumberStrategy extends Strategy<number> {
 }
 
 export class FloatStrategy extends Strategy<number> {
-  private defaults: constrains.FloatConstrain;
-
-  constructor(specs: dSpecs.FloatSpecs, schema: AnySchema) {
+  constructor(specs: FloatSpecs, schema: AnySchema) {
     super(specs, schema);
-    this.defaults = constant.FLOAT_DEFAULTS;
   }
-
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign);
-    const precision = this.specs.precision || this.defaults.precision;
+    const precision = this.specs.precision || FLOAT_DEFAULTS.precision;
     const byNum = Math.pow(10, precision);
     const defaultPositive = 1 / byNum;
     const _min =
       digits.getLimitBasedOnSign(
-        this.specs.min || this.defaults.min,
+        this.specs.min || FLOAT_DEFAULTS.min,
         defaultPositive,
-        -this.defaults.max,
+        -FLOAT_DEFAULTS.max,
         sign
       ) * byNum;
     const max =
       digits.getLimitBasedOnSign(
-        this.specs.max || this.defaults.max,
-        this.defaults.max,
+        this.specs.max || FLOAT_DEFAULTS.max,
+        FLOAT_DEFAULTS.max,
         -defaultPositive,
         sign
       ) * byNum;

@@ -47,8 +47,6 @@ export interface FloatSpecs extends NumberSpecs {
   precision?: number;
 }
 
-export type StringSpecs = ArraySpecs;
-
 export interface Specs extends BaseSpecs, ArraySpecs, FloatSpecs, ObjectSpecs {}
 
 export type SignFN = (num?: number) => boolean;

@@ -1,5 +1,7 @@
 import { AnySchema } from "yup";
-import { constrains, strategy, specs as dSpecs } from "../data";
+
+import { ArraySpecs } from "../data/specs";
+import { Field } from "../data/strategies";
 
 import { Strategy } from "./base_strategies";
 import { arrays } from "./common";
@@ -9,20 +11,14 @@ type List = unknown[];
 
 export class ArrayStrategy extends Strategy<List> {
   private element;
-  private defaults: constrains.Constrain;
-  constructor(
-    specs: dSpecs.ArraySpecs,
-    schema: AnySchema,
-    element: strategy.Field
-  ) {
+  constructor(specs: ArraySpecs, schema: AnySchema, element: Field) {
     super(specs, schema);
     this.element = element;
-    this.defaults = ARRAY_DEFAULTS;
   }
   protected _draw(): List {
     const items: List = [];
     if (this.element !== undefined) {
-      const size = arrays.getLength(this.specs, this.defaults);
+      const size = arrays.getLength(this.specs, ARRAY_DEFAULTS);
       for (let i = 0; i < size; i++) {
         items.push(this.element.draw());
       }

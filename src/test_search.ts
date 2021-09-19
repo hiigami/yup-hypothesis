@@ -1,5 +1,6 @@
 import { Test } from "yup/lib/util/createValidation";
-import { enumerations } from "./data";
+
+import { TestParameter, TestName } from "./data/enumerations";
 import { Maybe } from "./data/types";
 
 type ExtraParams = Record<string, unknown>;
@@ -7,10 +8,7 @@ type Mapper = Map<string, Map<string, unknown>>;
 
 export interface ITestSearch {
   has(name: string): boolean;
-  getParameter<T>(
-    name: enumerations.TestParameter,
-    testName?: enumerations.TestName
-  ): Maybe<T>;
+  getParameter<T>(name: TestParameter, testName?: TestName): Maybe<T>;
 }
 
 export class TestSearch {
@@ -42,10 +40,7 @@ export class TestSearch {
   has(name: string): boolean {
     return this.mapper.has(name);
   }
-  getParameter<T>(
-    name: enumerations.TestParameter,
-    testName?: enumerations.TestName
-  ): Maybe<T> {
+  getParameter<T>(name: TestParameter, testName?: TestName): Maybe<T> {
     const params = this.mapper.get(testName ?? name);
     if (params === undefined) {
       return undefined;
