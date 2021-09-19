@@ -24,18 +24,18 @@ import yh from "yup-hypothesis";
 
 // -- Objects --
 const TestObjectSchema = yup.object({
-    bool: yup.boolean().required(),
+  bool: yup.boolean().required(),
 });
-const objExample = yh.example(TestObjectSchema) as yup.InferType<typeof TestObjectSchema>;
+const objExample = yh.example(TestObjectSchema);
 console.log(objExample);
 
 // -- Arrays --
 const TestArraySchema = yup.array(TestObjectSchema);
-const arrayExample = yh.example(TestArraySchema) as yup.InferType<typeof TestArraySchema>;
+const arrayExample = yh.example(TestArraySchema);
 console.log(arrayExample);
 
 // -- string, number, boolean, date --
 const TestSchema = yup.string().required();
-const anyExample = yh.example(TestSchema) as yup.InferType<typeof TestSchema>;
+const anyExample = yh.example(TestSchema);
 console.log(anyExample);
 ```
