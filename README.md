@@ -5,6 +5,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/9290db12ea8831e07c89/maintainability)](https://codeclimate.com/github/hiigami/yup-hypothesis/maintainability)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
 
+Create random data from a Yup schema.
+You can use the project's [roadmap](https://github.com/hiigami/yup-hypothesis/wiki/Roadmap#legends) to see the current supported features.
+
 ## Install
 
 ```bash
@@ -38,4 +41,10 @@ console.log(arrayExample);
 const TestSchema = yup.string().required();
 const anyExample = yh.example(TestSchema);
 console.log(anyExample);
+```
+
+## Test
+
+```bash
+npm test
 ```
