@@ -16,6 +16,8 @@ export const FLOAT_DEFAULTS: Readonly<constrains.FloatConstrain> =
     precision: 4,
   });
 
+export const LETTERS_CHAR_CODES = createConstrain(97, 122);
+
 export const NUMBER_DEFAULTS = createConstrain(0, 99999);
 
 export const STRATEGY_DEFAULTS = Object.freeze({

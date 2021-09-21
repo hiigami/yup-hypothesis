@@ -6,10 +6,13 @@ import * as rnd from "../src/random";
 import * as yup from "yup";
 import { testXTimes } from "./utils";
 
+const ObjectSchema = yup.object();
+const ObjectSchemaWithStringItem = yup.object({ str: yup.string() });
+
 test("should render object", async () => {
-  await testXTimes(yup.object(), 5);
-  await testXTimes(yup.object().required(), 10);
-  const TestSchema = yup.object({
+  await testXTimes(ObjectSchema, 5);
+  await testXTimes(ObjectSchema.required(), 10);
+  const TestSchema = ObjectSchema.shape({
     a: yup.string(),
     b: yup.string(),
     c: yup.string(),
@@ -23,6 +26,8 @@ test("should render object", async () => {
     //@ts-ignore
     TestSchema.from("a", "A", true).from("f", "fff").from("c", "d")
   );
+  await testXTimes(ObjectSchemaWithStringItem.unknown());
+  await testXTimes(ObjectSchemaWithStringItem.noUnknown());
 });
 
 test("should render nested objects", async () => {
@@ -51,20 +56,21 @@ test("should render nested objects", async () => {
         strSub2: yup.string(),
       })
       .camelCase(),
-    obj_default: yup.object({ str: yup.string() }).default({ str: "a" }),
-    obj_not_req: yup.object({ str: yup.string() }).notRequired(),
-    obj_null: yup.object({ str: yup.string() }).nullable(),
-    obj_one_of: yup
-      .object({ str: yup.string() })
-      .oneOf([{ str: "b" }, { str: "c" }]),
-    obj_req_not_null: yup
-      .object({ str: yup.string() })
-      .nullable(false)
-      .required(),
-    obj_snake_case: yup
+    obj_constant_case: yup
       .object({
         str_sub_3: yup.string(),
         strSub4: yup.string(),
+      })
+      .constantCase(),
+    obj_default: ObjectSchemaWithStringItem.default({ str: "a" }),
+    obj_not_req: ObjectSchemaWithStringItem.notRequired(),
+    obj_null: ObjectSchemaWithStringItem.nullable(),
+    obj_one_of: ObjectSchemaWithStringItem.oneOf([{ str: "b" }, { str: "c" }]),
+    obj_req_not_null: ObjectSchemaWithStringItem.nullable(false).required(),
+    obj_snake_case: yup
+      .object({
+        str_sub_5: yup.string(),
+        strSub6: yup.string(),
       })
       .snakeCase(),
     strip: yup.string().strip(),
