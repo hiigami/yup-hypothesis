@@ -6,7 +6,7 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
 
 Create random data from a Yup schema.
-You can use the project's [roadmap](https://github.com/hiigami/yup-hypothesis/wiki/Roadmap#legends) to see the current supported features.
+You can use the project's [roadmap](https://github.com/hiigami/yup-hypothesis/wiki/Roadmap) to see the current supported features.
 
 ## Install
 
