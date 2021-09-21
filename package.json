@@ -1,6 +1,6 @@
 {
   "name": "yup-hypothesis",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Create random data from a Yup schema.",
   "main": "./lib/cjs/main.js",
   "module": "./lib/cjs/main.js",
