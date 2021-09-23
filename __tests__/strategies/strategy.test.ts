@@ -6,7 +6,7 @@ import {
 
 import * as yup from "yup";
 
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { enumerations, specs as dSpecs, types } from "../../src/data";
 import { Strategy } from "../../src/strategies/base_strategies";
 import { STRATEGY_DEFAULTS } from "../../src/strategies/constant";
 
@@ -64,7 +64,7 @@ test("should handle default as function", () => {
     schema.required().nullable().default(defaultValue)
   ).draw();
 
-  expect(val).toBe((defaultValue as dSpecs.DefaultFn)());
+  expect(val).toBe((defaultValue as types.GenericFn<unknown>)());
 });
 
 test("should be one of", () => {

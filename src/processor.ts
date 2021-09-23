@@ -4,13 +4,13 @@ import { handlers, strategy, types } from "./data";
 import { ArrayHandler, FieldHandler, ObjectHandler } from "./handler";
 
 export class Processor {
-  private handlers: handlers.IHandler[];
+  private handlers: types.ReadOnlyArray<handlers.IHandler>;
   constructor() {
-    this.handlers = [
+    this.handlers = Object.freeze([
       new ArrayHandler(),
       new FieldHandler(),
       new ObjectHandler(),
-    ];
+    ]);
   }
   private getHandler(schema: AnySchema): types.Maybe<handlers.IHandler> {
     for (const handler of this.handlers) {
