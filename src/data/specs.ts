@@ -7,16 +7,15 @@ import {
   TestParameter,
   TestName,
 } from "./enumerations";
+import { GenericFn } from "./types";
 
 export interface SpecMutation<T> {
   (this: T, value: unknown, originalValue: unknown, schema: T): unknown;
 }
 
-export type DefaultFn = () => unknown;
-
 export interface BaseSpecs {
   choices?: Array<unknown>;
-  default?: unknown | DefaultFn;
+  default?: unknown | GenericFn<unknown>;
   exclude?: Set<unknown>;
   mutations?: SpecMutation<AnySchema>[];
   nullable: boolean;

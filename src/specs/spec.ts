@@ -1,13 +1,7 @@
 import { AnySchema } from "yup";
 
 import { Specs, SpecMutation } from "../data/specs";
-import {
-  PresenceType,
-  SchemaType,
-  TestParameter,
-  TestName,
-} from "../data/enumerations";
-import { Maybe } from "../data/types";
+import { PresenceType, SchemaType, TestName } from "../data/enumerations";
 import { title } from "../common";
 import { ITestSearch } from "../test_search";
 
@@ -63,29 +57,4 @@ export abstract class Spec {
     };
   }
   abstract get(): Specs;
-}
-
-export class DateSpec extends Spec {
-  protected _getType(): SchemaType {
-    return SchemaType.Date;
-  }
-  private _limitFromStringOrDefault(val?: string | number): Maybe<number> {
-    if (typeof val === "string") {
-      return new Date(val).getTime();
-    }
-    return val;
-  }
-  private _getLimit(param: TestParameter): Maybe<number> {
-    const val = this.testSearch.getParameter<number | Date>(param);
-    if (val instanceof Date) {
-      return val.getTime();
-    }
-    return this._limitFromStringOrDefault(val);
-  }
-  get(): Specs {
-    const specs = this._get();
-    specs.min = this._getLimit(TestParameter.Min);
-    specs.max = this._getLimit(TestParameter.Max);
-    return specs;
-  }
 }

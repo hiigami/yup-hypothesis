@@ -6,7 +6,7 @@ import {
 } from "../data/enumerations";
 import { LimitOption, Specs } from "../data/specs";
 import { Maybe } from "../data/types";
-import { Spec } from "./types";
+import { Spec } from "./spec";
 import * as digits from "./utils/digits";
 
 const limitOptionsMapper = {

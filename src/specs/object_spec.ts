@@ -2,7 +2,7 @@ import { ObjectSchemaSpec } from "yup/lib/object";
 
 import { SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
-import { Spec } from "./types";
+import { Spec } from "./spec";
 
 export class ObjectSpec extends Spec {
   protected _getType(): SchemaType {
