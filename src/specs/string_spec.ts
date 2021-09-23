@@ -1,5 +1,5 @@
 import { enumerations } from "../data";
-import { ArraySpec } from "./array_type";
+import { ArraySpec } from "./array_spec";
 
 interface TypeMapper {
   readonly test: enumerations.TestName;
