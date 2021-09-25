@@ -3,9 +3,9 @@ import { AnySchema } from "yup";
 import { ArraySpecs } from "../data/specs";
 import { random } from "../random";
 
-import { Strategy } from "./base_strategies";
 import { arrays, internet } from "./common";
 import { URL_DEFAULTS } from "./constant";
+import { Strategy } from "./strategy";
 
 function getOptionValue(off: boolean): boolean {
   return off ? false : random() > 0.5;

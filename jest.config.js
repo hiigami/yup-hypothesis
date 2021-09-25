@@ -5,7 +5,7 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   setupFilesAfterEnv: ["./jest.setup.ts"],
-  testPathIgnorePatterns: ["/node_modules/", "__tests__/utils", "src/"],
+  testPathIgnorePatterns: ["/node_modules/", "__tests__/utils", "src/", "lib/"],
   collectCoverageFrom: [
     "**/src/**/*.ts",
     "!**/node_modules/**",

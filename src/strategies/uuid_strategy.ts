@@ -1,4 +1,4 @@
-import { Strategy } from "./base_strategies";
+import { Strategy } from "./strategy";
 
 export class UUIDStrategy extends Strategy<string> {
   protected _draw(): string {

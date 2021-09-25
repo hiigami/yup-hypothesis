@@ -28,8 +28,8 @@ const mapper = new Map<SchemaType, StrategyConstructor>([
 ]);
 
 export class FieldHandler extends Handler {
-  canHandle(t: string): boolean {
-    const key = title(t);
+  canHandle(t: AnySchema): boolean {
+    const key = title(t.type);
     const schemaType = SchemaType[key as keyof typeof SchemaType];
     return mapper.has(schemaType);
   }

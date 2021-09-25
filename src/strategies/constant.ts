@@ -41,3 +41,5 @@ export const URL_DEFAULTS = createInternetConstrain<constrains.URLConstrain>(
 );
 
 export const URL_SCHEMAS = Object.freeze(["ftp", "http", "https"]);
+
+export const NOT_DEFINED = Symbol("not_defined");

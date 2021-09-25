@@ -7,7 +7,7 @@ import {
 import * as yup from "yup";
 
 import { enumerations, specs as dSpecs, types } from "../../src/data";
-import { Strategy } from "../../src/strategies/base_strategies";
+import { Strategy } from "../../src/strategies/strategy";
 import { STRATEGY_DEFAULTS } from "../../src/strategies/constant";
 
 class DummyStrategy extends Strategy<string> {

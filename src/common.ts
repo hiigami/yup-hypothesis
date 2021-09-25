@@ -22,6 +22,6 @@ export function createInternetConstrain<T extends InternetConstrain>(
   } as T);
 }
 
-export function title(s: string): string {
+export function title(s: string): Capitalize<string> {
   return `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
 }

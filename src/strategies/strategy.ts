@@ -1,21 +1,17 @@
 import { AnySchema } from "yup";
 
 import { enumerations, specs as dSpecs } from "../data";
+import { ConditionalOptions } from "../data/strategies";
+import { Nullable } from "../data/types";
 import { randomChoice, randomIntInclusive, random } from "../random";
-
 import { STRATEGY_DEFAULTS } from "./constant";
-
-type ReturnType<T> = T | null;
 
 interface Result<T> {
   apply: boolean;
-  value: ReturnType<T>;
+  value: Nullable<T>;
 }
 
-function createResult<T>(
-  apply: boolean,
-  value: ReturnType<T> = null
-): Result<T> {
+function createResult<T>(apply: boolean, value: Nullable<T> = null): Result<T> {
   return {
     apply: apply,
     value: value,
@@ -30,15 +26,15 @@ export abstract class Strategy<T> {
     this.specs = specs;
     this.schema = schema;
   }
-  protected abstract _draw(): T;
+  protected abstract _draw(options?: ConditionalOptions): T;
   protected _random(max: number, min = 0): number {
     return randomIntInclusive(max, min);
   }
-  private _getDefaultValue(): ReturnType<T> {
+  private _getDefaultValue(): Nullable<T> {
     if (typeof this.specs.default === "function") {
-      return this.specs.default() as ReturnType<T>;
+      return this.specs.default() as Nullable<T>;
     }
-    return this.specs.default as ReturnType<T>;
+    return this.specs.default as Nullable<T>;
   }
   private _shouldBeDefault(): Result<T> {
     if (
@@ -62,15 +58,14 @@ export abstract class Strategy<T> {
     }
     return this._shouldBeNull();
   }
-  private _choiceOrDraw(): ReturnType<T> {
+  private _choiceOrDraw(options?: ConditionalOptions): Nullable<T> {
     if (this.specs.choices && this.specs.choices.length > 0) {
-      return randomChoice<ReturnType<T>>(this.specs.choices as ReturnType<T>[]);
+      return randomChoice<Nullable<T>>(this.specs.choices as Nullable<T>[]);
     }
-    return this._draw();
+    return this._draw(options);
   }
-  private _applyMutations(value: ReturnType<T>): ReturnType<T> {
-    // ???: what if null
-    if (this.specs.mutations === undefined || value === null) {
+  private _applyMutations(value: Nullable<T>): Nullable<T> {
+    if (this.specs.mutations === undefined) {
       return value;
     }
     let mutated = value;
@@ -85,35 +80,14 @@ export abstract class Strategy<T> {
     }
     return true;
   }
-  draw(): ReturnType<T> {
+  draw(options?: ConditionalOptions): Nullable<T> {
     const result = this._defaultOrNull();
     if (result.apply) {
       return result.value;
     }
     /**@todo not one of */
-    return this._applyMutations(this._choiceOrDraw());
-  }
-}
-
-export class BooleanStrategy extends Strategy<boolean> {
-  constructor(specs: dSpecs.BaseSpecs, schema: AnySchema) {
-    super(specs, schema);
-  }
-  protected _draw(): boolean {
-    return random() < STRATEGY_DEFAULTS.bool;
-  }
-}
-
-export class DateStrategy extends Strategy<Date> {
-  constructor(specs: dSpecs.DateSpecs, schema: AnySchema) {
-    super(specs, schema);
-  }
-  protected _draw(): Date {
-    const min = new Date(this.specs.min || 0).getTime();
-    const max = this.specs.max
-      ? new Date(this.specs.max).getTime()
-      : new Date().getTime();
-    const timestamp = this._random(max, min);
-    return new Date(timestamp);
+    const drawValue = this._choiceOrDraw(options);
+    // ???: what if null in transform
+    return drawValue === null ? drawValue : this._applyMutations(drawValue);
   }
 }
