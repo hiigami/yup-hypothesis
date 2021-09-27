@@ -1,12 +1,19 @@
 import { AnySchema } from "yup";
 
 import { handlers, strategy, types } from "./data";
-import { ArrayHandler, FieldHandler, ObjectHandler } from "./handler";
+import {
+  ArrayHandler,
+  ConditionalHandler,
+  FieldHandler,
+  ObjectHandler,
+} from "./handler";
 
-export class Processor {
+export default class Processor {
+  private static instance: Processor;
   private handlers: types.ReadOnlyArray<handlers.IHandler>;
-  constructor() {
+  private constructor() {
     this.handlers = Object.freeze([
+      new ConditionalHandler(),
       new ArrayHandler(),
       new FieldHandler(),
       new ObjectHandler(),
@@ -14,7 +21,7 @@ export class Processor {
   }
   private getHandler(schema: AnySchema): types.Maybe<handlers.IHandler> {
     for (const handler of this.handlers) {
-      if (handler.canHandle(schema.type)) {
+      if (handler.canHandle(schema)) {
         return handler;
       }
     }
@@ -37,5 +44,11 @@ export class Processor {
       return handler?.handle(schema, fields);
     }
     return handler?.handle(schema);
+  }
+  static getInstance(): Processor {
+    if (!Processor.instance) {
+      Processor.instance = new Processor();
+    }
+    return Processor.instance;
   }
 }

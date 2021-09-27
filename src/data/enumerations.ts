@@ -12,6 +12,7 @@ export enum PresenceType {
 export enum SchemaType {
   Array = "array",
   Boolean = "boolean",
+  Conditional = "conditional",
   Date = "date",
   Email = "email",
   Float = "float",

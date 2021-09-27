@@ -2,9 +2,9 @@ import { AnySchema } from "yup";
 
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 
-import { Strategy } from "./base_strategies";
 import { digits } from "./common";
 import { FLOAT_DEFAULTS, NUMBER_DEFAULTS } from "./constant";
+import { Strategy } from "./strategy";
 
 export class NumberStrategy extends Strategy<number> {
   constructor(specs: NumberSpecs, schema: AnySchema) {

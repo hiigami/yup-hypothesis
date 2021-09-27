@@ -18,8 +18,8 @@ export abstract class Handler {
   getFields(_schema: AnySchema): handlers.Schemas {
     return undefined;
   }
-  canHandle(t: string): boolean {
-    if (t === this.schemaType) {
+  canHandle(t: AnySchema): boolean {
+    if (t.type === this.schemaType) {
       return true;
     }
     return false;

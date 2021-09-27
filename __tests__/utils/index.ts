@@ -1,23 +1,24 @@
 import { AnySchema, InferType } from "yup";
 
 import yh from "../../src/main";
-import { enumerations } from "../../src/data";
+import { enumerations, types } from "../../src/data";
 import { createConstrain } from "../../src/common";
 import { StrategyConstructor } from "../../src/data/strategies";
 
 export async function testXTimes(
   schema: AnySchema,
-  nTimes = 50
+  nTimes = 50,
+  context?: types.UnknownDict
 ): Promise<void> {
   for (let index = 0; index < nTimes; index++) {
-    const example = yh.example(schema) as InferType<typeof schema>;
+    const example = yh.example(schema, context) as InferType<typeof schema>;
     // const a = await schema.isValid(example);
     // if (!a) {
     //   console.log(example);
     //   const r = await schema.validate(example);
     //   console.log(r);
     // }
-    await expect(schema.isValid(example)).resolves.toBeTruthy();
+    await expect(schema.isValid(example, { context })).resolves.toBeTruthy();
   }
 }
 

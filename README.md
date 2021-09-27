@@ -16,6 +16,8 @@ npm i yup-hypothesis --save-dev
 
 ## Usage
 
+### Simple
+
 ```js
 import * as yup from "yup";
 import yh from "yup-hypothesis";
@@ -41,6 +43,19 @@ console.log(arrayExample);
 const TestSchema = yup.string().required();
 const anyExample = yh.example(TestSchema);
 console.log(anyExample);
+```
+
+### With context
+
+```js
+const TestConditionalSchema = yup.string().when("$t", {
+  is: true,
+  then: yup.string().nullable(),
+  otherwise: yup.string().oneOf(["a", "b"]),
+});
+const context = { t: true };
+const exampleWithContext = yh.example(TestConditionalSchema, context);
+console.log(exampleWithContext);
 ```
 
 ## Test
