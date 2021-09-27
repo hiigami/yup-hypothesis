@@ -1,12 +1,12 @@
 import { AnySchema, InferType } from "yup";
 
-import { Dict } from "./data/types";
+import { UnknownDict } from "./data/types";
 import Processor from "./processor";
 import { NOT_DEFINED } from "./strategies/constant";
 
 function example(
   schema: AnySchema,
-  context?: Dict<unknown>
+  context?: UnknownDict
 ): InferType<typeof schema> {
   const strategy = Processor.getInstance().run(schema);
   const result = strategy?.draw({ context });
