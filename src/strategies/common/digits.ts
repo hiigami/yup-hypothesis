@@ -7,28 +7,32 @@ function getRandomSign(): number {
   return random() < STRATEGY_DEFAULTS.sign ? 1 : -1;
 }
 
-export function getSign(sign?: enumerations.Sign): number {
+export function getSign(sign: enumerations.Sign): number {
   if (sign === enumerations.Sign.Indifferent) {
     return getRandomSign();
   }
   return sign === enumerations.Sign.Positive ? 1 : -1;
 }
 
-function minOrNegative(min: number, defaultVal: number, sign: Sign): number {
-  if (min >= 0 && sign === Sign.Negative) {
+function valueOrNegative(
+  value: number,
+  defaultVal: number,
+  sign: Sign
+): number {
+  if (value >= 0 && sign === Sign.Negative) {
     return defaultVal;
   }
-  return min;
+  return value;
 }
 
 export function getLimitBasedOnSign(
-  min: number,
+  value: number,
   defaultPositive: number,
   defaultNegative: number,
   sign: Sign
 ): number {
-  if (min <= 0 && sign === Sign.Positive) {
+  if (value <= 0 && sign === Sign.Positive) {
     return defaultPositive;
   }
-  return minOrNegative(min, defaultNegative, sign);
+  return valueOrNegative(value, defaultNegative, sign);
 }
