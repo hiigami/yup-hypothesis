@@ -35,7 +35,7 @@ test.each([
     const length = arrays.getLength(
       specs,
       constrain as constrains.Constrain,
-      strict
+      strict as boolean
     );
     expect(length).toEqual(expected);
   }

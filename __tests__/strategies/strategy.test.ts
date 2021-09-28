@@ -6,7 +6,8 @@ import {
 
 import * as yup from "yup";
 
-import { enumerations, specs as dSpecs, types } from "../../src/data";
+import * as mockUtils from "../utils";
+import { enumerations, types } from "../../src/data";
 import { Strategy } from "../../src/strategies/strategy";
 import { STRATEGY_DEFAULTS } from "../../src/strategies/constant";
 
@@ -17,11 +18,11 @@ class DummyStrategy extends Strategy<string> {
   }
 }
 
-const specs: dSpecs.Specs = {
+const specs = mockUtils.createSpecs({
   type: enumerations.SchemaType.String,
   nullable: false,
   presence: enumerations.PresenceType.Required,
-};
+});
 const schema = yup.string();
 
 test("should return from _draw", () => {
@@ -81,7 +82,7 @@ test("should be one of", () => {
 });
 
 test.each([
-  {
+  mockUtils.createTestItem({
     specs: {
       ...specs,
       presence: enumerations.PresenceType.Optional,
@@ -89,8 +90,8 @@ test.each([
     randValue: STRATEGY_DEFAULTS.defined + 0.01,
     schema: schema,
     expected: true,
-  },
-  {
+  }),
+  mockUtils.createTestItem({
     specs: {
       ...specs,
       presence: enumerations.PresenceType.Optional,
@@ -98,14 +99,14 @@ test.each([
     randValue: STRATEGY_DEFAULTS.defined - 0.01,
     schema: schema,
     expected: false,
-  },
-  {
+  }),
+  mockUtils.createTestItem({
     specs: specs,
     randValue: STRATEGY_DEFAULTS.defined - 0.0001,
     schema: schema.required(),
     expected: true,
-  },
-  {
+  }),
+  mockUtils.createTestItem({
     specs: {
       ...specs,
       presence: enumerations.PresenceType.Defined,
@@ -113,18 +114,17 @@ test.each([
     randValue: STRATEGY_DEFAULTS.defined - 0.001,
     schema: schema.defined(),
     expected: true,
-  },
+  }),
 ])(
   "should return $expected with random:$randValue, presence:$specs.presence",
   ({ specs, randValue, schema, expected }) => {
-    randomMock.mockReturnValue(randValue);
+    randomMock.mockReturnValue(randValue as number);
 
-    const val = new DummyStrategy(specs, schema).isDefined();
+    const val = new DummyStrategy(specs, schema as yup.AnySchema).isDefined();
     expect(val).toBe(expected);
   }
 );
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const customMutationSchema = schema.required().transform((val, _original) => {
   return val === "aaaa" ? "1234" : val;
 });

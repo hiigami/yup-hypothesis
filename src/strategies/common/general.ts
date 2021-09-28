@@ -1,6 +1,6 @@
 import { constrains } from "../../data";
 
-export function orderValues(value1: number, value2: number): number[] {
+export function orderValues(value1: number, value2: number): [number, number] {
   if (value1 < value2) {
     return [value2, value1];
   }

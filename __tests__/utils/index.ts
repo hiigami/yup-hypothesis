@@ -1,9 +1,10 @@
 import { AnySchema, InferType } from "yup";
 
 import yh from "../../src/main";
-import { enumerations, types } from "../../src/data";
+import { enumerations, types, specs } from "../../src/data";
 import { createConstrain } from "../../src/common";
-import { StrategyConstructor } from "../../src/data/strategies";
+import { Constrain } from "../../src/data/constrains";
+import { UnknownDict } from "../../src/data/types";
 
 export async function testXTimes(
   schema: AnySchema,
@@ -67,7 +68,7 @@ export function randIntIncMaxEqDefaultAndMinEq0Is1OrMax(maxDefault: number) {
   };
 }
 
-const createSpecs = (args?: {
+export const createSpecs = (args?: {
   type?: enumerations.SchemaType;
   presence?: enumerations.PresenceType;
   sign?: enumerations.Sign;
@@ -75,7 +76,7 @@ const createSpecs = (args?: {
   min?: number;
   max?: number;
   length?: number;
-}) => ({
+}): specs.Specs => ({
   type: args?.type || enumerations.SchemaType.String,
   nullable: args?.nullable || false,
   presence: args?.presence || enumerations.PresenceType.Required,
@@ -85,44 +86,20 @@ const createSpecs = (args?: {
   length: args?.length,
 });
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createTestItem = (args: {
-  name?: string;
-  constrain?: {
-    min: number;
-    max: number;
-  };
-  specs?: {
-    nullable?: boolean;
-    length?: number;
-    max?: number;
-    min?: number;
-    presence?: enumerations.PresenceType;
-    sign?: enumerations.Sign;
-    type?: enumerations.SchemaType;
-  };
-  expected: unknown;
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  check?: Function;
-  schema?: AnySchema;
-  strategy?: StrategyConstructor;
-  strict?: boolean;
-  randIntVal?: number;
-  randVal?: number;
-  toBeCalledWith?: unknown[];
-}) => ({
+interface TestItemArgs extends UnknownDict {
+  constrain?: Constrain;
+  specs?: Partial<specs.Specs>;
+}
+
+interface TestItem extends TestItemArgs {
+  specs: specs.Specs;
+}
+
+export const createTestItem = (args: TestItemArgs): TestItem => ({
+  ...args,
   specs: createSpecs(args.specs),
-  randIntVal: args.randIntVal,
-  randVal: args.randVal,
-  toBeCalledWith: args.toBeCalledWith,
-  strict: args.strict,
-  schema: args.schema,
-  strategy: args.strategy,
-  name: args.name,
-  check: args.check,
   constrain:
     args.constrain === undefined
       ? undefined
       : createConstrain(args.constrain?.min, args.constrain?.max),
-  expected: args.expected,
 });
