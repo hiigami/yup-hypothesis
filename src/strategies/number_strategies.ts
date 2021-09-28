@@ -1,5 +1,6 @@
 import { AnySchema } from "yup";
 
+import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 
 import { digits } from "./common";
@@ -11,7 +12,7 @@ export class NumberStrategy extends Strategy<number> {
     super(specs, schema);
   }
   protected _draw(): number {
-    const sign = digits.getSign(this.specs.sign);
+    const sign = digits.getSign(this.specs.sign as Sign);
     const min = digits.getLimitBasedOnSign(
       this.specs.min || NUMBER_DEFAULTS.min,
       1,
@@ -33,7 +34,7 @@ export class FloatStrategy extends Strategy<number> {
     super(specs, schema);
   }
   protected _draw(): number {
-    const sign = digits.getSign(this.specs.sign);
+    const sign = digits.getSign(this.specs.sign as Sign);
     const precision = this.specs.precision || FLOAT_DEFAULTS.precision;
     const byNum = Math.pow(10, precision);
     const defaultPositive = 1 / byNum;

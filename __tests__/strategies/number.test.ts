@@ -11,6 +11,9 @@ import {
   NUMBER_DEFAULTS,
   STRATEGY_DEFAULTS,
 } from "../../src/strategies/constant";
+import { StrategyConstructor } from "../../src/data/strategies";
+
+type VoidFn = (x: number) => void;
 
 const specsInt: dSpecs.Specs = {
   type: enumerations.SchemaType.Number,
@@ -103,9 +106,12 @@ test.each([
   }) => {
     randomIntInclusiveMock.mockReturnValue(randIntVal as number);
 
-    const val = new strategy!(specs, schema as yup.AnySchema).draw();
+    const val = new (strategy as StrategyConstructor)(
+      specs,
+      schema as yup.AnySchema
+    ).draw();
 
-    check!(val as number);
+    (check as VoidFn)(val as number);
     expect(val).toBe(expected);
     expect(randomIntInclusiveMock.mock.calls).toEqual(toBeCalledWith);
   }
@@ -171,9 +177,12 @@ test.each([
     randomMock.mockReturnValue(randVal as number);
     randomIntInclusiveMock.mockReturnValue(randIntVal as number);
 
-    const val = new strategy!(specs!, schema as yup.AnySchema).draw();
+    const val = new (strategy as StrategyConstructor)(
+      specs,
+      schema as yup.AnySchema
+    ).draw();
 
-    check!(val as number);
+    (check as VoidFn)(val as number);
     expect(val).toBe(expected);
     expect(randomIntInclusiveMock.mock.calls).toEqual(toBeCalledWith);
   }
