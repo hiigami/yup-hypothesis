@@ -54,6 +54,9 @@ const TestSchema = yup.object({
         })
         .max(5)
     ),
+    z: yup
+      .mixed()
+      .when("$t", { is: true, then: yup.boolean(), otherwise: yup.number() }),
   }),
 });
 
