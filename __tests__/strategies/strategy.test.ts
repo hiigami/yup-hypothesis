@@ -7,9 +7,10 @@ import {
 import * as yup from "yup";
 
 import * as mockUtils from "../utils";
+
+import { STRATEGY_DEFAULTS } from "../../src/config";
 import { enumerations, types } from "../../src/data";
 import { Strategy } from "../../src/strategies/strategy";
-import { STRATEGY_DEFAULTS } from "../../src/strategies/constant";
 
 class DummyStrategy extends Strategy<string> {
   public returnValue = "_draw";
@@ -29,17 +30,17 @@ test("should return from _draw", () => {
   randomMock.mockReturnValue(0);
   randomIntInclusiveMock.mockReturnValue(1);
 
-  const val = new DummyStrategy(specs, schema.required()).draw();
+  const val = new DummyStrategy({ specs, schema: schema.required() }).draw();
   expect(val).toEqual("_draw");
 });
 
 test("should be nullable", () => {
   randomMock.mockReturnValue(STRATEGY_DEFAULTS.nullable + 0.05);
 
-  const val = new DummyStrategy(
-    { ...specs, nullable: true },
-    schema.required().nullable()
-  ).draw();
+  const val = new DummyStrategy({
+    specs: { ...specs, nullable: true },
+    schema: schema.required().nullable(),
+  }).draw();
 
   expect(val).toBeNull();
 });
@@ -48,10 +49,10 @@ test("should be default", () => {
   randomMock.mockReturnValue(STRATEGY_DEFAULTS.default + 0.05);
 
   const defaultValue = "----";
-  const val = new DummyStrategy(
-    { ...specs, nullable: true, default: defaultValue },
-    schema.required().nullable().default(defaultValue)
-  ).draw();
+  const val = new DummyStrategy({
+    specs: { ...specs, nullable: true, default: defaultValue },
+    schema: schema.required().nullable().default(defaultValue),
+  }).draw();
 
   expect(val).toBe(defaultValue);
 });
@@ -60,10 +61,10 @@ test("should handle default as function", () => {
   randomMock.mockReturnValue(STRATEGY_DEFAULTS.default + 0.05);
 
   const defaultValue = () => "----";
-  const val = new DummyStrategy(
-    { ...specs, nullable: true, default: defaultValue },
-    schema.required().nullable().default(defaultValue)
-  ).draw();
+  const val = new DummyStrategy({
+    specs: { ...specs, nullable: true, default: defaultValue },
+    schema: schema.required().nullable().default(defaultValue),
+  }).draw();
 
   expect(val).toBe((defaultValue as types.GenericFn<unknown>)());
 });
@@ -73,10 +74,10 @@ test("should be one of", () => {
   const choices = ["a", "b", "c"];
   randomChoiceMock.mockReturnValue(choices[index]);
 
-  const val = new DummyStrategy(
-    { ...specs, choices: choices },
-    schema.required().oneOf(choices)
-  ).draw();
+  const val = new DummyStrategy({
+    specs: { ...specs, choices: choices },
+    schema: schema.required().oneOf(choices),
+  }).draw();
 
   expect(val).toBe(choices[index]);
 });
@@ -120,7 +121,10 @@ test.each([
   ({ specs, randValue, schema, expected }) => {
     randomMock.mockReturnValue(randValue as number);
 
-    const val = new DummyStrategy(specs, schema as yup.AnySchema).isDefined();
+    const val = new DummyStrategy({
+      specs,
+      schema: schema as yup.AnySchema,
+    }).isDefined();
     expect(val).toBe(expected);
   }
 );
@@ -163,7 +167,7 @@ test.each([
 ])(
   "should apply $name mutation",
   ({ specs, schema, returnValue, expected }) => {
-    const dummy = new DummyStrategy(specs, schema);
+    const dummy = new DummyStrategy({ specs, schema });
     dummy.returnValue = returnValue;
 
     expect(dummy.draw()).toEqual(expected);

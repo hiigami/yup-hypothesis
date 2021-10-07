@@ -19,6 +19,6 @@ export class ConditionalHandler extends Handler {
     if (specs === undefined) {
       return undefined;
     }
-    return new ConditionalStrategy(specs, schema);
+    return new ConditionalStrategy({ specs, schema });
   }
 }

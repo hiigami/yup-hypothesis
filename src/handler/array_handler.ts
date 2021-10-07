@@ -23,6 +23,6 @@ export class ArrayHandler extends Handler {
       return undefined;
     }
     const field = fields === undefined ? undefined : fields[0];
-    return new ArrayStrategy(specs, schema, field);
+    return new ArrayStrategy({ specs, schema, field });
   }
 }

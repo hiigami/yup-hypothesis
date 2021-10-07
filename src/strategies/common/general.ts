@@ -1,4 +1,6 @@
+import { STRATEGY_DEFAULTS } from "../../config";
 import { constrains } from "../../data";
+import { random } from "../../random";
 
 export function orderValues(value1: number, value2: number): [number, number] {
   if (value1 < value2) {
@@ -25,4 +27,8 @@ export function getValidValueOrBest(
     return val;
   }
   return val < constrain.min ? constrain.min : constrain.max;
+}
+
+export function randomBoolean(): boolean {
+  return random() < STRATEGY_DEFAULTS.bool;
 }

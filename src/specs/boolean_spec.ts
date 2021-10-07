@@ -1,12 +1,8 @@
 import { SchemaType } from "../data/enumerations";
-import { Specs } from "../data/specs";
-import { Spec } from "./spec";
+import { MixedSpec } from "./mixed_spec";
 
-export class BooleanSpec extends Spec {
+export class BooleanSpec extends MixedSpec {
   protected _getType(): SchemaType {
     return SchemaType.Boolean;
-  }
-  get(): Specs {
-    return this._get();
   }
 }

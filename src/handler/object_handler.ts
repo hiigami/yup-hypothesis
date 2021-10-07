@@ -19,6 +19,6 @@ export class ObjectHandler extends Handler {
     if (specs === undefined) {
       return undefined;
     }
-    return new ObjectStrategy(specs, schema, fields);
+    return new ObjectStrategy({ specs, schema, fields });
   }
 }

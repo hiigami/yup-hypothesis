@@ -3,6 +3,7 @@ export { BooleanStrategy } from "./boolean_strategy";
 export { ConditionalStrategy } from "./conditional_strategy";
 export { DateStrategy } from "./date_strategy";
 export { EmailStrategy } from "./email_strategy";
+export { MixedStrategy } from "./mixed_strategy";
 export { FloatStrategy, NumberStrategy } from "./number_strategies";
 export { ObjectStrategy } from "./object_strategy";
 export { StringStrategy } from "./string_strategy";

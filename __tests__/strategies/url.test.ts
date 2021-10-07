@@ -8,9 +8,10 @@ import {
 import * as yup from "yup";
 
 import * as mockUtils from "../utils";
+
+import * as constant from "../../src/config";
 import { enumerations, specs as dSpecs } from "../../src/data";
 import { URLStrategy } from "../../src/strategies";
-import * as constant from "../../src/strategies/constant";
 
 test("should be a URL", () => {
   const specs: dSpecs.Specs = {
@@ -26,7 +27,10 @@ test("should be a URL", () => {
       .mockReturnValueOnce(constant.URL_SCHEMAS[i]);
     randomIntInclusiveMock.mockReturnValue(i + 1).mockReturnValueOnce(12 + i);
 
-    const val = new URLStrategy(specs, yup.string().url().required()).draw();
+    const val = new URLStrategy({
+      specs,
+      schema: yup.string().url().required(),
+    }).draw();
 
     expect(mockUtils.urlCheck(val!)).toBeTruthy();
 

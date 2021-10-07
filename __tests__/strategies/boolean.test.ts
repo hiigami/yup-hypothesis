@@ -14,6 +14,9 @@ test("should be bool", () => {
 
   randomMock.mockReturnValue(0);
   randomIntInclusiveMock.mockReturnValue(1);
-  const val = new BooleanStrategy(specs, yup.boolean().required()).draw();
+  const val = new BooleanStrategy({
+    specs,
+    schema: yup.boolean().required(),
+  }).draw();
   expect(typeof val).toEqual("boolean");
 });

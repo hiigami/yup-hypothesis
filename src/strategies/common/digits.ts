@@ -1,7 +1,7 @@
+import { STRATEGY_DEFAULTS } from "../../config";
 import { enumerations } from "../../data";
 import { Sign } from "../../data/enumerations";
 import { random } from "../../random";
-import { STRATEGY_DEFAULTS } from "../constant";
 
 function getRandomSign(): number {
   return random() < STRATEGY_DEFAULTS.sign ? 1 : -1;

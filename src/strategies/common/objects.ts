@@ -1,3 +1,4 @@
+import { NOT_DEFINED } from "../../config";
 import {
   ConditionalOptions,
   Field,
@@ -6,7 +7,6 @@ import {
 } from "../../data/strategies";
 import { UnknownDict } from "../../data/types";
 import { ConditionalStrategy } from "../conditional_strategy";
-import { NOT_DEFINED } from "../constant";
 
 type ConditionalMap = Map<string, ConditionalStrategy>;
 

@@ -1,34 +1,32 @@
 import { AnySchema } from "yup";
 
+import { LETTERS_CHAR_CODES } from "../config";
 import { ObjectSpecs } from "../data/specs";
-import { ConditionalOptions, Fields } from "../data/strategies";
-import { GenericFn, UnknownDict } from "../data/types";
-import { random, randomChoice, randomIntInclusive } from "../random";
+import { ConditionalOptions, Fields, StrategyArgs } from "../data/strategies";
+import { UnknownDict } from "../data/types";
 
+import { MixedStrategy } from "./mixed_strategy";
+import { characters, objects } from "./common";
+import { randomBoolean } from "./common/general";
 import { Strategy } from "./strategy";
-import { genText } from "./common/characters";
-import { objects } from "./common";
-import { LETTERS_CHAR_CODES, STRING_DEFAULTS } from "./constant";
+import { PresenceType, SchemaType } from "../data/enumerations";
 
-const mapper = new Map<string, GenericFn<unknown>>([
-  ["boolean", () => random() > 0.5],
-  ["date", () => new Date()],
-  ["nullable", () => null],
-  ["number", () => randomIntInclusive(255, -255)],
-  [
-    "string",
-    () => {
-      const size = randomIntInclusive(255, 0);
-      return genText(size, STRING_DEFAULTS.chars);
+function randomValue() {
+  return new MixedStrategy({
+    specs: {
+      type: SchemaType.Mixed,
+      nullable: randomBoolean(),
+      presence: PresenceType.Required,
     },
-  ],
-]);
+    schema: {} as AnySchema,
+  }).draw();
+}
 
 export class ObjectStrategy extends Strategy<UnknownDict> {
   private fields;
-  constructor(specs: ObjectSpecs, schema: AnySchema, fields?: Fields) {
-    super(specs, schema);
-    this.fields = fields;
+  constructor(args: StrategyArgs & { specs: ObjectSpecs; fields?: Fields }) {
+    super(args);
+    this.fields = args.fields;
   }
   isDefined(): boolean {
     if (this.specs.choices !== undefined) {
@@ -46,11 +44,9 @@ export class ObjectStrategy extends Strategy<UnknownDict> {
   }
   private _drawUnknown(result: UnknownDict): void {
     const numOfUnknown = this._random(5, 1);
-    const keys = [...mapper.keys()];
     for (let i = 0; i < numOfUnknown; i++) {
-      const key = genText(this._random(10, 1), LETTERS_CHAR_CODES);
-      const fnKey = randomChoice(keys);
-      result[key] = mapper.get(fnKey)?.();
+      const key = characters.genText(this._random(10, 1), LETTERS_CHAR_CODES);
+      result[key as string] = randomValue();
     }
   }
   protected _draw(options?: ConditionalOptions): UnknownDict {

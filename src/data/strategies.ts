@@ -1,6 +1,6 @@
 import { AnySchema } from "yup";
 
-import { Specs } from "./specs";
+import { BaseSpecs } from "./specs";
 import { Dict, Maybe, UnknownDict } from "./types";
 
 export type Field = Maybe<IStrategy>;
@@ -18,6 +18,11 @@ export interface IStrategy {
   draw(options?: ConditionalOptions): unknown;
 }
 
+export interface StrategyArgs extends UnknownDict {
+  schema: AnySchema;
+  specs: BaseSpecs;
+}
+
 export interface StrategyConstructor {
-  new (specs: Specs, schema: AnySchema): IStrategy;
+  new (args: StrategyArgs): IStrategy;
 }

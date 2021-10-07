@@ -1,9 +1,9 @@
 import { AnySchema } from "yup";
 
-import { Specs, SpecMutation } from "../data/specs";
 import { PresenceType, SchemaType, TestName } from "../data/enumerations";
+import { Specs, SpecMutation } from "../data/specs";
+import { ITestSearch } from "../data/test_search";
 import { title } from "../common";
-import { ITestSearch } from "../test_search";
 
 export interface SpecConstructor {
   new (schema: AnySchema, testSearch: ITestSearch): Spec;

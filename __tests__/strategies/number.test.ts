@@ -4,14 +4,14 @@ import { createTestItem } from "../utils";
 
 import * as yup from "yup";
 
-import { enumerations, specs as dSpecs } from "../../src/data";
-import { FloatStrategy, NumberStrategy } from "../../src/strategies";
 import {
   FLOAT_DEFAULTS,
   NUMBER_DEFAULTS,
   STRATEGY_DEFAULTS,
-} from "../../src/strategies/constant";
+} from "../../src/config";
+import { enumerations, specs as dSpecs } from "../../src/data";
 import { StrategyConstructor } from "../../src/data/strategies";
+import { FloatStrategy, NumberStrategy } from "../../src/strategies";
 
 type VoidFn = (x: number) => void;
 
@@ -47,7 +47,7 @@ test.each([
   randomMock.mockReturnValue(0);
   randomIntInclusiveMock.mockReturnValue(1);
 
-  const val = new strategy(specs, schema).draw();
+  const val = new strategy({ specs, schema }).draw();
   expect(typeof val === "number").toBeTruthy();
   expect(check(val as number)).toBeTruthy();
 });
@@ -106,10 +106,10 @@ test.each([
   }) => {
     randomIntInclusiveMock.mockReturnValue(randIntVal as number);
 
-    const val = new (strategy as StrategyConstructor)(
+    const val = new (strategy as StrategyConstructor)({
       specs,
-      schema as yup.AnySchema
-    ).draw();
+      schema: schema as yup.AnySchema,
+    }).draw();
 
     (check as VoidFn)(val as number);
     expect(val).toBe(expected);
@@ -177,10 +177,10 @@ test.each([
     randomMock.mockReturnValue(randVal as number);
     randomIntInclusiveMock.mockReturnValue(randIntVal as number);
 
-    const val = new (strategy as StrategyConstructor)(
+    const val = new (strategy as StrategyConstructor)({
       specs,
-      schema as yup.AnySchema
-    ).draw();
+      schema: schema as yup.AnySchema,
+    }).draw();
 
     (check as VoidFn)(val as number);
     expect(val).toBe(expected);

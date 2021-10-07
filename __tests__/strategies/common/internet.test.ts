@@ -3,7 +3,7 @@ jest.unmock("../../../src/random");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as rnd from "../../../src/random";
 
-import { EMAIL_DEFAULTS, URL_DEFAULTS } from "../../../src/strategies/constant";
+import { EMAIL_DEFAULTS, URL_DEFAULTS } from "../../../src/config";
 import { internet } from "../../../src/strategies/common";
 
 const randEmail = () => ({

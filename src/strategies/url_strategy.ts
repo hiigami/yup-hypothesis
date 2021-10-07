@@ -1,10 +1,9 @@
-import { AnySchema } from "yup";
-
+import { URL_DEFAULTS } from "../config";
 import { ArraySpecs } from "../data/specs";
+import { StrategyArgs } from "../data/strategies";
 import { random } from "../random";
 
 import { arrays, internet } from "./common";
-import { URL_DEFAULTS } from "./constant";
 import { Strategy } from "./strategy";
 
 function getOptionValue(off: boolean): boolean {
@@ -12,8 +11,8 @@ function getOptionValue(off: boolean): boolean {
 }
 
 export class URLStrategy extends Strategy<string> {
-  constructor(specs: ArraySpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs & { specs: ArraySpecs }) {
+    super(args);
   }
   private _gen(size: number): string {
     const isMinSize = size === URL_DEFAULTS.min;

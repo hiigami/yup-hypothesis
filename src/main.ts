@@ -1,8 +1,8 @@
 import { AnySchema, InferType } from "yup";
 
+import { NOT_DEFINED } from "./config";
 import { UnknownDict } from "./data/types";
 import Processor from "./processor";
-import { NOT_DEFINED } from "./strategies/constant";
 
 function example(
   schema: AnySchema,

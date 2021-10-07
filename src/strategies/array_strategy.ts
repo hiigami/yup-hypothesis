@@ -1,19 +1,17 @@
-import { AnySchema } from "yup";
-
+import { ARRAY_DEFAULTS } from "../config";
 import { ArraySpecs } from "../data/specs";
-import { ConditionalOptions, Field } from "../data/strategies";
+import { ConditionalOptions, Field, StrategyArgs } from "../data/strategies";
 
 import { arrays } from "./common";
-import { ARRAY_DEFAULTS } from "./constant";
 import { Strategy } from "./strategy";
 
 type List = unknown[];
 
 export class ArrayStrategy extends Strategy<List> {
   private element;
-  constructor(specs: ArraySpecs, schema: AnySchema, element: Field) {
-    super(specs, schema);
-    this.element = element;
+  constructor(args: StrategyArgs & { specs: ArraySpecs; element?: Field }) {
+    super(args);
+    this.element = args.element;
   }
   protected _draw(options?: ConditionalOptions): List {
     const items: List = [];

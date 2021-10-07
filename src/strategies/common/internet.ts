@@ -1,8 +1,7 @@
+import { URL_SCHEMAS } from "../../config";
 import { constrains } from "../../data";
 import { ReadOnlyArray } from "../../data/types";
 import { random, randomChoice, randomIntInclusive } from "../../random";
-
-import { URL_SCHEMAS } from "../constant";
 
 import { getValidValueOrBest } from "./general";
 

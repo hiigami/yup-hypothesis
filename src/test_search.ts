@@ -1,17 +1,13 @@
 import { Test } from "yup/lib/util/createValidation";
 
 import { TestParameter, TestName } from "./data/enumerations";
+import { ITestSearch } from "./data/test_search";
 import { Maybe } from "./data/types";
 
 type ExtraParams = Record<string, unknown>;
 type Mapper = Map<string, Map<string, unknown>>;
 
-export interface ITestSearch {
-  has(name: string): boolean;
-  getParameter<T>(name: TestParameter, testName?: TestName): Maybe<T>;
-}
-
-export class TestSearch {
+export class TestSearch implements ITestSearch {
   private mapper: Mapper;
 
   constructor(tests: Test[]) {

@@ -16,6 +16,7 @@ export enum SchemaType {
   Date = "date",
   Email = "email",
   Float = "float",
+  Mixed = "mixed",
   Number = "number",
   Object = "object",
   String = "string",

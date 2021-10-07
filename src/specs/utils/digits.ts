@@ -1,3 +1,4 @@
+import { FLOAT_DEFAULTS } from "../../config";
 import {
   SchemaType,
   Sign,
@@ -6,7 +7,6 @@ import {
 } from "../../data/enumerations";
 import { LimitOption, SignFN, SignMapper } from "../../data/specs";
 import { Maybe } from "../../data/types";
-import { FLOAT_DEFAULTS } from "../../strategies/constant";
 
 export function getCorrectOffset(
   offset: number,
