@@ -40,7 +40,7 @@ const TestArraySchema = yup.array(TestObjectSchema);
 const arrayExample = yh.example(TestArraySchema);
 console.log(arrayExample);
 
-// -- string, number, boolean, date --
+// -- mixed, string, number, boolean, date --
 const TestSchema = yup.string().required();
 const anyExample = yh.example(TestSchema);
 console.log(anyExample);
