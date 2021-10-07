@@ -1,11 +1,10 @@
-import { AnySchema } from "yup";
-
 import { DateSpecs } from "../data/specs";
+import { StrategyArgs } from "../data/strategies";
 import { Strategy } from "./strategy";
 
 export class DateStrategy extends Strategy<Date> {
-  constructor(specs: DateSpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs & { specs: DateSpecs }) {
+    super(args);
   }
   protected _draw(): Date {
     const min = new Date(this.specs.min || 0).getTime();

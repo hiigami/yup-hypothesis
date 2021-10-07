@@ -1,19 +1,22 @@
 import { AnySchema } from "yup";
 import Condition from "yup/lib/Condition";
 
+import { NOT_DEFINED } from "../config";
 import { PresenceType } from "../data/enumerations";
-import { BaseSpecs } from "../data/specs";
-import { ConditionalOptions, IStrategy } from "../data/strategies";
+import {
+  ConditionalOptions,
+  IStrategy,
+  StrategyArgs,
+} from "../data/strategies";
 import Processor from "../processor";
 
-import { NOT_DEFINED } from "./constant";
 import { Strategy } from "./strategy";
 
 export class ConditionalStrategy extends Strategy<unknown> {
   private conditions: Condition[];
   private depends: string[];
-  constructor(specs: BaseSpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs) {
+    super(args);
     this.conditions = this.schema["conditions"] as Condition[];
     this.depends = this.conditions.map((c) => c.refs.map((r) => r.key)).flat();
   }

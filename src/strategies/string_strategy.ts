@@ -1,14 +1,13 @@
-import { AnySchema } from "yup";
-
+import { STRING_DEFAULTS } from "../config";
 import { ArraySpecs } from "../data/specs";
+import { StrategyArgs } from "../data/strategies";
 
 import { arrays, characters } from "./common";
-import { STRING_DEFAULTS } from "./constant";
 import { Strategy } from "./strategy";
 
 export class StringStrategy extends Strategy<string> {
-  constructor(specs: ArraySpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs & { specs: ArraySpecs }) {
+    super(args);
   }
   protected _draw(): string {
     const size = arrays.getLength(this.specs, STRING_DEFAULTS);

@@ -1,10 +1,10 @@
 import { AnySchema } from "yup";
 
+import { STRATEGY_DEFAULTS } from "../config";
 import { enumerations, specs as dSpecs } from "../data";
-import { ConditionalOptions } from "../data/strategies";
+import { ConditionalOptions, StrategyArgs } from "../data/strategies";
 import { Nullable } from "../data/types";
 import { randomChoice, randomIntInclusive, random } from "../random";
-import { STRATEGY_DEFAULTS } from "./constant";
 
 interface Result<T> {
   apply: boolean;
@@ -19,12 +19,12 @@ function createResult<T>(apply: boolean, value: Nullable<T> = null): Result<T> {
 }
 
 export abstract class Strategy<T> {
-  readonly specs: dSpecs.Specs;
   readonly schema: AnySchema;
+  readonly specs: dSpecs.Specs;
 
-  constructor(specs: dSpecs.Specs, schema: AnySchema) {
-    this.specs = specs;
-    this.schema = schema;
+  constructor(args: StrategyArgs) {
+    this.specs = args.specs;
+    this.schema = args.schema;
   }
   protected abstract _draw(options?: ConditionalOptions): T;
   protected _random(max: number, min = 0): number {

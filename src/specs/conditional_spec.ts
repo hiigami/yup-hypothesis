@@ -1,7 +1,7 @@
 import { SchemaType } from "../data/enumerations";
-import { BooleanSpec } from "./boolean_spec";
+import { MixedSpec } from "./mixed_spec";
 
-export class ConditionalSpec extends BooleanSpec {
+export class ConditionalSpec extends MixedSpec {
   protected _getType(): SchemaType {
     return SchemaType.Conditional;
   }

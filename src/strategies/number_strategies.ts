@@ -1,15 +1,14 @@
-import { AnySchema } from "yup";
-
+import { FLOAT_DEFAULTS, NUMBER_DEFAULTS } from "../config";
 import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
+import { StrategyArgs } from "../data/strategies";
 
 import { digits } from "./common";
-import { FLOAT_DEFAULTS, NUMBER_DEFAULTS } from "./constant";
 import { Strategy } from "./strategy";
 
 export class NumberStrategy extends Strategy<number> {
-  constructor(specs: NumberSpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs & { specs: NumberSpecs }) {
+    super(args);
   }
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign as Sign);
@@ -30,8 +29,8 @@ export class NumberStrategy extends Strategy<number> {
 }
 
 export class FloatStrategy extends Strategy<number> {
-  constructor(specs: FloatSpecs, schema: AnySchema) {
-    super(specs, schema);
+  constructor(args: StrategyArgs & { specs: FloatSpecs }) {
+    super(args);
   }
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign as Sign);
