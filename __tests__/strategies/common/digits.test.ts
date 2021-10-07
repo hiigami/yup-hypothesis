@@ -1,9 +1,10 @@
 import { randomMock } from "../../../jest.setup";
 
 import { createTestItem } from "../../utils";
+
+import { STRATEGY_DEFAULTS } from "../../../src/config";
 import { enumerations } from "../../../src/data";
 import { digits } from "../../../src/strategies/common";
-import { STRATEGY_DEFAULTS } from "../../../src/strategies/constant";
 
 test.each([
   createTestItem({

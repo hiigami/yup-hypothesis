@@ -6,8 +6,8 @@ jest.mock("../src/processor");
 
 import { AnySchema } from "yup";
 
+import { NOT_DEFINED } from "../src/config";
 import yh from "../src/main";
-import { NOT_DEFINED } from "../src/strategies/constant";
 
 const getInstance = Processor.getInstance as jest.MockedFunction<
   typeof Processor.getInstance

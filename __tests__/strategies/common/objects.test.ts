@@ -2,18 +2,18 @@ import * as yup from "yup";
 
 import { createSpecs } from "../../utils";
 
+import { NOT_DEFINED } from "../../../src/config";
 import { UnknownDict } from "../../../src/data/types";
 import { ConditionalStrategy } from "../../../src/strategies";
 import { objects } from "../../../src/strategies/common";
-import { NOT_DEFINED } from "../../../src/strategies/constant";
 
 const options = { context: { t: true } };
-const conditionalStrategy = new ConditionalStrategy(
-  createSpecs(),
-  yup
+const conditionalStrategy = new ConditionalStrategy({
+  specs: createSpecs(),
+  schema: yup
     .string()
-    .when("k2.k2_2", { is: true, then: yup.string(), otherwise: yup.string() })
-);
+    .when("k2.k2_2", { is: true, then: yup.string(), otherwise: yup.string() }),
+});
 
 test("should draw fields", () => {
   const result = {};
@@ -40,14 +40,14 @@ test("should draw fields", () => {
 });
 
 test("should draw conditional fields", () => {
-  const conditionalStrategy2 = new ConditionalStrategy(
-    createSpecs(),
-    yup.string().when("k2.k2_1", {
+  const conditionalStrategy2 = new ConditionalStrategy({
+    specs: createSpecs(),
+    schema: yup.string().when("k2.k2_1", {
       is: true,
       then: yup.string(),
       otherwise: yup.string(),
-    })
-  );
+    }),
+  });
   conditionalStrategy2.draw = jest.fn((_args?: UnknownDict) => NOT_DEFINED);
   const result = { k1: 0, k2: { k2_1: true, k2_2: false } };
   conditionalStrategy.draw = jest.fn((_args?: UnknownDict) => "k3");

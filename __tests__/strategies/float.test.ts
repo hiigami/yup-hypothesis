@@ -4,9 +4,10 @@ import { randomIntInclusiveMock } from "../../jest.setup";
 import * as yup from "yup";
 
 import { addDecimals } from "../utils";
+
+import * as constant from "../../src/config";
 import { enumerations, specs as dSpecs } from "../../src/data";
 import { FloatStrategy } from "../../src/strategies";
-import * as constant from "../../src/strategies/constant";
 
 const specs: dSpecs.Specs = {
   type: enumerations.SchemaType.Float,
@@ -26,10 +27,10 @@ test("should respect max and min for float", () => {
   const expected = 2;
   randomIntInclusiveMock.mockReturnValue(expected);
 
-  const val = new FloatStrategy(
-    _specs,
-    schema.min(_specs.min).max(_specs.max)
-  ).draw();
+  const val = new FloatStrategy({
+    specs: _specs,
+    schema: schema.min(_specs.min).max(_specs.max),
+  }).draw();
 
   const precision = constant.FLOAT_DEFAULTS.precision;
   expect(val).toEqual(addDecimals(expected, precision));
@@ -50,9 +51,9 @@ test("should respect precision", () => {
   const expected = 2;
   randomIntInclusiveMock.mockReturnValue(expected);
 
-  const val = new FloatStrategy(
-    _specs,
-    schema.min(_specs.min).max(_specs.max)
-  ).draw();
+  const val = new FloatStrategy({
+    specs: _specs,
+    schema: schema.min(_specs.min).max(_specs.max),
+  }).draw();
   expect(val).toEqual(_specs.max);
 });

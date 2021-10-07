@@ -22,7 +22,10 @@ test("should be an email", () => {
   randomIntInclusiveMock.mockReturnValue(2).mockReturnValueOnce(12);
   randomChoiceMock.mockReturnValue("a");
 
-  const val = new EmailStrategy(specs, yup.string().email().required()).draw();
+  const val = new EmailStrategy({
+    specs,
+    schema: yup.string().email().required(),
+  }).draw();
 
   expect(mockUtils.emailCheck(val!)).toBeTruthy();
 });

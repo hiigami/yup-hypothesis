@@ -14,7 +14,10 @@ test("should be a string", () => {
     nullable: false,
     presence: enumerations.PresenceType.Required,
   };
-  const val = new StringStrategy(specs, yup.string().required()).draw();
+  const val = new StringStrategy({
+    specs,
+    schema: yup.string().required(),
+  }).draw();
 
   expect(typeof val).toEqual("string");
 });
