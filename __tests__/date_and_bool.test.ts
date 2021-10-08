@@ -28,6 +28,8 @@ test("should render bool", async () => {
     bool_def: yup.boolean().defined(),
     bool_def_null: yup.boolean().nullable().defined(),
     bool_default: yup.boolean().default(false),
+    bool_is_false: yup.boolean().isFalse(),
+    bool_is_true: yup.boolean().isTrue(),
     bool_not_req: yup.boolean().notRequired(),
     bool_one_of: yup.boolean().oneOf([true]),
     bool_opt: yup.boolean().optional(),

@@ -34,6 +34,7 @@ export enum TestName {
   Defined = "defined",
   Email = "email",
   Integer = "integer",
+  IsValue = "is-value",
   Max = "max",
   Min = "min",
   URL = "url",
@@ -46,4 +47,5 @@ export enum TestParameter {
   Max = "max",
   Min = "min",
   More = "more",
+  Value = "value",
 }
