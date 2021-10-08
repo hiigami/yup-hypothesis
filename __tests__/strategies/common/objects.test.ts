@@ -15,17 +15,16 @@ const conditionalStrategy = new ConditionalStrategy({
     .when("k2.k2_2", { is: true, then: yup.string(), otherwise: yup.string() }),
 });
 
+const createDummyField = (drawValue: unknown, isDefined = true) => ({
+  isDefined: jest.fn(() => isDefined),
+  draw: jest.fn((_args?: UnknownDict) => drawValue),
+});
+
 test("should draw fields", () => {
   const result = {};
   const fields = {
-    tmp1: {
-      isDefined: jest.fn(() => true),
-      draw: jest.fn((_args?: UnknownDict) => 1),
-    },
-    tmp2: {
-      isDefined: jest.fn(() => false),
-      draw: jest.fn((_args?: UnknownDict) => 2),
-    },
+    tmp1: createDummyField(1),
+    tmp2: createDummyField(2, false),
     tmp3: conditionalStrategy,
   };
   const conditionals = objects.drawFields(result, fields, options);

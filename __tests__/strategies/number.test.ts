@@ -4,23 +4,16 @@ import { createTestItem } from "../utils";
 
 import * as yup from "yup";
 
+import { createSpecs } from "../utils";
 import { NUMBER_DEFAULTS, STRATEGY_DEFAULTS } from "../../src/config";
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { enumerations } from "../../src/data";
 import { StrategyConstructor } from "../../src/data/strategies";
 import { FloatStrategy, NumberStrategy } from "../../src/strategies";
 
 type VoidFn = (x: number) => void;
 
-const specsInt: dSpecs.Specs = {
-  type: enumerations.SchemaType.Number,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
-};
-const specsFloat: dSpecs.Specs = {
-  type: enumerations.SchemaType.Float,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
-};
+const specsInt = createSpecs({ type: enumerations.SchemaType.Number });
+const specsFloat = createSpecs({ type: enumerations.SchemaType.Float });
 const schemaInt = yup.number().integer().required();
 const schemaFloat = yup.number().required();
 

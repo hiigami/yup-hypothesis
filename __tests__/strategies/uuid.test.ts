@@ -3,17 +3,13 @@ import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
 import * as yup from "yup";
 
-import { uuidCheck } from "../utils";
+import { createSpecs, uuidCheck } from "../utils";
 
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { enumerations } from "../../src/data";
 import { UUIDStrategy } from "../../src/strategies";
 
 test("should be uuid", () => {
-  const specs: dSpecs.Specs = {
-    type: enumerations.SchemaType.UUID,
-    nullable: false,
-    presence: enumerations.PresenceType.Required,
-  };
+  const specs = createSpecs({ type: enumerations.SchemaType.UUID });
 
   randomMock.mockReturnValue(0);
   randomIntInclusiveMock.mockReturnValue(1);
@@ -22,5 +18,6 @@ test("should be uuid", () => {
     specs,
     schema: yup.string().uuid().required(),
   }).draw();
+
   expect(uuidCheck(val!)).toBeTruthy();
 });

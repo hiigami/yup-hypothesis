@@ -3,18 +3,16 @@ import { randomIntInclusiveMock } from "../../jest.setup";
 
 import * as yup from "yup";
 
-import { addDecimals } from "../utils";
+import { addDecimals, createSpecs } from "../utils";
 
 import * as constant from "../../src/config";
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { enumerations } from "../../src/data";
 import { FloatStrategy } from "../../src/strategies";
 
-const specs: dSpecs.Specs = {
+const specs = createSpecs({
   type: enumerations.SchemaType.Float,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
   sign: enumerations.Sign.Positive,
-};
+});
 const schema = yup.number().required();
 
 test("should respect max and min for float", () => {
@@ -55,5 +53,6 @@ test("should respect precision", () => {
     specs: _specs,
     schema: schema.min(_specs.min).max(_specs.max),
   }).draw();
+
   expect(val).toEqual(_specs.max);
 });

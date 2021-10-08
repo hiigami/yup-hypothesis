@@ -4,31 +4,25 @@ import { createTestItem } from "../../utils";
 import { constrains } from "../../../src/data";
 import { arrays } from "../../../src/strategies/common";
 
+const lengthTestItem = (args: {
+  length: number;
+  expected: number;
+  strict?: boolean;
+  min?: number;
+  max?: number;
+}) =>
+  createTestItem({
+    constrain: { min: args.min || 3, max: args.max || 9 },
+    specs: { length: args.length },
+    strict: args.strict ?? true,
+    expected: args.expected,
+  });
+
 test.each([
-  createTestItem({
-    constrain: { min: 3, max: 9 },
-    strict: true,
-    expected: 3,
-    specs: { length: 3 },
-  }),
-  createTestItem({
-    constrain: { min: 3, max: 9 },
-    strict: true,
-    expected: 3,
-    specs: { length: 2 },
-  }),
-  createTestItem({
-    constrain: { min: 3, max: 9 },
-    strict: true,
-    expected: 9,
-    specs: { length: 10 },
-  }),
-  createTestItem({
-    constrain: { min: 3, max: 9 },
-    strict: false,
-    expected: 2,
-    specs: { length: 2 },
-  }),
+  lengthTestItem({ length: 3, expected: 3 }),
+  lengthTestItem({ length: 2, expected: 3 }),
+  lengthTestItem({ length: 10, expected: 9 }),
+  lengthTestItem({ length: 2, expected: 2, strict: false }),
 ])(
   "should return valid length $expected with (strict: $strict, length: $specs.length)",
   ({ specs, constrain, strict, expected }) => {

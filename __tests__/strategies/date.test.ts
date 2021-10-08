@@ -2,14 +2,11 @@ import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
 import * as yup from "yup";
 
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { createSpecs } from "../utils";
+import { enumerations } from "../../src/data";
 import { DateStrategy } from "../../src/strategies";
 
-const specs: dSpecs.Specs = {
-  type: enumerations.SchemaType.Date,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
-};
+const specs = createSpecs({ type: enumerations.SchemaType.Date });
 const schema = yup.date().required();
 
 test("should be date", () => {

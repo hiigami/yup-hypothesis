@@ -8,22 +8,16 @@ import {
 import * as yup from "yup";
 
 import * as mockUtils from "../utils";
-import { enumerations, specs as dSpecs } from "../../src/data";
 import { EmailStrategy } from "../../src/strategies";
+import { SchemaType } from "../../src/data/enumerations";
 
 test("should be an email", () => {
-  const specs: dSpecs.Specs = {
-    type: enumerations.SchemaType.Email,
-    nullable: false,
-    presence: enumerations.PresenceType.Required,
-  };
-
   randomMock.mockReturnValue(0);
   randomIntInclusiveMock.mockReturnValue(2).mockReturnValueOnce(12);
   randomChoiceMock.mockReturnValue("a");
 
   const val = new EmailStrategy({
-    specs,
+    specs: mockUtils.createSpecs({ type: SchemaType.Email }),
     schema: yup.string().email().required(),
   }).draw();
 
