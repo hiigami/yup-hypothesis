@@ -4,6 +4,12 @@ import { StrategyConstructor } from "../data/strategies";
 import * as specs from "../specs";
 import * as strategies from "../strategies";
 
+export {
+  limitOptionsMapper,
+  signMapper,
+  stringTypeToTestMapper,
+} from "./specs";
+
 export const schemaToSpecMapper = new Map<SchemaType, specs.SpecConstructor>([
   [SchemaType.Array, specs.ArraySpec],
   [SchemaType.Boolean, specs.BooleanSpec],

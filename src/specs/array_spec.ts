@@ -2,7 +2,7 @@ import { PresenceType, SchemaType, TestParameter } from "../data/enumerations";
 import { Specs } from "../data/specs";
 import { Maybe } from "../data/types";
 
-import { minByPresence } from "./utils/common";
+import { minByPresence } from "./common/arrays";
 import { Spec } from "./spec";
 
 export class ArraySpec extends Spec {
