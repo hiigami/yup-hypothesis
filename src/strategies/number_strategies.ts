@@ -1,4 +1,4 @@
-import { FLOAT_DEFAULTS, NUMBER_DEFAULTS } from "../config";
+import { NUMBER_DEFAULTS } from "../config";
 import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
@@ -34,20 +34,20 @@ export class FloatStrategy extends Strategy<number> {
   }
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign as Sign);
-    const precision = this.specs.precision || FLOAT_DEFAULTS.precision;
+    const precision = this.specs.precision || NUMBER_DEFAULTS.precision;
     const byNum = Math.pow(10, precision);
     const defaultPositive = 1 / byNum;
     const _min =
       digits.getLimitBasedOnSign(
-        this.specs.min || FLOAT_DEFAULTS.min,
+        this.specs.min || NUMBER_DEFAULTS.min,
         defaultPositive,
-        -FLOAT_DEFAULTS.max,
+        -NUMBER_DEFAULTS.max,
         sign
       ) * byNum;
     const max =
       digits.getLimitBasedOnSign(
-        this.specs.max || FLOAT_DEFAULTS.max,
-        FLOAT_DEFAULTS.max,
+        this.specs.max || NUMBER_DEFAULTS.max,
+        NUMBER_DEFAULTS.max,
         -defaultPositive,
         sign
       ) * byNum;

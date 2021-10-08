@@ -9,7 +9,7 @@ export interface EmailConstrain extends Constrain {
   tld: Constrain;
 }
 
-export interface FloatConstrain extends Constrain {
+export interface NumberConstrain extends Constrain {
   precision: number;
 }
 

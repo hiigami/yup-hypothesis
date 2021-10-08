@@ -32,7 +32,7 @@ test("should respect max and min for float", () => {
     schema: schema.min(_specs.min).max(_specs.max),
   }).draw();
 
-  const precision = constant.FLOAT_DEFAULTS.precision;
+  const precision = constant.NUMBER_DEFAULTS.precision;
   expect(val).toEqual(addDecimals(expected, precision));
   const byNum = Math.pow(10, precision);
   expect(randomIntInclusiveMock.mock.calls).toEqual([

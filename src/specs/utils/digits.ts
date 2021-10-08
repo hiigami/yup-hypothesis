@@ -1,4 +1,4 @@
-import { FLOAT_DEFAULTS } from "../../config";
+import { NUMBER_DEFAULTS } from "../../config";
 import {
   SchemaType,
   Sign,
@@ -11,7 +11,7 @@ import { Maybe } from "../../data/types";
 export function getCorrectOffset(
   offset: number,
   type: SchemaType,
-  precision = FLOAT_DEFAULTS.precision
+  precision = NUMBER_DEFAULTS.precision
 ): number {
   return type === SchemaType.Number ? offset : offset / Math.pow(10, precision);
 }
