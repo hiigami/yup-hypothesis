@@ -10,15 +10,11 @@ import * as yup from "yup";
 import * as mockUtils from "../utils";
 
 import * as constant from "../../src/config";
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { enumerations } from "../../src/data";
 import { URLStrategy } from "../../src/strategies";
 
 test("should be a URL", () => {
-  const specs: dSpecs.Specs = {
-    type: enumerations.SchemaType.URL,
-    nullable: false,
-    presence: enumerations.PresenceType.Required,
-  };
+  const specs = mockUtils.createSpecs({ type: enumerations.SchemaType.URL });
 
   randomMock.mockReturnValue(Math.random());
   for (let i = 0; i < constant.URL_SCHEMAS.length; i++) {

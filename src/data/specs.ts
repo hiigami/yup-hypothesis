@@ -50,8 +50,7 @@ export interface Specs extends BaseSpecs, ArraySpecs, FloatSpecs, ObjectSpecs {}
 
 export type SignFN = (num?: number) => boolean;
 
-export interface SignMapper {
-  readonly with: string;
+export interface SignMapperItem {
   readonly sign: Sign;
   fn: SignFN;
 }

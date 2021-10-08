@@ -4,31 +4,20 @@ import { createTestItem } from "../utils";
 
 import * as yup from "yup";
 
-import {
-  FLOAT_DEFAULTS,
-  NUMBER_DEFAULTS,
-  STRATEGY_DEFAULTS,
-} from "../../src/config";
-import { enumerations, specs as dSpecs } from "../../src/data";
+import { createSpecs } from "../utils";
+import { NUMBER_DEFAULTS, STRATEGY_DEFAULTS } from "../../src/config";
+import { enumerations } from "../../src/data";
 import { StrategyConstructor } from "../../src/data/strategies";
 import { FloatStrategy, NumberStrategy } from "../../src/strategies";
 
 type VoidFn = (x: number) => void;
 
-const specsInt: dSpecs.Specs = {
-  type: enumerations.SchemaType.Number,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
-};
-const specsFloat: dSpecs.Specs = {
-  type: enumerations.SchemaType.Float,
-  nullable: false,
-  presence: enumerations.PresenceType.Required,
-};
+const specsInt = createSpecs({ type: enumerations.SchemaType.Number });
+const specsFloat = createSpecs({ type: enumerations.SchemaType.Float });
 const schemaInt = yup.number().integer().required();
 const schemaFloat = yup.number().required();
 
-const precisionOffset = Math.pow(10, FLOAT_DEFAULTS.precision);
+const precisionOffset = Math.pow(10, NUMBER_DEFAULTS.precision);
 
 test.each([
   {
@@ -77,7 +66,7 @@ test.each([
     name: "negative",
     specs: { ...specsFloat, sign: enumerations.Sign.Negative },
     randIntVal: -53,
-    toBeCalledWith: [[-1, -FLOAT_DEFAULTS.max * precisionOffset]],
+    toBeCalledWith: [[-1, -NUMBER_DEFAULTS.max * precisionOffset]],
     strategy: FloatStrategy,
     schema: schemaFloat.negative(),
     expected: -53 / precisionOffset,
@@ -87,7 +76,7 @@ test.each([
     name: "positive",
     specs: { ...specsFloat, sign: enumerations.Sign.Positive },
     randIntVal: 92,
-    toBeCalledWith: [[FLOAT_DEFAULTS.max * precisionOffset, 1]],
+    toBeCalledWith: [[NUMBER_DEFAULTS.max * precisionOffset, 1]],
     strategy: FloatStrategy,
     schema: schemaFloat.positive(),
     expected: 92 / precisionOffset,
@@ -145,7 +134,7 @@ test.each([
     specs: { ...specsFloat, sign: enumerations.Sign.Indifferent },
     randIntVal: -53,
     randVal: STRATEGY_DEFAULTS.sign + 0.05,
-    toBeCalledWith: [[-1, -FLOAT_DEFAULTS.max * precisionOffset]],
+    toBeCalledWith: [[-1, -NUMBER_DEFAULTS.max * precisionOffset]],
     strategy: FloatStrategy,
     schema: schemaFloat.negative(),
     expected: -53 / precisionOffset,
@@ -156,7 +145,7 @@ test.each([
     specs: { ...specsFloat, sign: enumerations.Sign.Indifferent },
     randIntVal: 92,
     randVal: STRATEGY_DEFAULTS.sign - 0.05,
-    toBeCalledWith: [[FLOAT_DEFAULTS.max * precisionOffset, 1]],
+    toBeCalledWith: [[NUMBER_DEFAULTS.max * precisionOffset, 1]],
     strategy: FloatStrategy,
     schema: schemaFloat.positive(),
     expected: 92 / precisionOffset,

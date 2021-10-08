@@ -10,15 +10,13 @@ export const EMAIL_DEFAULTS =
     enumerations.InternetConstrainType.Username
   );
 
-export const FLOAT_DEFAULTS: Readonly<constrains.FloatConstrain> =
+export const NUMBER_DEFAULTS: Readonly<constrains.NumberConstrain> =
   Object.freeze({
     ...createConstrain(0, 99999),
     precision: 4,
   });
 
 export const LETTERS_CHAR_CODES = createConstrain(97, 122);
-
-export const NUMBER_DEFAULTS = createConstrain(0, 99999);
 
 export const STRATEGY_DEFAULTS = Object.freeze({
   bool: 0.5,

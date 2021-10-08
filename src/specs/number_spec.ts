@@ -1,29 +1,9 @@
-import {
-  SchemaType,
-  Sign,
-  TestParameter,
-  TestName,
-} from "../data/enumerations";
+import { SchemaType, Sign, TestName } from "../data/enumerations";
 import { LimitOption, Specs } from "../data/specs";
 import { Maybe } from "../data/types";
+import { limitOptionsMapper, signMapper } from "../mapper";
 import { Spec } from "./spec";
-import * as digits from "./utils/digits";
-
-const limitOptionsMapper = {
-  min: [
-    digits.createLimitOption(TestParameter.Min),
-    digits.createLimitOption(TestParameter.More, +1, TestName.Min),
-  ],
-  max: [
-    digits.createLimitOption(TestParameter.Max),
-    digits.createLimitOption(TestParameter.Less, -1, TestName.Max),
-  ],
-};
-
-const signMapper = [
-  digits.createSingMapper("min", Sign.Positive, digits.isPositiveByMin),
-  digits.createSingMapper("max", Sign.Negative, digits.isNegativeByMax),
-];
+import * as digits from "./common/digits";
 
 export class NumberSpec extends Spec {
   protected _getType(): SchemaType {
@@ -34,8 +14,8 @@ export class NumberSpec extends Spec {
     return SchemaType.Float;
   }
   protected _getSign(max?: number, min?: number): Sign {
-    for (const item of signMapper) {
-      const val = digits.signHelper(item.with, max, min);
+    for (const [key, item] of signMapper) {
+      const val = digits.signHelper(key, max, min);
       const flag = item.fn(val);
       if (flag) {
         return item.sign;
@@ -43,7 +23,10 @@ export class NumberSpec extends Spec {
     }
     return Sign.Indifferent;
   }
-  private _getLimit(options: LimitOption[], type: SchemaType): Maybe<number> {
+  private _getLimit(
+    options: Readonly<LimitOption[]>,
+    type: SchemaType
+  ): Maybe<number> {
     for (const option of options) {
       const val = this.testSearch.getParameter<number>(
         option.param,
@@ -58,8 +41,10 @@ export class NumberSpec extends Spec {
   }
   get(): Specs {
     const specs = this._get();
-    specs.min = this._getLimit(limitOptionsMapper.min, specs.type);
-    specs.max = this._getLimit(limitOptionsMapper.max, specs.type);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    specs.min = this._getLimit(limitOptionsMapper.get("min")!, specs.type);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    specs.max = this._getLimit(limitOptionsMapper.get("max")!, specs.type);
     specs.sign = this._getSign(specs.max, specs.min);
     return specs;
   }
