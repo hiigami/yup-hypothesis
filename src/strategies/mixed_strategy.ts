@@ -1,6 +1,10 @@
 import { SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
-import { IStrategy, StrategyConstructor } from "../data/strategies";
+import {
+  IStrategy,
+  StrategyArgs,
+  StrategyConstructor,
+} from "../data/strategies";
 import { Maybe } from "../data/types";
 import { randomChoice } from "../random";
 
@@ -12,7 +16,8 @@ import { ObjectStrategy } from "./object_strategy";
 import { URLStrategy } from "./url_strategy";
 import { UUIDStrategy } from "./uuid_strategy";
 
-type dd = [StrategyConstructor, Specs][];
+type StrategiesStack = [StrategyConstructor, Specs][];
+
 const mapper = new Map<SchemaType, StrategyConstructor>([
   [SchemaType.Array, ArrayStrategy],
   [SchemaType.Boolean, BooleanStrategy],
@@ -27,10 +32,10 @@ const mapper = new Map<SchemaType, StrategyConstructor>([
 ]);
 
 export class MixedStrategy extends Strategy<unknown> {
-  private getRandomStrategyStack(): dd {
+  private getRandomStrategyStack(): StrategiesStack {
     const schemaTypes = [...mapper.keys()];
     let exit = false;
-    const stack: dd = [];
+    const stack: StrategiesStack = [];
     while (!exit) {
       const schemaType = randomChoice(schemaTypes);
       const strategy = mapper.get(schemaType) as StrategyConstructor;
@@ -45,20 +50,20 @@ export class MixedStrategy extends Strategy<unknown> {
     }
     return stack;
   }
-  private getFinalStrategy(stack: dd): Maybe<IStrategy> {
+  private getFinalStrategy(stack: StrategiesStack): Maybe<IStrategy> {
     let element;
     while (stack.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const [s, sc] = stack.pop()!;
+      const [strategy, specs] = stack.pop()!;
+      const strategyArgs: StrategyArgs<typeof specs> = {
+        specs: specs,
+        schema: this.schema,
+      };
       if (element) {
-        element = new s({
-          specs: { ...sc, max: 20 },
-          schema: this.schema,
-          element: element,
-        });
-      } else {
-        element = new s({ specs: sc, schema: this.schema });
+        strategyArgs.specs.max = 20;
+        strategyArgs.element = element;
       }
+      element = new strategy(strategyArgs);
     }
     return element;
   }
