@@ -6,7 +6,7 @@ import { arrays, characters } from "./common";
 import { Strategy } from "./strategy";
 
 export class StringStrategy extends Strategy<string> {
-  constructor(args: StrategyArgs & { specs: ArraySpecs }) {
+  constructor(args: StrategyArgs<ArraySpecs>) {
     super(args);
   }
   protected _draw(): string {

@@ -11,7 +11,7 @@ function getOptionValue(off: boolean): boolean {
 }
 
 export class URLStrategy extends Strategy<string> {
-  constructor(args: StrategyArgs & { specs: ArraySpecs }) {
+  constructor(args: StrategyArgs<ArraySpecs>) {
     super(args);
   }
   private _gen(size: number): string {

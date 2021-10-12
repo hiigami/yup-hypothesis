@@ -2,6 +2,7 @@ import { AnySchema } from "yup";
 
 import { STRATEGY_DEFAULTS } from "../config";
 import { enumerations, specs as dSpecs } from "../data";
+import { BaseSpecs } from "../data/specs";
 import { ConditionalOptions, StrategyArgs } from "../data/strategies";
 import { Nullable } from "../data/types";
 import { randomChoice, randomIntInclusive, random } from "../random";
@@ -22,7 +23,7 @@ export abstract class Strategy<T> {
   readonly schema: AnySchema;
   readonly specs: dSpecs.Specs;
 
-  constructor(args: StrategyArgs) {
+  constructor(args: StrategyArgs<BaseSpecs>) {
     this.specs = args.specs;
     this.schema = args.schema;
   }

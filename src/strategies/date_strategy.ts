@@ -3,7 +3,7 @@ import { StrategyArgs } from "../data/strategies";
 import { Strategy } from "./strategy";
 
 export class DateStrategy extends Strategy<Date> {
-  constructor(args: StrategyArgs & { specs: DateSpecs }) {
+  constructor(args: StrategyArgs<DateSpecs>) {
     super(args);
   }
   protected _draw(): Date {

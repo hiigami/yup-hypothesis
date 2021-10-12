@@ -7,7 +7,7 @@ import { digits } from "./common";
 import { Strategy } from "./strategy";
 
 export class NumberStrategy extends Strategy<number> {
-  constructor(args: StrategyArgs & { specs: NumberSpecs }) {
+  constructor(args: StrategyArgs<NumberSpecs>) {
     super(args);
   }
   protected _draw(): number {
@@ -29,7 +29,7 @@ export class NumberStrategy extends Strategy<number> {
 }
 
 export class FloatStrategy extends Strategy<number> {
-  constructor(args: StrategyArgs & { specs: FloatSpecs }) {
+  constructor(args: StrategyArgs<FloatSpecs>) {
     super(args);
   }
   protected _draw(): number {

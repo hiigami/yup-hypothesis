@@ -3,6 +3,7 @@ import Condition from "yup/lib/Condition";
 
 import { NOT_DEFINED } from "../config";
 import { PresenceType } from "../data/enumerations";
+import { BaseSpecs } from "../data/specs";
 import {
   ConditionalOptions,
   IStrategy,
@@ -15,7 +16,7 @@ import { Strategy } from "./strategy";
 export class ConditionalStrategy extends Strategy<unknown> {
   private conditions: Condition[];
   private depends: string[];
-  constructor(args: StrategyArgs) {
+  constructor(args: StrategyArgs<BaseSpecs>) {
     super(args);
     this.conditions = this.schema["conditions"] as Condition[];
     this.depends = this.conditions.map((c) => c.refs.map((r) => r.key)).flat();
