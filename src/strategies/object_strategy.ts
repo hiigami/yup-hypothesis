@@ -24,7 +24,7 @@ function randomValue() {
 
 export class ObjectStrategy extends Strategy<UnknownDict> {
   private fields;
-  constructor(args: StrategyArgs & { specs: ObjectSpecs; fields?: Fields }) {
+  constructor(args: StrategyArgs<ObjectSpecs> & { fields?: Fields }) {
     super(args);
     this.fields = args.fields;
   }

@@ -9,7 +9,7 @@ type List = unknown[];
 
 export class ArrayStrategy extends Strategy<List> {
   private element;
-  constructor(args: StrategyArgs & { specs: ArraySpecs; element?: Field }) {
+  constructor(args: StrategyArgs<ArraySpecs> & { element?: Field }) {
     super(args);
     this.element = args.element;
   }

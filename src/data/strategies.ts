@@ -18,11 +18,11 @@ export interface IStrategy {
   draw(options?: ConditionalOptions): unknown;
 }
 
-export interface StrategyArgs extends UnknownDict {
+export interface StrategyArgs<T extends BaseSpecs> extends UnknownDict {
   schema: AnySchema;
-  specs: BaseSpecs;
+  specs: T;
 }
 
 export interface StrategyConstructor {
-  new (args: StrategyArgs): IStrategy;
+  new <T extends BaseSpecs>(args: StrategyArgs<T>): IStrategy;
 }
