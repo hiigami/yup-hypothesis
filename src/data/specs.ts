@@ -48,6 +48,8 @@ export interface FloatSpecs extends NumberSpecs {
 
 export interface Specs extends BaseSpecs, ArraySpecs, FloatSpecs, ObjectSpecs {}
 
+export type OffsetSchemaTypeChoices = SchemaType.Number | SchemaType.Float;
+
 export type SignFN = (num?: number) => boolean;
 
 export interface SignMapperItem {
