@@ -1,5 +1,5 @@
 import { SchemaType, Sign, TestName } from "../data/enumerations";
-import { LimitOption, Specs } from "../data/specs";
+import { LimitOption, OffsetSchemaTypeChoices, Specs } from "../data/specs";
 import { Maybe } from "../data/types";
 import { limitOptionsMapper, signMapper } from "../mapper";
 import { Spec } from "./spec";
@@ -25,7 +25,7 @@ export class NumberSpec extends Spec {
   }
   private _getLimit(
     options: Readonly<LimitOption[]>,
-    type: SchemaType
+    type: OffsetSchemaTypeChoices
   ): Maybe<number> {
     for (const option of options) {
       const val = this.testSearch.getParameter<number>(
@@ -41,10 +41,16 @@ export class NumberSpec extends Spec {
   }
   get(): Specs {
     const specs = this._get();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    specs.min = this._getLimit(limitOptionsMapper.get("min")!, specs.type);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    specs.max = this._getLimit(limitOptionsMapper.get("max")!, specs.type);
+    specs.min = this._getLimit(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      limitOptionsMapper.get("min")!,
+      specs.type as OffsetSchemaTypeChoices
+    );
+    specs.max = this._getLimit(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      limitOptionsMapper.get("max")!,
+      specs.type as OffsetSchemaTypeChoices
+    );
     specs.sign = this._getSign(specs.max, specs.min);
     return specs;
   }

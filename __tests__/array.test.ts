@@ -11,7 +11,7 @@ test("should render an array", async () => {
   await testXTimes(yup.array().ensure(), 5);
   await testXTimes(
     yup
-      .array(yup.string().min(1).max(1))
+      .array(yup.string().required())
       .oneOf([["a", "b", "c"], ["g", "h"], ["z"]])
   );
   const TestSchema = yup.object({
