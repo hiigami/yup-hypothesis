@@ -1,10 +1,11 @@
 import { NUMBER_DEFAULTS } from "../../config";
 import { SchemaType } from "../../data/enumerations";
+import { OffsetSchemaTypeChoices } from "../../data/specs";
 import { Maybe } from "../../data/types";
 
 export function getCorrectOffset(
   offset: number,
-  type: SchemaType,
+  type: OffsetSchemaTypeChoices,
   precision = NUMBER_DEFAULTS.precision
 ): number {
   return type === SchemaType.Number ? offset : offset / Math.pow(10, precision);

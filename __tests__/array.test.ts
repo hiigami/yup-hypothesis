@@ -9,11 +9,6 @@ import { testXTimes } from "./utils";
 test("should render an array", async () => {
   await testXTimes(yup.array().required(), 5);
   await testXTimes(yup.array().ensure(), 5);
-  await testXTimes(
-    yup
-      .array(yup.string().min(1).max(1))
-      .oneOf([["a", "b", "c"], ["g", "h"], ["z"]])
-  );
   const TestSchema = yup.object({
     compact: yup
       .array(yup.string().nullable().oneOf(["", "1", "0", "4", null]))
