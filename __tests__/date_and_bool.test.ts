@@ -35,6 +35,8 @@ test("should render bool", async () => {
     bool_opt: yup.boolean().optional(),
     bool_req: yup.boolean().required(),
     bool_req_not_null: yup.boolean().nullable(false).required(),
+    bool_strict: yup.boolean().strict(),
+    bool_strict_false: yup.boolean().strict(false),
   });
   await testXTimes(TestSchema);
 });

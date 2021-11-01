@@ -37,10 +37,8 @@ export abstract class Spec {
   }
   private _getMutations(): SpecMutation<AnySchema>[] {
     const mutations = [];
-    for (const x in this.schema.transforms) {
-      if (this.schema.transforms[x].name !== "coerce") {
-        mutations.push(this.schema.transforms[x]);
-      }
+    for (const x in this.schema.transforms.slice(1)) {
+      mutations.push(this.schema.transforms[x]);
     }
     return mutations;
   }
@@ -53,6 +51,7 @@ export abstract class Spec {
       mutations: this._getMutations(),
       nullable: this.schema.spec.nullable,
       presence: this._getPresence(),
+      strict: this.schema.spec.strict ?? false,
       type: this._getType(),
     };
   }

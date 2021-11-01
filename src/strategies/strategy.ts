@@ -27,6 +27,9 @@ export abstract class Strategy<T> {
     this.specs = args.specs;
     this.schema = args.schema;
   }
+  protected _applyStrictness(value: T): T {
+    return value;
+  }
   protected abstract _draw(options?: ConditionalOptions): T;
   protected _random(max: number, min = 0): number {
     return randomIntInclusive(max, min);
@@ -63,7 +66,7 @@ export abstract class Strategy<T> {
     if (this.specs.choices && this.specs.choices.length > 0) {
       return randomChoice<Nullable<T>>(this.specs.choices as Nullable<T>[]);
     }
-    return this._draw(options);
+    return this._applyStrictness(this._draw(options));
   }
   private _applyMutations(value: Nullable<T>): Nullable<T> {
     if (this.specs.mutations === undefined) {
