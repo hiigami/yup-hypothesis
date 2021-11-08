@@ -1,7 +1,7 @@
 import { NotStrict } from "../data/types";
 import { randomChoice } from "../random";
 
-import { randomBoolean } from "./common/general";
+import { applyStrictness, randomBoolean } from "./common/general";
 import { Strategy } from "./strategy";
 
 function asNotStrict(val: boolean) {
@@ -15,10 +15,7 @@ type BooleanUnStrict = NotStrict<boolean | number>;
 
 export class BooleanStrategy extends Strategy<BooleanUnStrict> {
   protected _applyStrictness(val: boolean): BooleanUnStrict {
-    if (this.specs.strict) {
-      return val;
-    }
-    return asNotStrict(val);
+    return applyStrictness(val, asNotStrict, this.specs.strict);
   }
   protected _draw(): BooleanUnStrict {
     return randomBoolean();

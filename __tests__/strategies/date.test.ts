@@ -2,13 +2,11 @@ import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
 
 import * as yup from "yup";
 
-import { createSpecs, createTestItem } from "../utils";
+import { CheckFn, createSpecs, createTestItem } from "../utils";
 
 import { STRATEGY_DEFAULTS } from "../../src/config";
 import { enumerations } from "../../src/data";
 import { DateStrategy } from "../../src/strategies";
-
-type Fn = (value: unknown) => void;
 
 const specs = createSpecs({ type: enumerations.SchemaType.Date });
 const schema = yup.date().required();
@@ -17,7 +15,7 @@ const defaultCheck = (x: unknown) => expect(x).toBeInstanceOf(Date);
 const dateTestItem = (args?: {
   strict?: boolean;
   randomMockValue?: number;
-  check?: Fn;
+  check?: CheckFn<unknown>;
   name?: string;
 }) =>
   createTestItem({
@@ -29,6 +27,11 @@ const dateTestItem = (args?: {
 
 test.each([
   dateTestItem({ strict: true }),
+  dateTestItem({
+    name: "String",
+    randomMockValue: STRATEGY_DEFAULTS.bool + 0.01,
+    check: (val) => expect(typeof val).toEqual("string"),
+  }),
   dateTestItem({
     name: "String",
     strict: false,
@@ -48,7 +51,7 @@ test.each([
       specs,
       schema,
     }).draw();
-    (check as Fn)(val);
+    (check as CheckFn<unknown>)(val);
   }
 );
 

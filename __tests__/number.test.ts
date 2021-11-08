@@ -22,6 +22,8 @@ test("should render float", async () => {
     float_req: yup.number().required(),
     float_req_not_null: yup.number().nullable(false).required(),
     float_round: yup.number().round("floor"),
+    float_strict: yup.number().strict(),
+    float_strict_false: yup.number().strict(false),
     float_truncate: yup.number().truncate(),
   });
   await testXTimes(TestSchema);
@@ -42,6 +44,8 @@ test("should render integer", async () => {
     int_pos: yup.number().integer().positive(),
     int_req: yup.number().integer().required(),
     int_req_not_null: yup.number().integer().nullable(false).required(),
+    int_strict: yup.number().integer().strict(),
+    int_strict_false: yup.number().integer().strict(false),
   });
   await testXTimes(TestSchema);
 });

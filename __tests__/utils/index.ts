@@ -6,6 +6,8 @@ import { createConstrain } from "../../src/common";
 import { Constrain } from "../../src/data/constrains";
 import { UnknownDict } from "../../src/data/types";
 
+export type CheckFn<T> = (value: T) => void;
+
 export async function testXTimes(
   schema: AnySchema,
   nTimes = 50,

@@ -1,45 +1,118 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { randomIntInclusiveMock, randomMock } from "../../jest.setup";
-import { createTestItem } from "../utils";
 
 import * as yup from "yup";
 
-import { createSpecs } from "../utils";
+import { CheckFn, createTestItem, createSpecs } from "../utils";
+
 import { NUMBER_DEFAULTS, STRATEGY_DEFAULTS } from "../../src/config";
 import { enumerations } from "../../src/data";
 import { StrategyConstructor } from "../../src/data/strategies";
 import { FloatStrategy, NumberStrategy } from "../../src/strategies";
+import { Specs } from "../../src/data/specs";
 
 type VoidFn = (x: number) => void;
 
-const specsInt = createSpecs({ type: enumerations.SchemaType.Number });
-const specsFloat = createSpecs({ type: enumerations.SchemaType.Float });
+const specsInt = createSpecs({
+  type: enumerations.SchemaType.Number,
+  strict: true,
+});
+const specsFloat = createSpecs({
+  type: enumerations.SchemaType.Float,
+  strict: true,
+});
 const schemaInt = yup.number().integer().required();
 const schemaFloat = yup.number().required();
 
 const precisionOffset = Math.pow(10, NUMBER_DEFAULTS.precision);
 
+const isIntegerCheck = (x: number) => expect(Number.isInteger(x)).toBeTruthy();
+const isNotIntegerCheck = (x: number) =>
+  expect(!Number.isInteger(x)).toBeTruthy();
+const numberTestItem = (args: {
+  specs: Specs;
+  randomMockValue?: number;
+  schema?: yup.AnySchema;
+  asType?: string;
+  check?: CheckFn<number>;
+  strategy?: StrategyConstructor;
+  name?: string;
+}) =>
+  createTestItem({
+    specs: args.specs,
+    schema: args.schema ?? schemaInt,
+    randomMockValue: args.randomMockValue ?? STRATEGY_DEFAULTS.bool - 0.01,
+    asType: args.asType ?? "number",
+    check: args.check ?? isIntegerCheck,
+    strategy: args.strategy ?? NumberStrategy,
+  });
+
 test.each([
-  {
-    specs: specsInt,
-    strategy: NumberStrategy,
-    schema: schemaInt,
-    check: (x: number) => Number.isInteger(x),
-  },
-  {
+  numberTestItem({ specs: specsInt }),
+  numberTestItem({
+    specs: { ...specsInt, strict: undefined },
+    asType: "string",
+    randomMockValue: STRATEGY_DEFAULTS.bool + 0.01,
+  }),
+  numberTestItem({
+    specs: { ...specsInt, strict: false },
+    asType: "string",
+    randomMockValue: STRATEGY_DEFAULTS.bool + 0.01,
+  }),
+  numberTestItem({
+    specs: { ...specsInt, strict: undefined },
+  }),
+  numberTestItem({
     specs: specsFloat,
     strategy: FloatStrategy,
     schema: schemaFloat,
-    check: (x: number) => !Number.isInteger(x),
-  },
-])("should be $specs.type", ({ specs, strategy, schema, check }) => {
-  randomMock.mockReturnValue(0);
-  randomIntInclusiveMock.mockReturnValue(1);
+    check: isNotIntegerCheck,
+  }),
+  numberTestItem({
+    specs: { ...specsFloat, strict: undefined },
+    strategy: FloatStrategy,
+    schema: schemaFloat,
+    check: isNotIntegerCheck,
+    asType: "string",
+    randomMockValue: STRATEGY_DEFAULTS.bool + 0.01,
+  }),
+  numberTestItem({
+    specs: { ...specsFloat, strict: false },
+    strategy: FloatStrategy,
+    schema: schemaFloat,
+    check: isNotIntegerCheck,
+    asType: "string",
+    randomMockValue: STRATEGY_DEFAULTS.bool + 0.01,
+  }),
+  numberTestItem({
+    specs: { ...specsFloat, strict: undefined },
+    strategy: FloatStrategy,
+    schema: schemaFloat,
+    check: isNotIntegerCheck,
+  }),
+])(
+  "should be $specs.type as $asType with strict: $specs.strict",
+  ({ asType, specs, strategy, randomMockValue, schema, check }) => {
+    randomMock
+      .mockReturnValue(0)
+      .mockReturnValueOnce(randomMockValue as number);
+    randomIntInclusiveMock.mockReturnValue(1);
 
-  const val = new strategy({ specs, schema }).draw();
-  expect(typeof val === "number").toBeTruthy();
-  expect(check(val as number)).toBeTruthy();
-});
+    const val = new (strategy as StrategyConstructor)({
+      specs,
+      schema: schema as yup.AnySchema,
+    }).draw();
+    expect(typeof val === asType).toBeTruthy();
+    let _val = val;
+    if (asType === "string") {
+      _val =
+        specs.type === enumerations.SchemaType.Number
+          ? Number.parseInt(val as string)
+          : Number.parseFloat(val as string);
+    }
+    (check as CheckFn<number>)(_val as number);
+  }
+);
 
 test.each([
   createTestItem({

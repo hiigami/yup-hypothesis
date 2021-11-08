@@ -2,11 +2,21 @@ import { NUMBER_DEFAULTS } from "../config";
 import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
+import { NotStrict } from "../data/types";
 
 import { digits } from "./common";
+import { applyStrictness } from "./common/general";
 import { Strategy } from "./strategy";
 
-export class NumberStrategy extends Strategy<number> {
+type NumberUnStrict = NotStrict<number>;
+
+abstract class BaseStrategy extends Strategy<NumberUnStrict> {
+  protected _applyStrictness(val: number): NumberUnStrict {
+    return applyStrictness(val, (val) => val.toString(), this.specs.strict);
+  }
+}
+
+export class NumberStrategy extends BaseStrategy {
   constructor(args: StrategyArgs<NumberSpecs>) {
     super(args);
   }
@@ -28,7 +38,7 @@ export class NumberStrategy extends Strategy<number> {
   }
 }
 
-export class FloatStrategy extends Strategy<number> {
+export class FloatStrategy extends BaseStrategy {
   constructor(args: StrategyArgs<FloatSpecs>) {
     super(args);
   }
