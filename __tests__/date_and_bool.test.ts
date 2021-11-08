@@ -18,6 +18,8 @@ test("should render date", async () => {
     date_opt: yup.date().optional(),
     date_req: yup.date().required(),
     date_req_not_null: yup.date().nullable(false).required(),
+    date_strict: yup.date().strict(),
+    date_strict_false: yup.date().strict(false),
   });
   await testXTimes(TestSchema);
 });
