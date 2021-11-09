@@ -20,6 +20,7 @@ export interface BaseSpecs {
   mutations?: SpecMutation<AnySchema>[];
   nullable: boolean;
   presence: PresenceType;
+  strict?: boolean;
   type: SchemaType;
 }
 

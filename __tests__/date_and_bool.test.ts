@@ -18,6 +18,8 @@ test("should render date", async () => {
     date_opt: yup.date().optional(),
     date_req: yup.date().required(),
     date_req_not_null: yup.date().nullable(false).required(),
+    date_strict: yup.date().strict(),
+    date_strict_false: yup.date().strict(false),
   });
   await testXTimes(TestSchema);
 });
@@ -35,6 +37,8 @@ test("should render bool", async () => {
     bool_opt: yup.boolean().optional(),
     bool_req: yup.boolean().required(),
     bool_req_not_null: yup.boolean().nullable(false).required(),
+    bool_strict: yup.boolean().strict(),
+    bool_strict_false: yup.boolean().strict(false),
   });
   await testXTimes(TestSchema);
 });

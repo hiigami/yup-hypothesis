@@ -6,6 +6,8 @@ import { createConstrain } from "../../src/common";
 import { Constrain } from "../../src/data/constrains";
 import { UnknownDict } from "../../src/data/types";
 
+export type CheckFn<T> = (value: T) => void;
+
 export async function testXTimes(
   schema: AnySchema,
   nTimes = 50,
@@ -13,12 +15,13 @@ export async function testXTimes(
 ): Promise<void> {
   for (let index = 0; index < nTimes; index++) {
     const example = yh.example(schema, context) as InferType<typeof schema>;
-    // const a = await schema.isValid(example);
-    // if (!a) {
-    //   console.log(example);
-    //   const r = await schema.validate(example);
-    //   console.log(r);
-    // }
+    const a = await schema.isValid(example, { context });
+    if (!a) {
+      console.log(`context: ${JSON.stringify(context)}`);
+      console.log(`example: ${JSON.stringify(example)}`);
+      const r = await schema.validate(example);
+      console.log(r);
+    }
     await expect(schema.isValid(example, { context })).resolves.toBeTruthy();
   }
 }
@@ -72,6 +75,7 @@ export const createSpecs = (args?: {
   type?: enumerations.SchemaType;
   presence?: enumerations.PresenceType;
   sign?: enumerations.Sign;
+  strict?: boolean;
   nullable?: boolean;
   min?: number;
   max?: number;
@@ -84,6 +88,7 @@ export const createSpecs = (args?: {
   min: args?.min,
   max: args?.max,
   length: args?.length,
+  strict: args?.strict,
 });
 
 interface TestItemArgs extends UnknownDict {

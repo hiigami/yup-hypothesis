@@ -12,6 +12,7 @@ import { FloatStrategy } from "../../src/strategies";
 const specs = createSpecs({
   type: enumerations.SchemaType.Float,
   sign: enumerations.Sign.Positive,
+  strict: true,
 });
 const schema = yup.number().required();
 

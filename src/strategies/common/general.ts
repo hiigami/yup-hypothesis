@@ -1,5 +1,6 @@
 import { STRATEGY_DEFAULTS } from "../../config";
 import { constrains } from "../../data";
+import { GenericFnWithArg } from "../../data/types";
 import { random } from "../../random";
 
 export function orderValues(value1: number, value2: number): [number, number] {
@@ -31,4 +32,15 @@ export function getValidValueOrBest(
 
 export function randomBoolean(): boolean {
   return random() < STRATEGY_DEFAULTS.bool;
+}
+
+export function applyStrictness<A, B>(
+  val: A,
+  fn: GenericFnWithArg<A, B>,
+  strict?: boolean
+): A | B {
+  if (strict) {
+    return val;
+  }
+  return randomBoolean() ? val : fn(val);
 }

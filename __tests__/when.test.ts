@@ -6,15 +6,17 @@ import * as rnd from "../src/random";
 import * as yup from "yup";
 import { testXTimes } from "./utils";
 
-const Context = { b: 5, cc: 4, t: true };
+const Context = { bb: 5, cc: 4, t: true };
 
 const TestSchema = yup.object({
   a: yup.number().positive().min(3).max(20),
   b: yup
     .number()
     .positive()
-    .when("e.a", (a, schema) => {
-      return a ? schema.min(3).max(a) : schema;
+    .when("e.a", (val, schema) => {
+      return val === undefined || val === null
+        ? schema
+        : schema.min(3).max(val);
     }),
   c: yup
     .number()
@@ -37,9 +39,9 @@ const TestSchema = yup.object({
     a: yup
       .number()
       .positive()
-      .when(["$b", "$cc"], {
-        is: (b?: number, c?: number): boolean => {
-          return Number.isInteger(c) && Number.isInteger(b);
+      .when(["$bb", "$cc"], {
+        is: (bb?: number, cc?: number): boolean => {
+          return Number.isInteger(cc) && Number.isInteger(bb);
         },
         then: yup.number().required().min(3).max(20),
         otherwise: yup.number().optional().nullable().min(20).max(100),
@@ -54,9 +56,11 @@ const TestSchema = yup.object({
         })
         .max(5)
     ),
-    z: yup
-      .mixed()
-      .when("$t", { is: true, then: yup.boolean(), otherwise: yup.number() }),
+    z: yup.mixed().when("$t", {
+      is: true,
+      then: yup.boolean().strict(),
+      otherwise: yup.number(),
+    }),
   }),
 });
 
