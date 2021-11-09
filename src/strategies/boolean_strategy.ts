@@ -4,20 +4,20 @@ import { randomChoice } from "../random";
 import { applyStrictness, randomBoolean } from "./common/general";
 import { Strategy } from "./strategy";
 
-function asNotStrict(val: boolean) {
+type NotStrictBoolean = NotStrict<boolean | number>;
+
+function asNotStrict(val: boolean): NotStrictBoolean {
   if (val) {
     return randomChoice([true, 1, "true", "1"]);
   }
   return randomChoice([false, 0, "false", "0"]);
 }
 
-type BooleanUnStrict = NotStrict<boolean | number>;
-
-export class BooleanStrategy extends Strategy<BooleanUnStrict> {
-  protected _applyStrictness(val: boolean): BooleanUnStrict {
+export class BooleanStrategy extends Strategy<NotStrictBoolean> {
+  protected _applyStrictness(val: boolean): NotStrictBoolean {
     return applyStrictness(val, asNotStrict, this.specs.strict);
   }
-  protected _draw(): BooleanUnStrict {
+  protected _draw(): NotStrictBoolean {
     return randomBoolean();
   }
 }

@@ -5,20 +5,20 @@ import { NotStrict } from "../data/types";
 import { applyStrictness } from "./common/general";
 import { Strategy } from "./strategy";
 
-type DateUnStrict = NotStrict<Date>;
+type NotStrictDate = NotStrict<Date>;
 
-export class DateStrategy extends Strategy<DateUnStrict> {
+export class DateStrategy extends Strategy<NotStrictDate> {
   constructor(args: StrategyArgs<DateSpecs>) {
     super(args);
   }
-  protected _applyStrictness(val: Date): DateUnStrict {
+  protected _applyStrictness(val: Date): NotStrictDate {
     return applyStrictness(
       val,
       (x: Date) => x.toISOString(),
       this.specs.strict
     );
   }
-  protected _draw(): DateUnStrict {
+  protected _draw(): NotStrictDate {
     const min = new Date(this.specs.min || 0).getTime();
     const max = this.specs.max
       ? new Date(this.specs.max).getTime()

@@ -8,10 +8,10 @@ import { digits } from "./common";
 import { applyStrictness } from "./common/general";
 import { Strategy } from "./strategy";
 
-type NumberUnStrict = NotStrict<number>;
+type NotStrictNumber = NotStrict<number>;
 
-abstract class BaseStrategy extends Strategy<NumberUnStrict> {
-  protected _applyStrictness(val: number): NumberUnStrict {
+abstract class BaseStrategy extends Strategy<NotStrictNumber> {
+  protected _applyStrictness(val: number): NotStrictNumber {
     return applyStrictness(val, (val) => val.toString(), this.specs.strict);
   }
 }
