@@ -46,6 +46,10 @@ const anyExample = yh.example(TestSchema);
 console.log(anyExample);
 ```
 
+> **_WARNING_** &nbsp; If _strict is not set to true in your yup schema_ you might not get the exact type returned from the `yh.example` function.
+>
+> e.g. `yh.example(yup.boolean())` will return a valid value for the schema, but can be one of the following types: boolean, number or string.
+
 ### With context
 
 ```js
