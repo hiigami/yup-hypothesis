@@ -20,6 +20,8 @@ test("should render string", async () => {
     str_opt: yup.string().optional(),
     str_req: yup.string().required(),
     str_req_not_null: yup.string().nullable(false).required(),
+    str_strict: yup.string().strict(),
+    str_strict_false: yup.string().strict(false),
     str_trim: yup.string().trim(),
     str_upper: yup.string().uppercase(),
   });
