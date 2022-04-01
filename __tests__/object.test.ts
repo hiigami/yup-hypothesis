@@ -1,10 +1,10 @@
-jest.unmock("../src/random");
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as rnd from "../src/random";
-
 import * as yup from "yup";
+
+import * as rnd from "../src/random";
 import { testXTimes } from "./utils";
+
+jest.unmock("../src/random");
 
 const ObjectSchema = yup.object();
 const ObjectSchemaWithStringItem = yup.object({ str: yup.string() });
@@ -76,4 +76,26 @@ test("should render nested objects", async () => {
     strip: yup.string().strip(),
   });
   await testXTimes(TestSchema, 200);
+});
+
+test("should render object with mutation returning new schema", async () => {
+  const tt = yup
+    .object()
+    .shape({ key: yup.string() })
+    .noUnknown()
+    .withMutation((_schema) => {
+      return yup.object().shape({ a: yup.number() }).noUnknown();
+    });
+  await testXTimes(tt, 200);
+});
+
+test("should render object with mutation returning same schema", async () => {
+  const tt = yup
+    .object()
+    .shape({ key: yup.string() })
+    .noUnknown()
+    .withMutation((schema) => {
+      return schema.shape({ a: yup.number() }).noUnknown();
+    });
+  await testXTimes(tt, 200);
 });
