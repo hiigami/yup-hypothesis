@@ -1,10 +1,10 @@
-jest.unmock("../src/random");
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as rnd from "../src/random";
-
 import * as yup from "yup";
+
+import * as rnd from "../src/random";
 import { testXTimes } from "./utils";
+
+jest.unmock("../src/random");
 
 test("should render mixed", async () => {
   const TestSchema = yup.object({
