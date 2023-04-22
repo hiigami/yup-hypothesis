@@ -2,7 +2,6 @@ import { URL_SCHEMAS } from "../../config";
 import { constrains } from "../../data";
 import { ReadOnlyArray } from "../../data/types";
 import { random, randomChoice, randomIntInclusive } from "../../random";
-
 import { getValidValueOrBest } from "./general";
 
 interface URLOptions {
@@ -98,16 +97,42 @@ function genEntity(size: number): string {
   return genSection(size, EXTRA_CHARS.slice(0, 2));
 }
 
-function genHost(size: number, defaults: HostDefaults, strict = false) {
+function replaceInvalidChar(txt: string) {
+  let tmp = txt;
+  if (EXTRA_CHARS.lastIndexOf(txt.slice(-1)) > -1) {
+    tmp = tmp.slice(0, tmp.length - 1) + randomChoice<string>(LETTERS);
+  }
+  if (EXTRA_CHARS.lastIndexOf(tmp[0]) > -1) {
+    return randomChoice<string>(LETTERS) + tmp.slice(1, tmp.length);
+  }
+  return tmp;
+}
+
+function ensureHostDotRule(txt: string): string {
+  const tmp = txt.split(".");
+  const size = tmp.length - 1;
+  for (let i = size; i > -1; i--) {
+    const l = tmp[i].length;
+    if (l > 61) {
+      const half = Math.floor(l / 2);
+      const item = tmp[i];
+      tmp[i] = replaceInvalidChar(item.slice(0, half));
+      tmp.push(replaceInvalidChar(item.slice(half, l - 1)));
+    }
+  }
+  return tmp.join(".");
+}
+
+export function genHost(size: number, defaults: HostDefaults, strict = false) {
   // offset = TLD (x1)
   const _size = strict ? size - defaults.tld.max : size;
   const entitySize = getSectionLength(_size, 1, defaults.entity);
-  const entity = genEntity(entitySize);
+  const entity = ensureHostDotRule(genEntity(entitySize));
   const tldSize = strict
     ? size - entity.length
     : getSectionLength(size - entity.length, 0, defaults.tld, strict);
-  const tld = genEntity(tldSize);
-  return `${entity}.${tld}`;
+  const tld = ensureHostDotRule(genEntity(tldSize));
+  return ensureHostDotRule(`${entity}.${tld}`);
 }
 
 export function genEmail(

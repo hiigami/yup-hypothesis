@@ -1,5 +1,4 @@
 import { AnySchema } from "yup";
-import Condition from "yup/lib/Condition";
 
 import { NOT_DEFINED } from "../config";
 import { PresenceType } from "../data/enumerations";
@@ -10,8 +9,9 @@ import {
   StrategyArgs,
 } from "../data/strategies";
 import Processor from "../processor";
-
 import { Strategy } from "./strategy";
+
+type Condition = AnySchema["conditions"];
 
 export class ConditionalStrategy extends Strategy<unknown> {
   private conditions: Condition[];
@@ -19,7 +19,9 @@ export class ConditionalStrategy extends Strategy<unknown> {
   constructor(args: StrategyArgs<BaseSpecs>) {
     super(args);
     this.conditions = this.schema["conditions"] as Condition[];
-    this.depends = this.conditions.map((c) => c.refs.map((r) => r.key)).flat();
+    this.depends = this.conditions
+      .map((c) => c.refs.map((r: { key: unknown }) => r.key))
+      .flat();
   }
   private _drawWithParent(
     strategy?: IStrategy,

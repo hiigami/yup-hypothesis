@@ -1,9 +1,10 @@
-import { Test } from "yup/lib/util/createValidation";
+import { Schema } from "yup";
 
-import { TestParameter, TestName } from "./data/enumerations";
+import { TestName, TestParameter } from "./data/enumerations";
 import { ITestSearch } from "./data/test_search";
 import { Maybe } from "./data/types";
 
+type Test = Schema["tests"][0];
 type ExtraParams = Record<string, unknown>;
 type Mapper = Map<string, Map<string, unknown>>;
 
@@ -24,12 +25,12 @@ export class TestSearch implements ITestSearch {
     const mapper = new Map();
     for (const test of tests) {
       const options = test.OPTIONS;
-      if (!mapper.has(options.name)) {
-        mapper.set(options.name, new Map());
+      if (!mapper.has(options?.name)) {
+        mapper.set(options?.name, new Map());
       }
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const item = mapper.get(options.name)!;
-      this._setParams(item, options.params);
+      const item = mapper.get(options?.name)!;
+      this._setParams(item, options?.params);
     }
     return mapper;
   }

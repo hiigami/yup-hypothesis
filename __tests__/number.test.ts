@@ -6,6 +6,7 @@ import * as rnd from "../src/random";
 import * as yup from "yup";
 import { testXTimes } from "./utils";
 
+
 test("should render float", async () => {
   const TestSchema = yup.object({
     float: yup.number(),
@@ -20,7 +21,7 @@ test("should render float", async () => {
     float_opt: yup.number().optional(),
     float_pos: yup.number().positive(),
     float_req: yup.number().required(),
-    float_req_not_null: yup.number().nullable(false).required(),
+    float_req_not_null: yup.number().nonNullable().required(),
     float_round: yup.number().round("floor"),
     float_strict: yup.number().strict(),
     float_strict_false: yup.number().strict(false),
@@ -43,7 +44,7 @@ test("should render integer", async () => {
     int_opt: yup.number().integer().optional(),
     int_pos: yup.number().integer().positive(),
     int_req: yup.number().integer().required(),
-    int_req_not_null: yup.number().integer().nullable(false).required(),
+    int_req_not_null: yup.number().integer().nonNullable().required(),
     int_strict: yup.number().integer().strict(),
     int_strict_false: yup.number().integer().strict(false),
   });

@@ -1,10 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as yup from "yup";
-
-import * as rnd from "../src/random";
-import { testXTimes } from "./utils";
-
 jest.unmock("../src/random");
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as rnd from "../src/random";
+
+import * as yup from "yup";
+import { testXTimes } from "./utils";
 
 const ObjectSchema = yup.object();
 const ObjectSchemaWithStringItem = yup.object({ str: yup.string() });
@@ -66,7 +66,7 @@ test("should render nested objects", async () => {
     obj_not_req: ObjectSchemaWithStringItem.notRequired(),
     obj_null: ObjectSchemaWithStringItem.nullable(),
     obj_one_of: ObjectSchemaWithStringItem.oneOf([{ str: "b" }, { str: "c" }]),
-    obj_req_not_null: ObjectSchemaWithStringItem.nullable(false).required(),
+    obj_req_not_null: ObjectSchemaWithStringItem.nonNullable().required(),
     obj_snake_case: yup
       .object({
         str_sub_5: yup.string(),

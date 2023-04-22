@@ -13,7 +13,8 @@ const TestSchema = yup.object({
   b: yup
     .number()
     .positive()
-    .when("e.a", (val, schema) => {
+    .when("e.a", (values, schema) => {
+      const val = values[0];
       return val === undefined || val === null
         ? schema
         : schema.min(3).max(val);
@@ -24,16 +25,16 @@ const TestSchema = yup.object({
     .required()
     .when("d", {
       is: (a?: number) => a,
-      then: yup.number().min(2),
-      otherwise: yup.number().min(10),
+      then: (_schema) => yup.number().min(2),
+      otherwise: (_schema) => yup.number().min(10),
     }),
   d: yup
     .number()
     .positive()
     .when("a", {
       is: (a?: number) => a,
-      then: yup.number().min(2),
-      otherwise: yup.number().min(10),
+      then: (_schema) => yup.number().min(2),
+      otherwise: (_schema) => yup.number().min(10),
     }),
   e: yup.object({
     a: yup
@@ -43,23 +44,24 @@ const TestSchema = yup.object({
         is: (bb?: number, cc?: number): boolean => {
           return Number.isInteger(cc) && Number.isInteger(bb);
         },
-        then: yup.number().required().min(3).max(20),
-        otherwise: yup.number().optional().nullable().min(20).max(100),
+        then: (_schema) => yup.number().required().min(3).max(20),
+        otherwise: (_schema) =>
+          yup.number().optional().nullable().min(20).max(100),
       }),
     r: yup.array().of(
       yup
         .number()
         .when("$t", {
           is: true,
-          then: yup.number().positive(),
-          otherwise: yup.number().negative(),
+          then: (_schema) => yup.number().positive(),
+          otherwise: (_schema) => yup.number().negative(),
         })
         .max(5)
     ),
     z: yup.mixed().when("$t", {
       is: true,
-      then: yup.boolean().strict(),
-      otherwise: yup.number(),
+      then: (_schema) => yup.boolean().strict(),
+      otherwise: (_schema) => yup.number(),
     }),
   }),
 });
@@ -67,8 +69,8 @@ const TestSchema = yup.object({
 test("should apply conditionals in non array or object schema", async () => {
   const TestStringSchema = yup.string().when("$t", {
     is: true,
-    then: yup.string().nullable(),
-    otherwise: yup.string().oneOf(["a", "b"]),
+    then: (_schema) => yup.string().nullable(),
+    otherwise: (_schema) => yup.string().oneOf(["a", "b"]),
   });
   await testXTimes(TestStringSchema, 5);
   await testXTimes(TestStringSchema, 5, Context);

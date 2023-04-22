@@ -1,5 +1,6 @@
-import { AnySchema } from "yup";
+import { AnySchema, ref } from "yup";
 
+import { is } from "./common";
 import { handlers, strategy, types } from "./data";
 import {
   ArrayHandler,
@@ -7,6 +8,8 @@ import {
   FieldHandler,
   ObjectHandler,
 } from "./handler";
+
+type Reference = ReturnType<typeof ref>;
 
 export default class Processor {
   private static instance: Processor;
@@ -27,11 +30,15 @@ export default class Processor {
     }
     return undefined;
   }
-  private processFields(schemas: AnySchema[]): strategy.Fields {
+  private processFields<T>(rawFields: T): strategy.Fields {
     const fields: strategy.Fields = {};
-    for (const name in schemas) {
-      if (schemas[name].spec.strip !== true) {
-        fields[name] = this.run(schemas[name]);
+    for (const name in rawFields) {
+      /** @todo add reference logic */
+      if (
+        is<AnySchema, Reference>(rawFields[name] as AnySchema, "spec") &&
+        (rawFields[name] as AnySchema).spec.strip !== true
+      ) {
+        fields[name] = this.run(rawFields[name] as AnySchema);
       }
     }
     return fields;

@@ -4,14 +4,13 @@ import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields } from "../data/strategies";
 import { ObjectStrategy } from "../strategies";
-
 import { Handler } from "./handler";
 
-export class ObjectHandler extends Handler {
+export class ObjectHandler extends Handler<handlers.Shape> {
   constructor() {
     super(SchemaType.Object);
   }
-  getFields(schema: AnyObjectSchema): handlers.Schemas {
+  getFields(schema: AnyObjectSchema): handlers.Shape {
     return schema.fields;
   }
   handle(schema: AnyObjectSchema, fields?: Fields): Field {

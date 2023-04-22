@@ -1,13 +1,12 @@
 import { AnySchema } from "yup";
 
-import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
 import { Field, Fields } from "../data/strategies";
 import { Maybe } from "../data/types";
 import { SchemaBuilder } from "../schema_builder";
 
-export abstract class Handler {
+export abstract class Handler<T> {
   protected schemaType: Maybe<SchemaType>;
   constructor(schemaType?: SchemaType) {
     this.schemaType = schemaType;
@@ -15,7 +14,7 @@ export abstract class Handler {
   protected getSpecs(schema: AnySchema): Maybe<Specs> {
     return new SchemaBuilder(schema).specs();
   }
-  getFields(_schema: AnySchema): handlers.Schemas {
+  getFields(_schema: AnySchema): Maybe<T> {
     return undefined;
   }
   canHandle(t: AnySchema): boolean {

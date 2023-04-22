@@ -1,12 +1,12 @@
 import { AnySchema } from "yup";
 
+import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields } from "../data/strategies";
 import { ConditionalStrategy } from "../strategies";
-
 import { Handler } from "./handler";
 
-export class ConditionalHandler extends Handler {
+export class ConditionalHandler extends Handler<handlers.Schemas> {
   constructor() {
     super(SchemaType.Conditional);
   }

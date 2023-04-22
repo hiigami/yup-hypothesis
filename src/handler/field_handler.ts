@@ -1,13 +1,13 @@
 import { AnySchema } from "yup";
 
+import { title } from "../common";
+import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields, StrategyConstructor } from "../data/strategies";
-import { title } from "../common";
 import { schemaToStrategyMapper } from "../mapper";
-
 import { Handler } from "./handler";
 
-export class FieldHandler extends Handler {
+export class FieldHandler extends Handler<handlers.Schemas> {
   canHandle(t: AnySchema): boolean {
     const key = title(t.type);
     const schemaType = SchemaType[key as keyof typeof SchemaType];
