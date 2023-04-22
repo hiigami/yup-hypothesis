@@ -1,9 +1,8 @@
 import { AnySchema } from "yup";
 
-import { PresenceType, SchemaType, TestName } from "../data/enumerations";
-import { Specs, SpecMutation } from "../data/specs";
+import { PresenceType, SchemaType } from "../data/enumerations";
+import { SpecMutation, Specs } from "../data/specs";
 import { ITestSearch } from "../data/test_search";
-import { title } from "../common";
 
 export interface SpecConstructor {
   new (schema: AnySchema, testSearch: ITestSearch): Spec;
@@ -18,11 +17,13 @@ export abstract class Spec {
     this.testSearch = testSearch;
   }
   private _getPresence(): PresenceType {
-    const keyName = title(this.schema.spec.presence);
-    if (this.testSearch.has(TestName.Defined)) {
-      return PresenceType.Defined;
+    if (this.schema.spec.optional) {
+      return PresenceType.Optional;
     }
-    return PresenceType[keyName as keyof typeof PresenceType];
+    if (!this.schema.spec.nullable) {
+      return PresenceType.Required;
+    }
+    return PresenceType.Defined;
   }
   protected abstract _getType(): SchemaType;
   protected _getChoices(exclude: Set<unknown>): unknown[] {

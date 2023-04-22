@@ -1,5 +1,5 @@
-import { constrains, enumerations } from "../data";
 import { createConstrain, createInternetConstrain } from "../common";
+import { constrains, enumerations } from "../data";
 
 export const ARRAY_DEFAULTS = createConstrain(0, 99);
 

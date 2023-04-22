@@ -1,10 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as yup from "yup";
-
-import * as rnd from "../src/random";
-import { testXTimes } from "./utils";
-
 jest.unmock("../src/random");
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as rnd from "../src/random";
+
+import * as yup from "yup";
+import { testXTimes } from "./utils";
 
 test("should render mixed", async () => {
   const TestSchema = yup.object({
@@ -16,7 +16,7 @@ test("should render mixed", async () => {
     mixed_one_of: yup.mixed().oneOf([true, "we", 33.2]),
     mixed_opt: yup.mixed().optional(),
     mixed_req: yup.mixed().required(),
-    mixed_req_not_null: yup.mixed().nullable(false).required(),
+    mixed_req_not_null: yup.mixed().nonNullable().required(),
   });
   await testXTimes(TestSchema);
 });

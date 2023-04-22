@@ -1,8 +1,11 @@
-import { ObjectSchemaSpec } from "yup/lib/object";
+import { ObjectSchema } from "yup";
 
 import { SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
 import { Spec } from "./spec";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ObjectSchemaSpec = ObjectSchema<any, any, any, any>["spec"];
 
 export class ObjectSpec extends Spec {
   protected _getType(): SchemaType {

@@ -17,6 +17,12 @@ test.each([
   randEmail(),
   randEmail(),
   randEmail(),
+  randEmail(),
+  randEmail(),
+  randEmail(),
+  randEmail(),
+  randEmail(),
+  randEmail(),
 ])("should return an email of size: $size", ({ size }) => {
   const val = internet.genEmail(size, EMAIL_DEFAULTS);
   expect(val.length).toEqual(size);

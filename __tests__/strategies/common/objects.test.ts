@@ -1,16 +1,16 @@
 import * as yup from "yup";
 
-import { createSpecs } from "../../utils";
-
 import { NOT_DEFINED } from "../../../src/config";
 import { UnknownDict } from "../../../src/data/types";
 import { ConditionalStrategy } from "../../../src/strategies";
 import { objects } from "../../../src/strategies/common";
-import { ConditionOptions } from "yup/lib/Condition";
+import { createSpecs } from "../../utils";
+
+type ConditionOptions = Parameters<yup.AnySchema["when"]>[1];
 
 const createConditionalStrategy = (
   keys: string | string[],
-  options: ConditionOptions<yup.AnySchema>
+  options: ConditionOptions
 ) =>
   new ConditionalStrategy({
     specs: createSpecs(),
@@ -20,8 +20,8 @@ const createConditionalStrategy = (
 const options = { context: { t: true } };
 const conditionalStrategy = createConditionalStrategy("k2.k2_2", {
   is: true,
-  then: yup.string().required(),
-  otherwise: yup.string().nullable(true),
+  then: (_schema) => yup.string().required(),
+  otherwise: (_schema) => yup.string().nullable(),
 });
 
 const createDummyField = (drawValue: unknown, isDefined = true) => ({
@@ -50,8 +50,8 @@ test("should draw fields", () => {
 test("should draw conditional fields", () => {
   const conditionalStrategy2 = createConditionalStrategy("k2.k2_1", {
     is: false,
-    then: yup.string().lowercase(),
-    otherwise: yup.string().uppercase(),
+    then: (_schema) => yup.string().lowercase(),
+    otherwise: (_schema) => yup.string().uppercase(),
   });
 
   conditionalStrategy2.draw = jest.fn((_args?: UnknownDict) => NOT_DEFINED);

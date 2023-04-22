@@ -1,12 +1,15 @@
-import { AnySchema } from "yup";
+import { AnyObjectSchema, AnySchema } from "yup";
 
-import { Fields, Field } from "./strategies";
+import { ArraySchemaAny } from "./schemas";
+import { Field, Fields } from "./strategies";
 import { Maybe } from "./types";
 
-export type Schemas = Maybe<AnySchema[]>;
+export type Schemas = Maybe<NonNullable<ArraySchemaAny["innerType"]>[]>;
+export type Shape = AnyObjectSchema["fields"];
 
+type IHandlerType = Schemas | Shape;
 export interface IHandler {
   canHandle(t: AnySchema): boolean;
-  getFields(schema: AnySchema): Schemas;
+  getFields(schema: AnySchema): IHandlerType;
   handle(schema: AnySchema, fields?: Fields): Field;
 }

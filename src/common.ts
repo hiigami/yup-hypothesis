@@ -23,5 +23,9 @@ export function createInternetConstrain<T extends InternetConstrain>(
 }
 
 export function title(s: string): Capitalize<string> {
-  return `${s.charAt(0).toUpperCase()}${s.slice(1)}`;
+  return `${s.charAt(0).toUpperCase()}${s.slice(1)}` as Capitalize<string>;
+}
+
+export function is<A, B>(x: A | B, m: keyof A): x is A {
+  return (x as A)[m] !== undefined;
 }
