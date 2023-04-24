@@ -7,6 +7,7 @@ import {
   ConditionalHandler,
   FieldHandler,
   ObjectHandler,
+  TupleHandler,
 } from "./handler";
 
 type Reference = ReturnType<typeof ref>;
@@ -20,6 +21,7 @@ export default class Processor {
       new ArrayHandler(),
       new FieldHandler(),
       new ObjectHandler(),
+      new TupleHandler(),
     ]);
   }
   private getHandler(schema: AnySchema): types.Maybe<handlers.IHandler> {
