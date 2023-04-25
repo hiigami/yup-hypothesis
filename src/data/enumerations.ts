@@ -20,6 +20,7 @@ export enum SchemaType {
   Number = "number",
   Object = "object",
   String = "string",
+  Tuple = "tuple",
   URL = "url",
   UUID = "uuid",
 }

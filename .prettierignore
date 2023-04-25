@@ -5,5 +5,5 @@ coverage
 # Ignore all HTML files:
 *.html
 
-# Ignore all HTML files:
+# Ignore all Test files:
 __tests__

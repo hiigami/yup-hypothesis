@@ -7,3 +7,4 @@ export { NumberSpec } from "./number_spec";
 export { ObjectSpec } from "./object_spec";
 export { SpecConstructor } from "./spec";
 export { StringSpec } from "./string_spec";
+export { TupleSpec } from "./tuple_spec";

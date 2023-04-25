@@ -1,6 +1,5 @@
 import { NotStrict } from "../data/types";
 import { randomChoice } from "../random";
-
 import { applyStrictness, randomBoolean } from "./common/general";
 import { Strategy } from "./strategy";
 

@@ -1,6 +1,5 @@
 import { SchemaType } from "../data/enumerations";
 import { StrategyConstructor } from "../data/strategies";
-
 import * as specs from "../specs";
 import * as strategies from "../strategies";
 
@@ -19,6 +18,7 @@ export const schemaToSpecMapper = new Map<SchemaType, specs.SpecConstructor>([
   [SchemaType.Number, specs.NumberSpec],
   [SchemaType.Object, specs.ObjectSpec],
   [SchemaType.String, specs.StringSpec],
+  [SchemaType.Tuple, specs.TupleSpec],
 ]);
 
 export const schemaToStrategyMapper = new Map<SchemaType, StrategyConstructor>([
