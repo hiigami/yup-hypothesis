@@ -7,7 +7,7 @@
 ![GitHub](https://img.shields.io/github/license/hiigami/yup-hypothesis)
 
 Create random data from a Yup schema.
-You can use the project's [roadmap](https://github.com/hiigami/yup-hypothesis/wiki/Roadmap) to see the current supported features.
+You can use the project's [roadmap](https://github.com/hiigami/yup-hypothesis/wiki/Roadmap-v1.x.x) to see the current supported features.
 
 ## Install
 
@@ -40,6 +40,11 @@ const TestArraySchema = yup.array(TestObjectSchema);
 const arrayExample = yh.example(TestArraySchema);
 console.log(arrayExample);
 
+// -- Tuple --
+const TestTupleSchema = yup.tuple([yup.string().label("name").required()]);
+const tupleExample = yh.example(TestTupleSchema);
+console.log(tupleExample);
+
 // -- mixed, string, number, boolean, date --
 const TestSchema = yup.string().required();
 const anyExample = yh.example(TestSchema);
@@ -55,8 +60,8 @@ console.log(anyExample);
 ```js
 const TestConditionalSchema = yup.string().when("$t", {
   is: true,
-  then: yup.string().nullable(),
-  otherwise: yup.string().oneOf(["a", "b"]),
+  then: (_schema) => yup.string().nullable(),
+  otherwise: (_schema) => yup.string().oneOf(["a", "b"]),
 });
 const context = { t: true };
 const exampleWithContext = yh.example(TestConditionalSchema, context);
