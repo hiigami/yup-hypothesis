@@ -23,9 +23,12 @@ test("should render a tuple", async () => {
 });
 
 test("should render a tuple with different options", async () => {
-  await testXTimes(yup.tuple([yup.string().label("name")]).optional());
-  await testXTimes(yup.tuple([yup.string().label("name")]).required());
-  await testXTimes(yup.tuple([yup.string().label("name")]).nonNullable());
-  await testXTimes(yup.tuple([yup.string().label("name")]).notRequired());
-  await testXTimes(yup.tuple([yup.string().label("name")]).defined());
+  const TestSchema = yup.object({
+    tuple_optional: yup.tuple([yup.string().label("name")]).optional(),
+    tuple_required: yup.tuple([yup.string().label("name")]).required(),
+    tuple_non_nullable: yup.tuple([yup.string().label("name")]).nonNullable(),
+    tuple_not_required: yup.tuple([yup.string().label("name")]).notRequired(),
+    tuple_defined: yup.tuple([yup.string().label("name")]).defined(),
+});
+  await testXTimes(TestSchema);
 });
