@@ -36,7 +36,7 @@ test("should draw fields", () => {
     tmp2: createDummyField(2, false),
     tmp3: conditionalStrategy,
   };
-  const conditionals = objects.drawFields(result, fields, options);
+  const {conditionals, references} = objects.drawFields(result, fields, options);
 
   expect(fields.tmp1.isDefined).toHaveBeenCalled();
   expect(fields.tmp1.draw).toHaveBeenCalledWith(options);
@@ -45,6 +45,7 @@ test("should draw fields", () => {
   expect(result).toEqual({ tmp1: 1 });
   expect(conditionals.size).toEqual(1);
   expect(conditionals.get("tmp3")).toEqual(conditionalStrategy);
+  expect(references.size).toEqual(0);
 });
 
 test("should draw conditional fields", () => {
