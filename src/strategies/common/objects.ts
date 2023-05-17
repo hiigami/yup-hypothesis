@@ -29,7 +29,7 @@ function isReference(
   field: Field,
   references: ReferenceMap
 ): boolean {
-  if (field instanceof ReferenceStrategy) {
+  if (field instanceof ReferenceStrategy && !field.isContext) {
     references.set(name, field);
     return true;
   }
@@ -48,7 +48,7 @@ export function drawFields(
     const conditional = isConditional(x, field, conditionals);
     const reference = isReference(x, field, references);
     if (!conditional && !reference && field?.isDefined()) {
-      result[x] = field?.draw(options);
+      result[x] = field?.draw({ ...options, parent: result });
     }
   }
   return { conditionals, references };
@@ -98,16 +98,7 @@ export function drawReferences(
   references: ReferenceMap,
   options?: ConditionalOptions
 ): void {
-  const keys = [...references.entries()]
-    .sort((a, b) => {
-      if (a[1].isContext) {
-        return -1;
-      } else if (b[1].isContext) {
-        return 1;
-      }
-      return 0;
-    })
-    .map((x) => x[0]);
+  const keys = [...references.keys()];
   while (keys.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const key = keys.shift()!;
