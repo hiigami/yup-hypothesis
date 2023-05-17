@@ -98,14 +98,21 @@ export function drawReferences(
   references: ReferenceMap,
   options?: ConditionalOptions
 ): void {
-  const resultKeys = Object.keys(result);
-  const keys = [...references.keys()];
+  const keys = [...references.entries()]
+    .sort((a, b) => {
+      if (a[1].isContext) {
+        return -1;
+      } else if (b[1].isContext) {
+        return 1;
+      }
+      return 0;
+    })
+    .map((x) => x[0]);
   while (keys.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const key = keys.shift()!;
     const current = references.get(key);
     setResultFromStrategy(key, result, current, options);
-    resultKeys.push(key);
     references.delete(key);
   }
 }

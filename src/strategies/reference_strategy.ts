@@ -64,11 +64,10 @@ function resolve(input: string, item: never) {
       }
     }
     if (lastCurrentPosition === currentPosition) {
-      throw new Error(
-        `Unknown path for: ${input[currentPosition]} in object ${JSON.stringify(
-          item
-        )}`
+      console.warn(
+        `Unknown path for: ${input} in object ${JSON.stringify(item)}`
       );
+      return undefined;
     }
     lastCurrentPosition = currentPosition;
   }
@@ -76,20 +75,25 @@ function resolve(input: string, item: never) {
 }
 
 export class ReferenceStrategy implements IStrategy {
-  private key;
-  constructor(args: { key: string }) {
-    this.key = args.key;
+  private path;
+  readonly isContext;
+  constructor(args: { path: string; isContext: boolean }) {
+    this.path = args.path;
+    this.isContext = args.isContext;
   }
   isDefined(): boolean {
     return true;
   }
-  public draw(options?: ConditionalOptions): unknown {
-    if (this.key.startsWith("$", 0) && options?.context !== undefined) {
-      return resolve(this.key.slice(1), options.context as never);
-    }
+  private _draw(options?: ConditionalOptions) {
     if (options?.parent !== undefined) {
-      return resolve(this.key, options.parent as never);
+      return resolve(this.path, options.parent as never);
     }
     return undefined;
+  }
+  public draw(options?: ConditionalOptions): unknown {
+    if (this.isContext && options?.context !== undefined) {
+      return resolve(this.path, options.context as never);
+    }
+    return this._draw(options);
   }
 }

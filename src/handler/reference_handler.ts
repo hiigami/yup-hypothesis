@@ -15,6 +15,6 @@ export class ReferenceHandler implements IHandler {
     return undefined;
   }
   handle(ref: Reference, _fields?: Fields): Field {
-    return new ReferenceStrategy({ key: ref.key });
+    return new ReferenceStrategy({ path: ref.path, isContext: ref.isContext });
   }
 }
