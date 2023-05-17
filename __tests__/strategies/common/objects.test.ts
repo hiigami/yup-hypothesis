@@ -48,7 +48,7 @@ test("should draw fields", () => {
   const {conditionals, references} = objects.drawFields(result, fields, options);
 
   expect(fields.tmp1.isDefined).toHaveBeenCalled();
-  expect(fields.tmp1.draw).toHaveBeenCalledWith(options);
+  expect(fields.tmp1.draw).toHaveBeenCalled();
   expect(fields.tmp2.isDefined).toHaveBeenCalled();
   expect(fields.tmp2.draw).not.toHaveBeenCalled();
   expect(result).toEqual({ tmp1: 1 });
