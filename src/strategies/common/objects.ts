@@ -7,8 +7,10 @@ import {
 } from "../../data/strategies";
 import { UnknownDict } from "../../data/types";
 import { ConditionalStrategy } from "../conditional_strategy";
+import { ReferenceStrategy } from "../reference_strategy";
 
 type ConditionalMap = Map<string, ConditionalStrategy>;
+type ReferenceMap = Map<string, ReferenceStrategy>;
 
 function isConditional(
   name: string,
@@ -22,22 +24,37 @@ function isConditional(
   return false;
 }
 
+function isReference(
+  name: string,
+  field: Field,
+  references: ReferenceMap
+): boolean {
+  if (field instanceof ReferenceStrategy && !field.isContext) {
+    references.set(name, field);
+    return true;
+  }
+  return false;
+}
+
 export function drawFields(
   result: UnknownDict,
   fields: Fields,
   options?: ConditionalOptions
-): ConditionalMap {
+) {
   const conditionals = new Map();
+  const references = new Map();
   for (const x in fields) {
     const field = fields[x];
-    if (!isConditional(x, field, conditionals) && field?.isDefined()) {
-      result[x] = field?.draw(options);
+    const conditional = isConditional(x, field, conditionals);
+    const reference = isReference(x, field, references);
+    if (!conditional && !reference && field?.isDefined()) {
+      result[x] = field?.draw({ ...options, parent: result });
     }
   }
-  return conditionals;
+  return { conditionals, references };
 }
 
-function setResultFromConditional(
+function setResultFromStrategy(
   key: string,
   result: UnknownDict,
   strategy?: IStrategy,
@@ -67,11 +84,26 @@ export function drawConditionals(
       ?.dependsOn()
       .every((x) => keys.lastIndexOf(x) > -1);
     if (!hasDependencies) {
-      setResultFromConditional(key, result, current, options);
+      setResultFromStrategy(key, result, current, options);
       resultKeys.push(key);
       conditionals.delete(key);
     } else {
       keys.push(key);
     }
+  }
+}
+
+export function drawReferences(
+  result: UnknownDict,
+  references: ReferenceMap,
+  options?: ConditionalOptions
+): void {
+  const keys = [...references.keys()];
+  while (keys.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const key = keys.shift()!;
+    const current = references.get(key);
+    setResultFromStrategy(key, result, current, options);
+    references.delete(key);
   }
 }

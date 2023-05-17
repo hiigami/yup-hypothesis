@@ -26,6 +26,11 @@ export function title(s: string): Capitalize<string> {
   return `${s.charAt(0).toUpperCase()}${s.slice(1)}` as Capitalize<string>;
 }
 
-export function is<A, B>(x: A | B, m: keyof A): x is A {
-  return (x as A)[m] !== undefined;
+export function is<A, B>(x: A | B, ...m: (keyof A)[]): x is A {
+  for (const k of m) {
+    if ((x as A)[k] === undefined) {
+      return false;
+    }
+  }
+  return true;
 }

@@ -1,15 +1,14 @@
 import { AnySchema } from "yup";
 
 import { LETTERS_CHAR_CODES } from "../config";
+import { PresenceType, SchemaType } from "../data/enumerations";
 import { ObjectSpecs } from "../data/specs";
 import { ConditionalOptions, Fields, StrategyArgs } from "../data/strategies";
 import { UnknownDict } from "../data/types";
-
-import { MixedStrategy } from "./mixed_strategy";
 import { characters, objects } from "./common";
 import { randomBoolean } from "./common/general";
+import { MixedStrategy } from "./mixed_strategy";
 import { Strategy } from "./strategy";
-import { PresenceType, SchemaType } from "../data/enumerations";
 
 function randomValue() {
   return new MixedStrategy({
@@ -37,8 +36,13 @@ export class ObjectStrategy extends Strategy<UnknownDict> {
   private _drawFields(options?: ConditionalOptions): UnknownDict {
     const result = {} as UnknownDict;
     if (this.fields !== undefined) {
-      const conditionals = objects.drawFields(result, this.fields, options);
+      const { conditionals, references } = objects.drawFields(
+        result,
+        this.fields,
+        options
+      );
       objects.drawConditionals(result, conditionals, options);
+      objects.drawReferences(result, references, options);
     }
     return result;
   }

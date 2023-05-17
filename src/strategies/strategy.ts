@@ -1,11 +1,12 @@
 import { AnySchema } from "yup";
 
 import { STRATEGY_DEFAULTS } from "../config";
-import { enumerations, specs as dSpecs } from "../data";
+import { specs as dSpecs, enumerations } from "../data";
 import { BaseSpecs } from "../data/specs";
 import { ConditionalOptions, StrategyArgs } from "../data/strategies";
 import { Nullable } from "../data/types";
-import { randomChoice, randomIntInclusive, random } from "../random";
+import { random, randomChoice, randomIntInclusive } from "../random";
+import { reference } from "./common";
 
 interface Result<T> {
   apply: boolean;
@@ -62,9 +63,18 @@ export abstract class Strategy<T> {
     }
     return this._shouldBeNull();
   }
+  private _drawChoice(options?: ConditionalOptions): Nullable<T> {
+    const choice = randomChoice<Nullable<T>>(
+      this.specs.choices as Nullable<T>[]
+    );
+    if (reference.isRefObject(choice)) {
+      return reference.resolve(choice.key, options) as Nullable<T>;
+    }
+    return choice;
+  }
   private _choiceOrDraw(options?: ConditionalOptions): Nullable<T> {
     if (this.specs.choices && this.specs.choices.length > 0) {
-      return randomChoice<Nullable<T>>(this.specs.choices as Nullable<T>[]);
+      return this._drawChoice(options);
     }
     return this._applyStrictness(this._draw(options));
   }
