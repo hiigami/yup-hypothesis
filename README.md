@@ -31,6 +31,7 @@ import yh from "yup-hypothesis";
 // -- Objects --
 const TestObjectSchema = yup.object({
   bool: yup.boolean().required(),
+  ref: yup.ref("bool"),
 });
 const objExample = yh.example(TestObjectSchema);
 console.log(objExample);

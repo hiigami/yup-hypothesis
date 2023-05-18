@@ -57,7 +57,17 @@ const TestSchema = yup.object({
           otherwise: (_schema) => yup.number().negative(),
         })
         .max(5)
-    ),
+    ).max(7),
+    s: yup.array().of(
+      yup
+        .number()
+        .when("a", {
+          is: true,
+          then: (_schema) => yup.number().positive(),
+          otherwise: (_schema) => yup.number().negative(),
+        })
+        .max(5)
+    ).max(5),
     z: yup.mixed().when("$t", {
       is: true,
       then: (_schema) => yup.boolean().strict(),
