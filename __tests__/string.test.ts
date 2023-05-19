@@ -4,7 +4,9 @@ jest.unmock("../src/random");
 import * as rnd from "../src/random";
 
 import * as yup from "yup";
+
 import { testXTimes } from "./utils";
+
 
 test("should render string", async () => {
   const TestSchema = yup.object({
@@ -25,6 +27,14 @@ test("should render string", async () => {
     str_trim: yup.string().trim(),
     str_upper: yup.string().uppercase(),
   });
+  await testXTimes(TestSchema);
+});
+
+test("should render string when concat", async () => {
+  const TestSchema = yup
+    .string()
+    .oneOf(["q", "1"])
+    .concat(yup.string().oneOf(["e"]));
   await testXTimes(TestSchema);
 });
 

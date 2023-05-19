@@ -4,7 +4,9 @@ jest.unmock("../src/random");
 import * as rnd from "../src/random";
 
 import * as yup from "yup";
+
 import { testXTimes } from "./utils";
+
 
 const ObjectSchema = yup.object();
 const ObjectSchemaWithStringItem = yup.object({ str: yup.string() });
@@ -98,4 +100,27 @@ test("should render object with mutation returning same schema", async () => {
       return schema.shape({ a: yup.number() }).noUnknown();
     });
   await testXTimes(tt, 200);
+});
+
+test("should render object with concat", async () => {
+  const objectConcatSchema = yup
+    .object({
+      bool: yup.boolean().required(),
+      ref: yup.ref("a"),
+    })
+    .concat(
+      yup
+        .object({
+          a: yup.string(),
+          ref2: yup.ref("bool"),
+          b: yup.date(),
+        })
+        .concat(
+          yup.object({
+            m: yup.mixed(),
+          })
+        )
+    );
+  console.warn = jest.fn();
+  await testXTimes(objectConcatSchema, 50);
 });

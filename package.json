@@ -48,7 +48,7 @@
     "@types/node": "^20.2.1",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
-    "eslint": "^8.40.0",
+    "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
@@ -59,7 +59,6 @@
     "prettier": "^2.8.8",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   },
   "eslintConfig": {
@@ -96,6 +95,9 @@
   "prettier": {
     "trailingComma": "es5",
     "importOrder": [
+      "jest.*",
+      "../src/random",
+      "<THIRD_PARTY_MODULES>",
       "^[./]"
     ],
     "importOrderSeparation": true,

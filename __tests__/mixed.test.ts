@@ -4,7 +4,9 @@ jest.unmock("../src/random");
 import * as rnd from "../src/random";
 
 import * as yup from "yup";
+
 import { testXTimes } from "./utils";
+
 
 test("should render mixed", async () => {
   const TestSchema = yup.object({
@@ -18,5 +20,10 @@ test("should render mixed", async () => {
     mixed_req: yup.mixed().required(),
     mixed_req_not_null: yup.mixed().nonNullable().required(),
   });
+  await testXTimes(TestSchema);
+});
+
+test("should render mixed when concat", async () => {
+  const TestSchema = yup.mixed().concat(yup.mixed());
   await testXTimes(TestSchema);
 });

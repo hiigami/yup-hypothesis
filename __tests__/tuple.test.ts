@@ -4,7 +4,9 @@ jest.unmock("../src/random");
 import * as rnd from "../src/random";
 
 import * as yup from "yup";
+
 import { testXTimes } from "./utils";
+
 
 test("should render a tuple", async () => {
   const TestSchema = yup.tuple([
@@ -17,7 +19,7 @@ test("should render a tuple", async () => {
     yup.date().notRequired(),
     yup.boolean().optional(),
     yup.boolean().defined(),
-    yup.object({one: yup.boolean(), two: yup.number().required()})
+    yup.object({ one: yup.boolean(), two: yup.number().required() }),
   ]);
   await testXTimes(TestSchema);
 });
@@ -29,6 +31,13 @@ test("should render a tuple with different options", async () => {
     tuple_non_nullable: yup.tuple([yup.string().label("name")]).nonNullable(),
     tuple_not_required: yup.tuple([yup.string().label("name")]).notRequired(),
     tuple_defined: yup.tuple([yup.string().label("name")]).defined(),
+  });
+  await testXTimes(TestSchema);
 });
+
+test("should render tuple when concat", async () => {
+  const TestSchema = yup
+    .tuple([yup.number(), yup.string()])
+    .concat(yup.tuple([yup.date()]));
   await testXTimes(TestSchema);
 });
