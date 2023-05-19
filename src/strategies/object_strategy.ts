@@ -3,12 +3,12 @@ import { AnySchema } from "yup";
 import { LETTERS_CHAR_CODES } from "../config";
 import { PresenceType, SchemaType } from "../data/enumerations";
 import { ObjectSpecs } from "../data/specs";
-import { ConditionalOptions, Fields, StrategyArgs } from "../data/strategies";
+import { ConditionalOptions, Fields } from "../data/strategies";
 import { UnknownDict } from "../data/types";
 import { characters, objects } from "./common";
 import { randomBoolean } from "./common/general";
 import { MixedStrategy } from "./mixed_strategy";
-import { Strategy } from "./strategy";
+import { StrategyWithFields } from "./strategy";
 
 function randomValue() {
   return new MixedStrategy({
@@ -21,12 +21,11 @@ function randomValue() {
   }).draw();
 }
 
-export class ObjectStrategy extends Strategy<UnknownDict> {
-  private fields;
-  constructor(args: StrategyArgs<ObjectSpecs> & { fields?: Fields }) {
-    super(args);
-    this.fields = args.fields;
-  }
+export class ObjectStrategy extends StrategyWithFields<
+  UnknownDict,
+  ObjectSpecs,
+  Fields
+> {
   isDefined(): boolean {
     if (this.specs.choices !== undefined) {
       return true;

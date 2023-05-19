@@ -1,24 +1,23 @@
-import { ARRAY_DEFAULTS, NOT_DEFINED } from "../config";
+import { ARRAY_DEFAULTS } from "../config";
 import { ArraySpecs } from "../data/specs";
-import { ConditionalOptions, Field, StrategyArgs } from "../data/strategies";
+import { ConditionalOptions, Field } from "../data/strategies";
+import { UnknownList } from "../data/types";
 import { arrays } from "./common";
-import { Strategy } from "./strategy";
+import { getValue } from "./common/field";
+import { StrategyWithFields } from "./strategy";
 
-type List = unknown[];
-
-export class ArrayStrategy extends Strategy<List> {
-  private element;
-  constructor(args: StrategyArgs<ArraySpecs> & { element?: Field }) {
-    super(args);
-    this.element = args.element;
-  }
-  protected _draw(options?: ConditionalOptions): List {
-    const items: List = [];
-    if (this.element !== undefined) {
+export class ArrayStrategy extends StrategyWithFields<
+  UnknownList,
+  ArraySpecs,
+  Field
+> {
+  protected _draw(options?: ConditionalOptions): UnknownList {
+    const items: UnknownList = [];
+    if (this.fields !== undefined) {
       const size = arrays.getLength(this.specs, ARRAY_DEFAULTS);
       for (let i = 0; i < size; i++) {
-        const item = this.element.draw(options);
-        items.push(item === NOT_DEFINED ? undefined : item);
+        const item = getValue(this.fields, options);
+        items.push(item);
       }
     }
     return items;

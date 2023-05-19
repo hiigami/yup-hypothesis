@@ -22,7 +22,7 @@ test("should be an array", () => {
       length: 1,
     }),
     schema: yup.array().of(numberSchema).length(1),
-    element: numberStrategy,
+    fields: numberStrategy,
   }).draw();
 
   expect(Array.isArray(val)).toBeTruthy();

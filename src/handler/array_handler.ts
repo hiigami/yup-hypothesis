@@ -22,6 +22,6 @@ export class ArrayHandler extends Handler<handlers.Schemas> {
       return undefined;
     }
     const field = fields === undefined ? undefined : fields[0];
-    return new ArrayStrategy({ specs, schema, element: field });
+    return new ArrayStrategy({ specs, schema, fields: field });
   }
 }

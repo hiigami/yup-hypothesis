@@ -3,7 +3,12 @@ import { AnySchema } from "yup";
 import { STRATEGY_DEFAULTS } from "../config";
 import { specs as dSpecs, enumerations } from "../data";
 import { BaseSpecs } from "../data/specs";
-import { ConditionalOptions, StrategyArgs } from "../data/strategies";
+import {
+  ConditionalOptions,
+  Field,
+  Fields,
+  StrategyArgs,
+} from "../data/strategies";
 import { Nullable } from "../data/types";
 import { random, randomChoice, randomIntInclusive } from "../random";
 import { reference } from "./common";
@@ -103,5 +108,17 @@ export abstract class Strategy<T> {
     const drawValue = this._choiceOrDraw(options);
     // ???: what if null in transform
     return drawValue === null ? drawValue : this._applyMutations(drawValue);
+  }
+}
+
+export abstract class StrategyWithFields<
+  A,
+  B extends BaseSpecs,
+  C = Fields | Field
+> extends Strategy<A> {
+  protected fields;
+  constructor(args: StrategyArgs<B> & { fields?: C }) {
+    super(args);
+    this.fields = args.fields;
   }
 }

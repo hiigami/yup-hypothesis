@@ -1,29 +1,16 @@
 import { ArraySpecs } from "../data/specs";
-import {
-  ConditionalOptions,
-  Field,
-  Fields,
-  StrategyArgs,
-} from "../data/strategies";
-import { Strategy } from "./strategy";
+import { ConditionalOptions, Fields } from "../data/strategies";
+import { UnknownList } from "../data/types";
+import { getValue } from "./common/field";
+import { StrategyWithFields } from "./strategy";
 
-type List = unknown[];
-
-function getValue(field: Field, options?: ConditionalOptions) {
-  if (field?.isDefined()) {
-    return field?.draw(options);
-  }
-  return undefined;
-}
-
-export class TupleStrategy extends Strategy<List> {
-  private fields;
-  constructor(args: StrategyArgs<ArraySpecs> & { fields?: Fields }) {
-    super(args);
-    this.fields = args.fields;
-  }
-  protected _draw(options?: ConditionalOptions): List {
-    const items: List = [];
+export class TupleStrategy extends StrategyWithFields<
+  UnknownList,
+  ArraySpecs,
+  Fields
+> {
+  protected _draw(options?: ConditionalOptions): UnknownList {
+    const items: UnknownList = [];
     if (this.fields !== undefined) {
       const keys = Object.keys(this.fields).sort();
       for (const key of keys) {
