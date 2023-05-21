@@ -13,7 +13,11 @@ export class BooleanSpec extends Spec {
       TestName.IsValue
     );
     if (restrictionValue !== undefined) {
-      specs.choices?.push(restrictionValue);
+      specs.choices?.push(
+        (restrictionValue as string).toString().toLowerCase() === "true"
+          ? true
+          : false
+      );
     }
     return specs;
   }
