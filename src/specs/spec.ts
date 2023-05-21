@@ -39,7 +39,7 @@ export abstract class Spec {
   private _getMutations(): SpecMutation<AnySchema>[] {
     const mutations = [];
     for (const x in this.schema.transforms.slice(1)) {
-      mutations.push(this.schema.transforms[x]);
+      mutations.push(this.schema.transforms[+x + 1]);
     }
     return mutations;
   }

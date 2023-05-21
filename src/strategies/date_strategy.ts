@@ -1,7 +1,6 @@
 import { DateSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { NotStrict } from "../data/types";
-
 import { applyStrictness } from "./common/general";
 import { Strategy } from "./strategy";
 

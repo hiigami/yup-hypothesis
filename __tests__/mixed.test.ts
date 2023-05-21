@@ -24,6 +24,6 @@ test("should render mixed", async () => {
 });
 
 test("should render mixed when concat", async () => {
-  const TestSchema = yup.mixed().concat(yup.mixed());
+  const TestSchema = yup.mixed().concat(yup.mixed().nullable());
   await testXTimes(TestSchema);
 });

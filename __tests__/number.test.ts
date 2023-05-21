@@ -50,3 +50,10 @@ test("should render integer", async () => {
   });
   await testXTimes(TestSchema);
 });
+
+test("should render number when concat", async () => {
+  const TestSchema = yup
+    .number().max(10)
+    .concat(yup.number().integer().min(7));
+  await testXTimes(TestSchema);
+});

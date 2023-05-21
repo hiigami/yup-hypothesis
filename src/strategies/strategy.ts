@@ -81,7 +81,7 @@ export abstract class Strategy<T> {
     if (this.specs.choices && this.specs.choices.length > 0) {
       return this._drawChoice(options);
     }
-    return this._applyStrictness(this._draw(options));
+    return this._draw(options);
   }
   private _applyMutations(value: Nullable<T>): Nullable<T> {
     if (this.specs.mutations === undefined) {
@@ -104,10 +104,9 @@ export abstract class Strategy<T> {
     if (result.apply) {
       return result.value;
     }
-    /**@todo not one of */
     const drawValue = this._choiceOrDraw(options);
-    // ???: what if null in transform
-    return drawValue === null ? drawValue : this._applyMutations(drawValue);
+    const value = this._applyMutations(drawValue);
+    return value === undefined ? value : this._applyStrictness(value as T);
   }
 }
 
