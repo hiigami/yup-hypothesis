@@ -1,7 +1,7 @@
 import {
-  randomMock,
   randomChoiceMock,
   randomIntInclusiveMock,
+  randomMock,
 } from "../../jest.setup";
 
 import * as yup from "yup";
