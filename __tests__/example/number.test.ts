@@ -1,10 +1,10 @@
-jest.unmock("../src/random");
+jest.unmock("../../src/random");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as rnd from "../src/random";
+import * as rnd from "../../src/random";
 
 import * as yup from "yup";
-import { testXTimes } from "./utils";
+import { testXTimes } from "../utils";
 
 
 test("should render float", async () => {

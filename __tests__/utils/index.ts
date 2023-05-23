@@ -5,6 +5,7 @@ import { enumerations, types, specs } from "../../src/data";
 import { createConstrain } from "../../src/common";
 import { Constrain } from "../../src/data/constrains";
 import { UnknownDict } from "../../src/data/types";
+import { SpecMutation } from "../../src/data/specs";
 
 export type CheckFn<T> = (value: T) => void;
 
@@ -80,6 +81,10 @@ export const createSpecs = (args?: {
   min?: number;
   max?: number;
   length?: number;
+  default?: unknown;
+  exclude?: Set<unknown>;
+  choices?: Array<unknown>,
+  mutations?: SpecMutation<AnySchema>[]
 }): specs.Specs => ({
   type: args?.type || enumerations.SchemaType.String,
   nullable: args?.nullable || false,
@@ -89,6 +94,10 @@ export const createSpecs = (args?: {
   max: args?.max,
   length: args?.length,
   strict: args?.strict,
+  exclude: args?.exclude || new Set(),
+  choices: args?.choices || [],
+  mutations: args?.mutations || [],
+  default: args?.default
 });
 
 interface TestItemArgs extends UnknownDict {
