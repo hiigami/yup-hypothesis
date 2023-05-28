@@ -13,9 +13,12 @@ import { enumerations, types } from "../../src/data";
 import { Strategy } from "../../src/strategies/strategy";
 
 class DummyStrategy extends Strategy<string> {
-  public returnValue = "_draw";
+  public returnValue: string | (() => string) = "_draw";
   protected _draw() {
-    return this.returnValue;
+    if (typeof this.returnValue === "string") {
+      return this.returnValue;
+    }
+    return this.returnValue();
   }
 }
 
@@ -80,6 +83,37 @@ test("should be one of", () => {
   }).draw();
 
   expect(val).toBe(choices[index]);
+});
+
+test("should be not one of having set oneOf", () => {
+  const choices = ["a", "b", "c"];
+  const exclude = ["b", "a"];
+  randomChoiceMock
+    .mockReturnValueOnce(choices[1])
+    .mockReturnValueOnce(choices[0])
+    .mockReturnValue(choices[2]);
+
+  const val = new DummyStrategy({
+    specs: { ...specs, choices: choices, exclude: new Set(exclude) },
+    schema: schema.required().oneOf(choices).notOneOf(exclude),
+  }).draw();
+
+  expect(val).toBe("c");
+});
+
+test("should be not one of", () => {
+  const exclude = ["b", "a"];
+  const dummyStrategy = new DummyStrategy({
+    specs: { ...specs, exclude: new Set(exclude) },
+    schema: schema.required().notOneOf(exclude),
+  });
+  const draws = ["a", "b", "d"];
+  dummyStrategy.returnValue = () => {
+    return draws.shift() ?? "";
+  };
+  const val = dummyStrategy.draw();
+
+  expect(val).toBe("d");
 });
 
 test.each([

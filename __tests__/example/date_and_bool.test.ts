@@ -15,8 +15,16 @@ test("should render date", async () => {
     date_def_null: yup.date().nullable().defined(),
     date_default: yup.date().default(new Date(0)),
     date_min_max: yup.date().min(new Date(5)).max(new Date(10)).required(),
+    date_not_one_of: yup
+      .date()
+      .min(new Date(5))
+      .max(new Date(10))
+      .notOneOf([new Date(5), new Date(7), new Date(9)]),
     date_not_req: yup.date().notRequired(),
-    // date_one_of: yup.date().oneOf([new Date(1), new Date(2), new Date(3)]),
+    date_one_of_strict: yup
+      .date()
+      .oneOf([new Date(1), new Date(2), new Date(3)])
+      .strict(),
     date_opt: yup.date().optional(),
     date_req: yup.date().required(),
     date_req_not_null: yup.date().nonNullable().required(),
@@ -28,6 +36,7 @@ test("should render date", async () => {
 
 test.failing("should render date from oneOf with strict false", async () => {
   const t = yup.date().oneOf([new Date(1), new Date(2), new Date(3)]);
+  console.log = jest.fn();
   await testXTimes(t);
 });
 
@@ -39,6 +48,7 @@ test("should render bool", async () => {
     bool_default: yup.boolean().default(false),
     bool_is_false: yup.boolean().isFalse(),
     bool_is_true: yup.boolean().isTrue(),
+    bool_not_one_of: yup.boolean().notOneOf([false]),
     bool_not_req: yup.boolean().notRequired(),
     bool_one_of: yup.boolean().oneOf([true]),
     bool_opt: yup.boolean().optional(),

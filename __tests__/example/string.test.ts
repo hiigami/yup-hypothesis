@@ -9,6 +9,43 @@ import { testXTimes } from "../utils";
 
 
 test("should render string", async () => {
+  const oneOf = ["a", "b", "c"];
+  const notOneOfSamples = [
+    "a",
+    "c",
+    "d",
+    "e",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "+",
+    "-",
+    "*",
+    "<",
+    ">",
+    '"',
+    "'",
+    "@",
+    "[",
+    "]",
+    "{",
+    "}",
+    "1",
+    "3",
+    "4",
+    "7",
+    "8",
+    "9",
+    "0",
+  ];
   const TestSchema = yup.object({
     str: yup.string(),
     str_def: yup.string().defined(),
@@ -17,8 +54,14 @@ test("should render string", async () => {
     str_ensure: yup.string().ensure(),
     str_lower: yup.string().lowercase(),
     str_min_max: yup.string().min(4).max(145),
+    str_not_one_of: yup
+      .string()
+      .length(1)
+      .lowercase()
+      .notOneOf(notOneOfSamples),
     str_not_req: yup.string().notRequired(),
-    str_one_of: yup.string().oneOf(["a", "b", "c"]),
+    str_one_of: yup.string().oneOf(oneOf),
+    str_one_of_with_not_one_of: yup.string().oneOf(oneOf).notOneOf(["b", "c"]),
     str_opt: yup.string().optional(),
     str_req: yup.string().required(),
     str_req_not_null: yup.string().nonNullable().required(),
