@@ -9,7 +9,7 @@ import { Strategy } from "./strategy";
 type NotStrictString = NotStrict<number | boolean | Date>;
 
 function asNotStrict(val: string): NotStrictString {
-  if (!isNaN(+val)) {
+  if (val !== " " && !isNaN(+val)) {
     return +val;
   } else if (["true", "false"].indexOf(val.toLocaleLowerCase()) > -1) {
     return val === "true";

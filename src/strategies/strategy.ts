@@ -25,7 +25,7 @@ function createResult<T>(apply: boolean, value: Nullable<T> = null): Result<T> {
   };
 }
 
-export abstract class Strategy<T> {
+abstract class BaseStrategy<T> {
   readonly schema: AnySchema;
   readonly specs: dSpecs.Specs;
 
@@ -33,8 +33,31 @@ export abstract class Strategy<T> {
     this.specs = args.specs;
     this.schema = args.schema;
   }
+  protected _applyMutations(value: Nullable<T>): Nullable<T> {
+    if (this.specs.mutations === undefined) {
+      return value;
+    }
+    let mutated = value;
+    for (const fn of this.specs.mutations) {
+      mutated = fn.call(this.schema, mutated, value, this.schema) as T;
+    }
+    return mutated;
+  }
   protected _applyStrictness(value: T): T {
     return value;
+  }
+  protected _choiceOrDraw(options?: ConditionalOptions): Nullable<T> {
+    if (this.specs.choices && this.specs.choices.length > 0) {
+      return this._drawChoice(options);
+    }
+    return this._draw(options);
+  }
+  protected _defaultOrNull(): Result<T> {
+    const defaultResult = this._shouldBeDefault();
+    if (defaultResult.apply) {
+      return defaultResult;
+    }
+    return this._shouldBeNull();
   }
   protected abstract _draw(options?: ConditionalOptions): T;
   protected _random(max: number, min = 0): number {
@@ -61,13 +84,6 @@ export abstract class Strategy<T> {
     }
     return createResult(false);
   }
-  private _defaultOrNull(): Result<T> {
-    const defaultResult = this._shouldBeDefault();
-    if (defaultResult.apply) {
-      return defaultResult;
-    }
-    return this._shouldBeNull();
-  }
   private _drawChoice(options?: ConditionalOptions): Nullable<T> {
     const choice = randomChoice<Nullable<T>>(
       this.specs.choices as Nullable<T>[]
@@ -77,35 +93,36 @@ export abstract class Strategy<T> {
     }
     return choice;
   }
-  private _choiceOrDraw(options?: ConditionalOptions): Nullable<T> {
-    if (this.specs.choices && this.specs.choices.length > 0) {
-      return this._drawChoice(options);
-    }
-    return this._draw(options);
-  }
-  private _applyMutations(value: Nullable<T>): Nullable<T> {
-    if (this.specs.mutations === undefined) {
-      return value;
-    }
-    let mutated = value;
-    for (const fn of this.specs.mutations) {
-      mutated = fn.call(this.schema, mutated, value, this.schema) as T;
-    }
-    return mutated;
-  }
+  abstract draw(options?: ConditionalOptions): Nullable<T>;
   isDefined(): boolean {
     if (this.specs.presence === enumerations.PresenceType.Optional) {
       return random() > STRATEGY_DEFAULTS.defined;
     }
     return true;
   }
+}
+
+export abstract class Strategy<T> extends BaseStrategy<T> {
+  private _isValueExcluded(value: unknown) {
+    return this.specs.exclude?.has(value) ?? false;
+  }
+  private _drawAndValidate(options?: ConditionalOptions): Nullable<T> {
+    let drawValue = this._choiceOrDraw(options);
+    let value = this._applyMutations(drawValue);
+    if (this.specs.exclude && this.specs.exclude.size > 0) {
+      while (this._isValueExcluded(value)) {
+        drawValue = this._choiceOrDraw(options);
+        value = this._applyMutations(drawValue);
+      }
+    }
+    return value;
+  }
   draw(options?: ConditionalOptions): Nullable<T> {
     const result = this._defaultOrNull();
     if (result.apply) {
       return result.value;
     }
-    const drawValue = this._choiceOrDraw(options);
-    const value = this._applyMutations(drawValue);
+    const value = this._drawAndValidate(options);
     return value === undefined ? value : this._applyStrictness(value as T);
   }
 }
@@ -114,10 +131,19 @@ export abstract class StrategyWithFields<
   A,
   B extends BaseSpecs,
   C = Fields | Field
-> extends Strategy<A> {
+> extends BaseStrategy<A> {
   protected fields;
   constructor(args: StrategyArgs<B> & { fields?: C }) {
     super(args);
     this.fields = args.fields;
+  }
+  draw(options?: ConditionalOptions): Nullable<A> {
+    const result = this._defaultOrNull();
+    if (result.apply) {
+      return result.value;
+    }
+    const drawValue = this._choiceOrDraw(options);
+    const value = this._applyMutations(drawValue);
+    return value === undefined ? value : this._applyStrictness(value as A);
   }
 }

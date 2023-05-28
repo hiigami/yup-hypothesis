@@ -20,28 +20,16 @@ export abstract class Spec {
     if (this.schema.spec.optional) {
       return PresenceType.Optional;
     }
-    if (!this.schema.spec.nullable) {
-      return PresenceType.Required;
-    }
-    return PresenceType.Defined;
+    return !this.schema.spec.nullable
+      ? PresenceType.Required
+      : PresenceType.Defined;
   }
   protected abstract _getType(): SchemaType;
-  protected _getChoices(exclude: Set<unknown>): unknown[] {
-    const choices = this.schema.describe().oneOf;
-    const output = [];
-    for (const item of choices) {
-      if (!exclude.has(item)) {
-        output.push(item);
-      }
-    }
-    return output;
-  }
   protected _get(): Specs {
-    const exclude = new Set(this.schema.describe().notOneOf);
     return {
-      choices: this._getChoices(exclude),
+      choices: this.schema.describe().oneOf,
       default: this.schema.spec.default,
-      exclude: exclude,
+      exclude: new Set(this.schema.describe().notOneOf),
       mutations: this.schema.transforms,
       nullable: this.schema.spec.nullable,
       presence: this._getPresence(),

@@ -4,8 +4,8 @@ import {
   PresenceType,
   SchemaType,
   Sign,
-  TestParameter,
   TestName,
+  TestParameter,
 } from "./enumerations";
 import { GenericFn } from "./types";
 
