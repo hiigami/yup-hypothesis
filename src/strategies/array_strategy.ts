@@ -4,9 +4,9 @@ import { ConditionalOptions, Field } from "../data/strategies";
 import { UnknownList } from "../data/types";
 import { arrays } from "./common";
 import { getValue } from "./common/field";
-import { StrategyWithFields } from "./strategy";
+import { StrategyNestedFields } from "./strategy";
 
-export class ArrayStrategy extends StrategyWithFields<
+export class ArrayStrategy extends StrategyNestedFields<
   UnknownList,
   ArraySpecs,
   Field

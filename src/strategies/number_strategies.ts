@@ -3,7 +3,6 @@ import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { NotStrict } from "../data/types";
-
 import { digits } from "./common";
 import { applyStrictness } from "./common/general";
 import { Strategy } from "./strategy";

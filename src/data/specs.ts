@@ -14,9 +14,9 @@ export interface SpecMutation<T> {
 }
 
 export interface BaseSpecs {
-  choices?: Array<unknown>;
+  choices: Array<unknown>;
   default?: unknown | GenericFn<unknown>;
-  exclude?: Set<unknown>;
+  exclude: Set<unknown>;
   mutations?: SpecMutation<AnySchema>[];
   nullable: boolean;
   presence: PresenceType;
