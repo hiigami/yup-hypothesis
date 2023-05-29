@@ -16,34 +16,9 @@ interface HostDefaults {
   tld: constrains.Constrain;
 }
 
-const LETTERS = Object.freeze([
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-]);
+const LETTERS = Object.freeze(
+  Array.from(Array(26)).map((e, i) => String.fromCharCode(97 + i))
+);
 const EXTRA_CHARS = Object.freeze([".", "-", "+", "~"]);
 
 function getSectionLength(

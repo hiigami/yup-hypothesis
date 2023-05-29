@@ -78,10 +78,9 @@ export function resolve(key: string, options?: ConditionalOptions): unknown {
   if (key.startsWith("$") && options?.context !== undefined) {
     return resolvePath(key.slice(1), options.context as never);
   }
-  if (options?.parent !== undefined) {
-    return resolvePath(key, options.parent as never);
-  }
-  return undefined;
+  return options?.parent !== undefined
+    ? resolvePath(key, options.parent as never)
+    : undefined;
 }
 
 function isDictionary(item: unknown) {

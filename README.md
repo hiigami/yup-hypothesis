@@ -69,6 +69,10 @@ const exampleWithContext = yh.example(TestConditionalSchema, context);
 console.log(exampleWithContext);
 ```
 
+### Examples
+
+To learn more about what yup-hypothesis can do you can visit the [tests folder](https://github.com/hiigami/yup-hypothesis/tree/main/__tests__/example) on the repository.
+
 ## Test
 
 ```bash
