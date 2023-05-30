@@ -2,7 +2,6 @@ import { URL_DEFAULTS } from "../config";
 import { ArraySpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { random } from "../random";
-
 import { arrays, internet } from "./common";
 import { Strategy } from "./strategy";
 

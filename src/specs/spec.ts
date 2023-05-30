@@ -2,6 +2,7 @@ import { AnySchema } from "yup";
 
 import { PresenceType, SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
+import { Fields } from "../data/strategies";
 import { ITestSearch } from "../data/test_search";
 
 export interface SpecConstructor {
@@ -37,5 +38,5 @@ export abstract class Spec {
       type: this._getType(),
     };
   }
-  abstract get(): Specs;
+  abstract get(fields?: Fields): Specs;
 }

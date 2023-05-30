@@ -14,7 +14,7 @@ export class ObjectHandler extends Handler<handlers.Shape> {
     return schema.fields;
   }
   handle(schema: AnyObjectSchema, fields?: Fields): Field {
-    const specs = this.getSpecs(schema);
+    const specs = this.getSpecs(schema, fields);
     if (specs === undefined) {
       return undefined;
     }

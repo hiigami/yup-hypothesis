@@ -2,9 +2,9 @@ import { ArraySpecs } from "../data/specs";
 import { ConditionalOptions, Fields } from "../data/strategies";
 import { UnknownList } from "../data/types";
 import { getValue } from "./common/field";
-import { StrategyWithFields } from "./strategy";
+import { StrategyNestedFields } from "./strategy";
 
-export class TupleStrategy extends StrategyWithFields<
+export class TupleStrategy extends StrategyNestedFields<
   UnknownList,
   ArraySpecs,
   Fields
@@ -12,7 +12,7 @@ export class TupleStrategy extends StrategyWithFields<
   protected _draw(options?: ConditionalOptions): UnknownList {
     const items: UnknownList = [];
     if (this.fields !== undefined) {
-      const keys = Object.keys(this.fields).sort();
+      const keys = Object.keys(this.fields).sort((a, b) => +a - +b);
       for (const key of keys) {
         items.push(getValue(this.fields[key], options));
       }

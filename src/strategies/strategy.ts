@@ -47,7 +47,7 @@ abstract class BaseStrategy<T> {
     return value;
   }
   protected _choiceOrDraw(options?: ConditionalOptions): Nullable<T> {
-    if (this.specs.choices && this.specs.choices.length > 0) {
+    if (this.specs.choices.length > 0) {
       return this._drawChoice(options);
     }
     return this._draw(options);
@@ -94,6 +94,9 @@ abstract class BaseStrategy<T> {
     return choice;
   }
   abstract draw(options?: ConditionalOptions): Nullable<T>;
+  getPresence() {
+    return this.specs.presence;
+  }
   isDefined(): boolean {
     if (this.specs.presence === enumerations.PresenceType.Optional) {
       return random() > STRATEGY_DEFAULTS.defined;
@@ -103,17 +106,12 @@ abstract class BaseStrategy<T> {
 }
 
 export abstract class Strategy<T> extends BaseStrategy<T> {
-  private _isValueExcluded(value: unknown) {
-    return this.specs.exclude?.has(value) ?? false;
-  }
   private _drawAndValidate(options?: ConditionalOptions): Nullable<T> {
     let drawValue = this._choiceOrDraw(options);
     let value = this._applyMutations(drawValue);
-    if (this.specs.exclude && this.specs.exclude.size > 0) {
-      while (this._isValueExcluded(value)) {
-        drawValue = this._choiceOrDraw(options);
-        value = this._applyMutations(drawValue);
-      }
+    while (this.specs.exclude.has(value)) {
+      drawValue = this._choiceOrDraw(options);
+      value = this._applyMutations(drawValue);
     }
     return value;
   }
@@ -127,7 +125,7 @@ export abstract class Strategy<T> extends BaseStrategy<T> {
   }
 }
 
-export abstract class StrategyWithFields<
+export abstract class StrategyNestedFields<
   A,
   B extends BaseSpecs,
   C = Fields | Field

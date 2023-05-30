@@ -1,5 +1,6 @@
 import { AnySchema } from "yup";
 
+import { PresenceType } from "./enumerations";
 import { BaseSpecs } from "./specs";
 import { Dict, Maybe, UnknownDict } from "./types";
 
@@ -13,6 +14,7 @@ export interface ConditionalOptions {
 }
 
 export interface IStrategy {
+  getPresence(): PresenceType;
   isDefined(): boolean;
   draw(): unknown;
   draw(options?: ConditionalOptions): unknown;

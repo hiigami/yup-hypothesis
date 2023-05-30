@@ -8,11 +8,13 @@ import { UnknownDict } from "../data/types";
 import { characters, objects } from "./common";
 import { randomBoolean } from "./common/general";
 import { MixedStrategy } from "./mixed_strategy";
-import { StrategyWithFields } from "./strategy";
+import { StrategyNestedFields } from "./strategy";
 
 function randomValue() {
   return new MixedStrategy({
     specs: {
+      choices: [],
+      exclude: new Set(),
       type: SchemaType.Mixed,
       nullable: randomBoolean(),
       presence: PresenceType.Required,
@@ -21,17 +23,11 @@ function randomValue() {
   }).draw();
 }
 
-export class ObjectStrategy extends StrategyWithFields<
+export class ObjectStrategy extends StrategyNestedFields<
   UnknownDict,
   ObjectSpecs,
   Fields
 > {
-  isDefined(): boolean {
-    if (this.specs.choices !== undefined) {
-      return true;
-    }
-    return super.isDefined();
-  }
   private _drawFields(options?: ConditionalOptions): UnknownDict {
     const result = {} as UnknownDict;
     if (this.fields !== undefined) {

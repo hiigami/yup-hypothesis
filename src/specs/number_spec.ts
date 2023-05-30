@@ -1,9 +1,10 @@
 import { SchemaType, Sign, TestName } from "../data/enumerations";
 import { LimitOption, OffsetSchemaTypeChoices, Specs } from "../data/specs";
+import { Fields } from "../data/strategies";
 import { Maybe } from "../data/types";
 import { limitOptionsMapper, signMapper } from "../mapper";
-import { Spec } from "./spec";
 import * as digits from "./common/digits";
+import { Spec } from "./spec";
 
 export class NumberSpec extends Spec {
   protected _getType(): SchemaType {
@@ -39,7 +40,7 @@ export class NumberSpec extends Spec {
     }
     return undefined;
   }
-  get(): Specs {
+  get(_fields?: Fields): Specs {
     const specs = this._get();
     specs.min = this._getLimit(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
