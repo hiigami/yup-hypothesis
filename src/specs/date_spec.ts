@@ -1,5 +1,6 @@
 import { SchemaType, TestParameter } from "../data/enumerations";
 import { Specs } from "../data/specs";
+import { Fields } from "../data/strategies";
 import { Maybe } from "../data/types";
 import { Spec } from "./spec";
 
@@ -20,7 +21,7 @@ export class DateSpec extends Spec {
     }
     return this._limitFromStringOrDefault(val);
   }
-  get(): Specs {
+  get(_fields?: Fields): Specs {
     const specs = this._get();
     specs.min = this._getLimit(TestParameter.Min);
     specs.max = this._getLimit(TestParameter.Max);

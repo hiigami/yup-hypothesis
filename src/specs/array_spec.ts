@@ -1,7 +1,7 @@
 import { PresenceType, SchemaType, TestParameter } from "../data/enumerations";
 import { Specs } from "../data/specs";
+import { Fields } from "../data/strategies";
 import { Maybe } from "../data/types";
-
 import { minByPresence } from "./common/arrays";
 import { Spec } from "./spec";
 
@@ -16,7 +16,7 @@ export class ArraySpec extends Spec {
     }
     return min;
   }
-  get(): Specs {
+  get(_fields?: Fields): Specs {
     const specs = this._get();
     specs.length = this.testSearch.getParameter(TestParameter.Length);
     specs.min = this._getMin(specs.presence);

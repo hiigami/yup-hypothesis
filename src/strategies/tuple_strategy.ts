@@ -12,7 +12,7 @@ export class TupleStrategy extends StrategyNestedFields<
   protected _draw(options?: ConditionalOptions): UnknownList {
     const items: UnknownList = [];
     if (this.fields !== undefined) {
-      const keys = Object.keys(this.fields).sort();
+      const keys = Object.keys(this.fields).sort((a, b) => +a - +b);
       for (const key of keys) {
         items.push(getValue(this.fields[key], options));
       }

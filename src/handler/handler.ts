@@ -11,8 +11,8 @@ export abstract class Handler<T> {
   constructor(schemaType?: SchemaType) {
     this.schemaType = schemaType;
   }
-  protected getSpecs(schema: AnySchema): Maybe<Specs> {
-    return new SchemaBuilder(schema).specs();
+  protected getSpecs(schema: AnySchema, fields?: Fields): Maybe<Specs> {
+    return new SchemaBuilder(schema).specs(fields);
   }
   getFields(_schema: AnySchema): Maybe<T> {
     return undefined;

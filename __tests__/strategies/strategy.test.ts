@@ -151,15 +151,16 @@ test.each([
     expected: true,
   }),
 ])(
-  "should return $expected with random:$randValue, presence:$specs.presence",
+  "should have defined value: $expected with random:$randValue, presence:$specs.presence",
   ({ specs, randValue, schema, expected }) => {
     randomMock.mockReturnValue(randValue as number);
 
-    const val = new DummyStrategy({
+    const dummyStrategy = new DummyStrategy({
       specs,
       schema: schema as yup.AnySchema,
-    }).isDefined();
-    expect(val).toBe(expected);
+    })
+    expect(dummyStrategy.isDefined()).toBe(expected);
+    expect(dummyStrategy.getPresence()).toBe(specs.presence);
   }
 );
 

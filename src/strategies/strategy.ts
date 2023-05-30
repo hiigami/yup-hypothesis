@@ -94,6 +94,9 @@ abstract class BaseStrategy<T> {
     return choice;
   }
   abstract draw(options?: ConditionalOptions): Nullable<T>;
+  getPresence() {
+    return this.specs.presence;
+  }
   isDefined(): boolean {
     if (this.specs.presence === enumerations.PresenceType.Optional) {
       return random() > STRATEGY_DEFAULTS.defined;

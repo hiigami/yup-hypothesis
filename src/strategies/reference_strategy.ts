@@ -1,3 +1,4 @@
+import { PresenceType } from "../data/enumerations";
 import { IStrategy } from "../data/strategies";
 import { ConditionalOptions } from "../data/strategies";
 import { resolvePath } from "./common/reference";
@@ -8,6 +9,9 @@ export class ReferenceStrategy implements IStrategy {
   constructor(args: { path: string; isContext: boolean }) {
     this.path = args.path;
     this.isContext = args.isContext;
+  }
+  getPresence(): PresenceType {
+    return PresenceType.Defined;
   }
   isDefined(): boolean {
     return true;
