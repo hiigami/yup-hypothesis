@@ -1,3 +1,4 @@
+import { PresenceType } from "../../src/data/enumerations";
 import { UnknownDict } from "../../src/data/types";
 import { ReferenceStrategy } from "../../src/strategies";
 
@@ -12,6 +13,7 @@ const referenceTestItem = (args: {
   options: { parent: args.parent, context: args.context },
   expected: args.expected,
 });
+
 test.each([
   referenceTestItem({
     expected: true,
@@ -45,5 +47,14 @@ test.each([
   ({ input, options, expected }) => {
     const val = new ReferenceStrategy(input).draw(options);
     expect(val).toEqual(expected);
+  }
+);
+
+test.each([{ isContext: true }, { isContext: false }])(
+  "should be defined and have defined presence with: (isContext: $isContext)",
+  ({ isContext }) => {
+    const strategy = new ReferenceStrategy({ path: "", isContext });
+    expect(strategy.isDefined()).toBeTruthy();
+    expect(strategy.getPresence()).toEqual(PresenceType.Defined);
   }
 );
