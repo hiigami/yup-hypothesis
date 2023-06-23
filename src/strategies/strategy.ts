@@ -13,17 +13,7 @@ import { Nullable } from "../data/types";
 import { random, randomChoice, randomIntInclusive } from "../random";
 import { reference } from "./common";
 
-interface Result<T> {
-  apply: boolean;
-  value: Nullable<T>;
-}
-
-function createResult<T>(apply: boolean, value: Nullable<T> = null): Result<T> {
-  return {
-    apply: apply,
-    value: value,
-  };
-}
+const NOTHING = Symbol("nothing");
 
 abstract class BaseStrategy<T> {
   readonly schema: AnySchema;
@@ -52,12 +42,11 @@ abstract class BaseStrategy<T> {
     }
     return this._draw(options);
   }
-  protected _defaultOrNull(): Result<T> {
-    const defaultResult = this._shouldBeDefault();
-    if (defaultResult.apply) {
-      return defaultResult;
+  protected _defaultOrNull() {
+    if (this._shouldBeDefault()) {
+      return this._getDefaultValue();
     }
-    return this._shouldBeNull();
+    return this._shouldBeNull() ? null : NOTHING;
   }
   protected abstract _draw(options?: ConditionalOptions): T;
   protected _random(max: number, min = 0): number {
@@ -69,20 +58,20 @@ abstract class BaseStrategy<T> {
     }
     return this.specs.default as Nullable<T>;
   }
-  private _shouldBeDefault(): Result<T> {
+  private _shouldBeDefault() {
     if (
       this.specs.default !== undefined &&
       random() > STRATEGY_DEFAULTS.default
     ) {
-      return createResult(true, this._getDefaultValue());
+      return true;
     }
-    return createResult(false);
+    return false;
   }
-  private _shouldBeNull(): Result<T> {
+  private _shouldBeNull() {
     if (this.specs.nullable && random() > STRATEGY_DEFAULTS.nullable) {
-      return createResult(true);
+      return true;
     }
-    return createResult(false);
+    return false;
   }
   private _drawChoice(options?: ConditionalOptions): Nullable<T> {
     const choice = randomChoice<Nullable<T>>(
@@ -117,8 +106,8 @@ export abstract class Strategy<T> extends BaseStrategy<T> {
   }
   draw(options?: ConditionalOptions): Nullable<T> {
     const result = this._defaultOrNull();
-    if (result.apply) {
-      return result.value;
+    if (result !== NOTHING) {
+      return result;
     }
     const value = this._drawAndValidate(options);
     return value === undefined ? value : this._applyStrictness(value as T);
@@ -137,8 +126,8 @@ export abstract class StrategyNestedFields<
   }
   draw(options?: ConditionalOptions): Nullable<A> {
     const result = this._defaultOrNull();
-    if (result.apply) {
-      return result.value;
+    if (result !== NOTHING) {
+      return result;
     }
     const drawValue = this._choiceOrDraw(options);
     const value = this._applyMutations(drawValue);
