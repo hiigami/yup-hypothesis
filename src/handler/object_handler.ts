@@ -3,6 +3,7 @@ import { AnyObjectSchema } from "yup";
 import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields } from "../data/strategies";
+import { typeToDrawableMapper } from "../mapper";
 import { ObjectStrategy } from "../strategies";
 import { Handler } from "./handler";
 
@@ -18,6 +19,6 @@ export class ObjectHandler extends Handler<handlers.Shape> {
     if (specs === undefined) {
       return undefined;
     }
-    return new ObjectStrategy({ specs, schema, fields });
+    return new ObjectStrategy({ specs, schema, fields }, typeToDrawableMapper);
   }
 }

@@ -3,6 +3,7 @@ import { ArraySchema } from "yup";
 import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields } from "../data/strategies";
+import { typeToDrawableMapper } from "../mapper";
 import { ArrayStrategy } from "../strategies";
 import { Handler } from "./handler";
 
@@ -22,6 +23,9 @@ export class ArrayHandler extends Handler<handlers.Schemas> {
       return undefined;
     }
     const field = fields === undefined ? undefined : fields[0];
-    return new ArrayStrategy({ specs, schema, fields: field });
+    return new ArrayStrategy(
+      { specs, schema, fields: field },
+      typeToDrawableMapper
+    );
   }
 }

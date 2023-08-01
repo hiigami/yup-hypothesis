@@ -1,7 +1,15 @@
 import { PresenceType } from "../data/enumerations";
 import { IStrategy } from "../data/strategies";
 import { ConditionalOptions } from "../data/strategies";
+import { Drawable, DrawableGeneric } from "../drawable";
 import { resolvePath } from "./common/reference";
+
+function toDrawable(item: any) {
+  if (item instanceof Drawable) {
+    return item;
+  }
+  return new DrawableGeneric(typeof item, item, false);
+}
 
 export class ReferenceStrategy implements IStrategy {
   private path;
@@ -22,10 +30,10 @@ export class ReferenceStrategy implements IStrategy {
     }
     return undefined;
   }
-  public draw(options?: ConditionalOptions): unknown {
+  public draw(options?: ConditionalOptions) {
     if (this.isContext && options?.context !== undefined) {
-      return resolvePath(this.path, options.context as never);
+      return toDrawable(resolvePath(this.path, options.context as never));
     }
-    return this._draw(options);
+    return toDrawable(this._draw(options));
   }
 }

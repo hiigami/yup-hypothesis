@@ -1,3 +1,4 @@
+import { ArrayStrategy, BooleanStrategy, DateStrategy, EmailStrategy } from ".";
 import { SchemaType } from "../data/enumerations";
 import { Specs } from "../data/specs";
 import {
@@ -7,12 +8,10 @@ import {
 } from "../data/strategies";
 import { Maybe } from "../data/types";
 import { randomChoice } from "../random";
-
-import { Strategy } from "./strategy";
-import { ArrayStrategy, BooleanStrategy, DateStrategy, EmailStrategy } from ".";
 import { FloatStrategy, NumberStrategy } from "./number_strategies";
-import { StringStrategy } from "./string_strategy";
 import { ObjectStrategy } from "./object_strategy";
+import { Strategy } from "./strategy";
+import { StringStrategy } from "./string_strategy";
 import { URLStrategy } from "./url_strategy";
 import { UUIDStrategy } from "./uuid_strategy";
 
@@ -63,7 +62,7 @@ export class MixedStrategy extends Strategy<unknown> {
         strategyArgs.specs.max = 20;
         strategyArgs.element = element;
       }
-      element = new strategy(strategyArgs);
+      element = new strategy(strategyArgs, this.drawableMapper);
     }
     return element;
   }

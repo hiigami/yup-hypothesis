@@ -64,7 +64,7 @@ function setResultFromStrategy(
     parent: result,
     context: options?.context,
   });
-  if (value !== NOT_DEFINED) {
+  if (value?.draw() !== NOT_DEFINED) {
     result[key] = value;
   }
 }

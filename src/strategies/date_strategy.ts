@@ -1,3 +1,4 @@
+import { DrawableMapper } from "../data/drawable";
 import { DateSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { NotStrict } from "../data/types";
@@ -7,8 +8,8 @@ import { Strategy } from "./strategy";
 type NotStrictDate = NotStrict<Date>;
 
 export class DateStrategy extends Strategy<NotStrictDate> {
-  constructor(args: StrategyArgs<DateSpecs>) {
-    super(args);
+  constructor(args: StrategyArgs<DateSpecs>, drawableMapper: DrawableMapper) {
+    super(args, drawableMapper);
   }
   protected _applyStrictness(val: Date): NotStrictDate {
     return applyStrictness(

@@ -1,5 +1,6 @@
 import { AnySchema } from "yup";
 
+import { DrawableMapper, IDrawable } from "./drawable";
 import { PresenceType } from "./enumerations";
 import { BaseSpecs } from "./specs";
 import { Dict, Maybe, UnknownDict } from "./types";
@@ -16,8 +17,8 @@ export interface ConditionalOptions {
 export interface IStrategy {
   getPresence(): PresenceType;
   isDefined(): boolean;
-  draw(): unknown;
-  draw(options?: ConditionalOptions): unknown;
+  draw(): IDrawable;
+  draw(options?: ConditionalOptions): IDrawable;
 }
 
 export interface StrategyArgs<T extends BaseSpecs> extends UnknownDict {
@@ -26,5 +27,8 @@ export interface StrategyArgs<T extends BaseSpecs> extends UnknownDict {
 }
 
 export interface StrategyConstructor {
-  new <T extends BaseSpecs>(args: StrategyArgs<T>): IStrategy;
+  new <T extends BaseSpecs>(
+    args: StrategyArgs<T>,
+    drawableMapper: DrawableMapper
+  ): IStrategy;
 }

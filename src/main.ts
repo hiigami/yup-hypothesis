@@ -10,7 +10,7 @@ function example(
 ): InferType<typeof schema> {
   const strategy = Processor.getInstance().run(schema);
   const result = strategy?.draw({ context });
-  return (result === NOT_DEFINED ? undefined : result) as InferType<
+  return (result === undefined ? undefined : result.draw()) as InferType<
     typeof schema
   >;
 }

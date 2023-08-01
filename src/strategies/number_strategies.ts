@@ -1,4 +1,5 @@
 import { NUMBER_DEFAULTS } from "../config";
+import { DrawableMapper } from "../data/drawable";
 import { Sign } from "../data/enumerations";
 import { FloatSpecs, NumberSpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
@@ -16,8 +17,8 @@ abstract class BaseStrategy extends Strategy<NotStrictNumber> {
 }
 
 export class NumberStrategy extends BaseStrategy {
-  constructor(args: StrategyArgs<NumberSpecs>) {
-    super(args);
+  constructor(args: StrategyArgs<NumberSpecs>, drawableMapper: DrawableMapper) {
+    super(args, drawableMapper);
   }
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign as Sign);
@@ -38,8 +39,8 @@ export class NumberStrategy extends BaseStrategy {
 }
 
 export class FloatStrategy extends BaseStrategy {
-  constructor(args: StrategyArgs<FloatSpecs>) {
-    super(args);
+  constructor(args: StrategyArgs<FloatSpecs>, drawableMapper: DrawableMapper) {
+    super(args, drawableMapper);
   }
   protected _draw(): number {
     const sign = digits.getSign(this.specs.sign as Sign);

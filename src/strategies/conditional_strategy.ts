@@ -1,6 +1,8 @@
 import { AnySchema } from "yup";
 
+import { is } from "../common";
 import { NOT_DEFINED } from "../config";
+import { IDrawable } from "../data/drawable";
 import { PresenceType } from "../data/enumerations";
 import { BaseSpecs } from "../data/specs";
 import {
@@ -8,25 +10,30 @@ import {
   IStrategy,
   StrategyArgs,
 } from "../data/strategies";
+import { DrawableGeneric } from "../drawable";
 import Processor from "../processor";
 import { Strategy } from "./strategy";
 
 type Condition = AnySchema["conditions"];
 
+function toDrawable(item: any) {
+  if (is<typeof item, IDrawable>(item, "type", "value")) {
+    return item;
+  }
+  return new DrawableGeneric(typeof item, item, false);
+}
+
 export class ConditionalStrategy extends Strategy<unknown> {
   private conditions: Condition[];
   private depends: string[];
   constructor(args: StrategyArgs<BaseSpecs>) {
-    super(args);
+    super(args, new Map());
     this.conditions = this.schema["conditions"] as Condition[];
     this.depends = this.conditions
       .map((c) => c.refs.map((r: { key: unknown }) => r.key))
       .flat();
   }
-  private _drawWithParent(
-    strategy?: IStrategy,
-    options?: ConditionalOptions
-  ): unknown {
+  private _drawWithParent(strategy?: IStrategy, options?: ConditionalOptions) {
     const isDefined = this.isDefined() || strategy?.isDefined();
     return isDefined ? strategy?.draw(options) : NOT_DEFINED;
   }
@@ -47,11 +54,11 @@ export class ConditionalStrategy extends Strategy<unknown> {
   dependsOn(): string[] {
     return this.depends;
   }
-  draw(options?: ConditionalOptions): unknown {
+  draw(options?: ConditionalOptions) {
     const schema = this._draw(options);
     const strategy = Processor.getInstance().run(schema);
     if (options?.parent) {
-      return this._drawWithParent(strategy, options);
+      return toDrawable(this._drawWithParent(strategy, options));
     }
     return strategy?.draw(options);
   }

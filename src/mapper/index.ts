@@ -9,6 +9,8 @@ export {
   stringTypeToTestMapper,
 } from "./specs";
 
+export { typeToDrawableMapper } from "./drawable";
+
 export const schemaToSpecMapper = new Map<SchemaType, specs.SpecConstructor>([
   [SchemaType.Array, specs.ArraySpec],
   [SchemaType.Boolean, specs.BooleanSpec],

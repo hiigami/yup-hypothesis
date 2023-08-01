@@ -5,6 +5,7 @@ import { handlers } from "../data";
 import { SchemaType } from "../data/enumerations";
 import { Field, Fields, StrategyConstructor } from "../data/strategies";
 import { schemaToStrategyMapper } from "../mapper";
+import { typeToDrawableMapper } from "../mapper";
 import { Handler } from "./handler";
 
 export class FieldHandler extends Handler<handlers.Schemas> {
@@ -21,6 +22,6 @@ export class FieldHandler extends Handler<handlers.Schemas> {
     const strategy = schemaToStrategyMapper.get(
       specs.type
     ) as StrategyConstructor;
-    return new strategy({ specs, schema });
+    return new strategy({ specs, schema }, typeToDrawableMapper);
   }
 }

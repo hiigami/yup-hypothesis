@@ -1,26 +1,31 @@
 import { AnySchema } from "yup";
 
 import { LETTERS_CHAR_CODES } from "../config";
+import { DrawableMapper } from "../data/drawable";
 import { PresenceType, SchemaType } from "../data/enumerations";
 import { ObjectSpecs } from "../data/specs";
 import { ConditionalOptions, Fields } from "../data/strategies";
-import { UnknownDict } from "../data/types";
+import { Nullable, UnknownDict } from "../data/types";
+import { DrawableGeneric } from "../drawable";
 import { characters, objects } from "./common";
 import { randomBoolean } from "./common/general";
 import { MixedStrategy } from "./mixed_strategy";
 import { StrategyNestedFields } from "./strategy";
 
-function randomValue() {
-  return new MixedStrategy({
-    specs: {
-      choices: [],
-      exclude: new Set(),
-      type: SchemaType.Mixed,
-      nullable: randomBoolean(),
-      presence: PresenceType.Required,
+function randomValue(mapper: DrawableMapper) {
+  return new MixedStrategy(
+    {
+      specs: {
+        choices: [],
+        exclude: new Set(),
+        type: SchemaType.Mixed,
+        nullable: randomBoolean(),
+        presence: PresenceType.Required,
+      },
+      schema: {} as AnySchema,
     },
-    schema: {} as AnySchema,
-  }).draw();
+    mapper
+  ).draw();
 }
 
 export class ObjectStrategy extends StrategyNestedFields<
@@ -45,7 +50,7 @@ export class ObjectStrategy extends StrategyNestedFields<
     const numOfUnknown = this._random(5, 1);
     for (let i = 0; i < numOfUnknown; i++) {
       const key = characters.genText(this._random(10, 1), LETTERS_CHAR_CODES);
-      result[key as string] = randomValue();
+      result[key as string] = randomValue(this.drawableMapper);
     }
   }
   protected _draw(options?: ConditionalOptions): UnknownDict {
@@ -54,5 +59,32 @@ export class ObjectStrategy extends StrategyNestedFields<
       this._drawUnknown(result);
     }
     return result;
+  }
+  protected _drawChoice(options?: ConditionalOptions): Nullable<UnknownDict> {
+    const choice = super._drawChoice(options);
+    if (choice === null) {
+      return choice;
+    }
+    for (const attr in choice) {
+      if (typeof this.fields !== "undefined") {
+        if (typeof this.fields[attr] === "undefined") {
+          choice[attr] = new DrawableGeneric(
+            typeof choice[attr],
+            choice[attr],
+            true
+          );
+        }
+        const name = this.fields[attr]?.constructor.name
+          .toLowerCase()
+          .replace("strategy", "");
+        if (typeof name !== "undefined") {
+          const drawable = this.drawableMapper.get(name);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          /**@ts-ignore */
+          choice[attr] = new drawable(choice[attr], true);
+        }
+      }
+    }
+    return choice;
   }
 }

@@ -29,11 +29,11 @@ export function getValidValueOrBest(
   }
   return val < constrain.min ? constrain.min : constrain.max;
 }
-
+/**@todo - delete */
 export function randomBoolean(): boolean {
   return random() < STRATEGY_DEFAULTS.bool;
 }
-
+/**@todo - delete */
 export function applyStrictness<A, B>(
   val: A,
   fn: GenericFnWithArg<A, B>,

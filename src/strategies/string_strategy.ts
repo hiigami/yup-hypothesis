@@ -1,4 +1,5 @@
 import { STRING_DEFAULTS } from "../config";
+import { DrawableMapper } from "../data/drawable";
 import { ArraySpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { NotStrict } from "../data/types";
@@ -20,8 +21,8 @@ function asNotStrict(val: string): NotStrictString {
 }
 
 export class StringStrategy extends Strategy<NotStrictString> {
-  constructor(args: StrategyArgs<ArraySpecs>) {
-    super(args);
+  constructor(args: StrategyArgs<ArraySpecs>, drawableMapper: DrawableMapper) {
+    super(args, drawableMapper);
   }
   protected _applyStrictness(val: string): NotStrictString {
     return applyStrictness(val, asNotStrict, this.specs.strict);

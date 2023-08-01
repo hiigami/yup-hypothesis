@@ -1,4 +1,5 @@
 import { URL_DEFAULTS } from "../config";
+import { DrawableMapper } from "../data/drawable";
 import { ArraySpecs } from "../data/specs";
 import { StrategyArgs } from "../data/strategies";
 import { random } from "../random";
@@ -10,8 +11,8 @@ function getOptionValue(off: boolean): boolean {
 }
 
 export class URLStrategy extends Strategy<string> {
-  constructor(args: StrategyArgs<ArraySpecs>) {
-    super(args);
+  constructor(args: StrategyArgs<ArraySpecs>, drawableMapper: DrawableMapper) {
+    super(args, drawableMapper);
   }
   private _gen(size: number): string {
     const isMinSize = size === URL_DEFAULTS.min;
